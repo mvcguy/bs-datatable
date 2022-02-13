@@ -1,2 +1,6 @@
-export { BSGridBase } from "./components/bs-grid-base";
-export { CacheService } from "./services/bs-cache-service";
+import { BSTableBase, BSTextInputExt, BSInput } from "./components";
+import { CookieHelper, dataEventsService, appDataEvents, appActions } from "./services"
+import { BSDataTable } from "./BSDataTable";
+
+export { BSTableBase, BSInput, BSTextInputExt, BSDataTable, CookieHelper, dataEventsService, appDataEvents, appActions }
+

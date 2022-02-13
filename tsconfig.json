@@ -5,12 +5,12 @@
       "module": "es6",
       "outDir": "./dist/",
       "sourceMap": true,
-      "declaration": false,
+      "declaration": true,
       "moduleResolution": "node",
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
       "target": "es5",
-      "allowJs": true,
+      "allowJs": false,
       "typeRoots": [
         "node_modules/@types"
       ],

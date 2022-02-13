@@ -16,10 +16,10 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js'],
     },
     output: {
-        filename: 'bs-datatable.js',
+        filename: 'index.js',
         path: path.resolve(__dirname, 'dist'),
         library: {
-            name: "BSDataTable",
+            name: "index",
             type: "umd"
         }
     },

@@ -27,7 +27,7 @@ class Cookie {
         document.cookie = name + '=' + encodeURIComponent(value) + opts
     }
 
-    delete(name: string, opts: any) {
+    delete(name: string, opts?: any) {
         this.set(name, '', { 'max-age': -1, ...opts })
     }
 

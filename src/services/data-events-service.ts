@@ -11,7 +11,7 @@ class DataEventsService {
 
     registerWinPopState() {
         var _this = this;
-        window.onpopstate= function(e) {
+        window.onpopstate = function (e) {
             if (e.state && e.state.eventData) {
                 console.log(e.state);
                 _this.notifyListeners(appDataEvents.ON_FETCH_RECORD, { eventData: e.state.eventData, skipPush: true });
@@ -22,12 +22,12 @@ class DataEventsService {
     notifyListeners(eventType: string, eventArgs: { eventData?: string; skipPush?: boolean; dataSourceName?: string; }) {
         if (!eventType) return;
         try {
-            $.each(this.callbacks, function () {
+            this.callbacks.forEach((cb) => {
                 // TODO: Check for datasourcname???
-                if (this.eventType !== eventType || (this.dataSourceName !== eventArgs.dataSourceName && this.verifyDSName === true)) return;
+                if (cb.eventType !== eventType || (cb.dataSourceName !== eventArgs.dataSourceName && cb.verifyDSName === true)) return;
                 // if (this.eventType !== eventType) return;
 
-                this.callback(eventArgs);
+                cb.callback(eventArgs);
             });
 
         } catch (error) {
@@ -69,10 +69,10 @@ class DataEventsService {
     invokeCallback(eventType: string, payload: any) {
         var resultArray = [];
 
-        $.each(this.callbacks, function () {
-            if (this.eventType === eventType) {
-                var result = this.callback(payload);
-                var dataSourceName = this.dataSourceName;
+        this.callbacks.forEach((cb) => {
+            if (cb.eventType === eventType) {
+                var result = cb.callback(payload);
+                var dataSourceName = cb.dataSourceName;
                 resultArray.push({ data: result, dataSourceName: dataSourceName });
                 console.log("invokeCallback: Event:", eventType, " payload: ", payload, " Result: ", result);
             }

@@ -1,7 +1,7 @@
-import { BSTableBase } from "./BSTableBase";
+import { BSDataTableBase } from "./BSDataTableBase";
 
 
-export class BSInput extends BSTableBase {
+export class BSDataTableInput extends BSDataTableBase {
     options: any;
     /**
      * @param {{ inputType: string; dataSourceName: string }} options

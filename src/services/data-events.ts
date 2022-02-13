@@ -7,13 +7,14 @@ export class appActions {
    static readonly COL_RESIZED = 'COL_RESIZED';
    static readonly COL_SHOW_HIDE = 'COL_SHOW_HIDE';
    static readonly COL_REORDER = 'COL_REORDER'
-   static readonly GRID_DATA = "GRID_DATA";
 }
 
 //
 // event types
 //
 export class appDataEvents {
+    
+   static readonly GRID_DATA = "GRID_DATA";
     static readonly ON_NEXT_RECORD = "ON_NEXT_RECORD";
     static readonly ON_PREV_RECORD = "ON_PREV_RECORD";
     static readonly ON_SAVE_RECORD = "ON_SAVE_RECORD";

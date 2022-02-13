@@ -1,15 +1,10 @@
-import { CookieHelper } from "../services/CookieHelper";
 import * as $ from "jquery"
-import { dataEventsService } from "../services/data-events-service"
-import { appDataEvents, appActions } from "../services/data-events"
+import { dataEventsService, appDataEvents, appActions, CookieHelper } from "../services"
 
-export class BSTableBase {
-
+export class BSDataTableBase {
 
     element: JQuery;
-
-    children: BSTableBase[];
-    CookieHelper: typeof CookieHelper;
+    children: BSDataTableBase[];
     jquery: JQueryStatic;
     appDataEvents: typeof appDataEvents;
     appActions: typeof appActions;
@@ -17,8 +12,7 @@ export class BSTableBase {
 
     constructor() {
 
-        this.jquery = $;
-        this.CookieHelper = CookieHelper;        
+        this.jquery = $;     
         this.children = [];
         this.appDataEvents = appDataEvents;
         this.appActions = appActions;
@@ -31,7 +25,7 @@ export class BSTableBase {
     getGridSettings(gridId) {
         try {
             // debugger;
-            var gridSettings = this.CookieHelper.getJSON(gridId);
+            var gridSettings = CookieHelper.getJSON(gridId);
             //console.log('GridSettings Cookie: ', gridSettings ? 'settings found' : 'no settings found!');
 
             return gridSettings;
@@ -117,7 +111,7 @@ export class BSTableBase {
 
     /**
      * 
-     * @param {BSTableBase} elem 
+     * @param {BSDataTableBase} elem 
      */
     append(elem, pushToArray = true) {
 
@@ -147,7 +141,7 @@ export class BSTableBase {
 
     clone() {
         //debugger;
-        var c = new BSTableBase();
+        var c = new BSDataTableBase();
         // c.element = this.element.clone();
         var x = this.element[0].cloneNode();
         if (x instanceof HTMLElement) {

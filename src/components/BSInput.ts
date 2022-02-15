@@ -1,12 +1,9 @@
 import { BSDataTableBase } from "./BSDataTableBase";
 
-
 export class BSDataTableInput extends BSDataTableBase {
     options: any;
-    /**
-     * @param {{ inputType: string; dataSourceName: string }} options
-     */
-    constructor(options) {
+   
+    constructor(options: { dataSourceName: string; inputType?: string; }) {
         super();
         this.options = options;
     }

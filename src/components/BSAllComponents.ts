@@ -3,6 +3,7 @@ import { appActions as gridActions, appDataEvents, dataEventsService, CookieHelp
 import { Tooltip, Modal } from "bootstrap"
 import { BSDataTableBase } from "./BSDataTableBase";
 import { BSDataTableInput } from "./BSInput";
+import '../services/string.extensions'
 
 export class BSDataTable extends BSDataTableBase {
 
@@ -13,48 +14,37 @@ export class BSDataTable extends BSDataTableBase {
     paginator: BSDataTablePagination;
     httpClient: BSDataTableHttpClient;
     sessionCache: SessionStorageService;
-    infiniteScroller: BSDataTableInfiniteScroll;
+    infiniteScroller: BSDataTableInfiniteScroll;    
+    gridActions: BSDataTableActions;
     configurableGrid: () => void;
     resizableGrid: () => void;
     enableColumnReordering: () => void;
-    gridActions: BSDataTableActions;
+    onGridConfigurationChanged: (eventArgs: any) => void;
+    onGridDataBound: (eventArgs: any) => void;
+    
 
     constructor(options: BSDataTableOptions) {
         super();
 
         this.options = options;
-
-        this.head = new BSDataTableHeader({});
-        this.body = new BSDataTableBody({});
-
+        this.head = new BSDataTableHeader();
+        this.body = new BSDataTableBody();
         this.selectors = new BSDataTableSelectorWindowCollection();
-
-        // this.bootstrap = bootstrap;
-
         this.paginator = new BSDataTablePagination(
             new BSDataTablePaginationOptions(this.options.dataSource.name,
                 new BSDataTablePagingMetaData(),
                 (page) => this.paginatorCallback(page)));
 
         this.sessionCache = new SessionStorageService();
-
-
         this.httpClient = new BSDataTableHttpClient(this.sessionCache, this.options.dataSource.name);
-
-        // this.render(); // render manually
-
-        // this.infiniteScroller = new BSDataTableInfiniteScroll({ gridElement: this.element });
         this.infiniteScroller = null;
-
-
         this.gridActions = null;
-
-
     }
+
     /**
      * @param {number} page
      */
-    paginatorCallback(page) {
+    paginatorCallback(page: number) {
         // console.log(`Page.Nbr: ${page} is requested`);
         this.fetchGridPage(page);
     }
@@ -99,11 +89,10 @@ export class BSDataTable extends BSDataTableBase {
         //
         // add row markers - this helps to improve the visual appearance of selected row
         //
-        var mh = new BSDataTableCell({});
-        mh.isHeader = true;
+        var mh = new BSDataTableCell(new BSDataTableColDefinition(), true);
 
         var marker = new BSDataTableMarker();
-        var mb = new BSDataTableCell({});
+        var mb = new BSDataTableCell(new BSDataTableColDefinition());
         mb.append(marker);
 
         gridHeaderRow.addCell(mh);
@@ -185,7 +174,7 @@ export class BSDataTable extends BSDataTableBase {
     addInfiniteScroll() {
         if (this.options.enableInfiniteScroll === true) {
             this.infiniteScroller = new BSDataTableInfiniteScroll({ gridElement: this.element, httpClient: this.httpClient });
-            this.infiniteScroller.nextPageCallback = (/** @type {number} */ page) => this.paginatorCallback(page);
+            this.infiniteScroller.nextPageCallback = (page) => this.paginatorCallback(page);
             this.infiniteScroller.enable();
         }
     }
@@ -201,7 +190,7 @@ export class BSDataTable extends BSDataTableBase {
     /**
      * @param {BSDataTableCell} th
      */
-    addSorting(th) {
+    addSorting(th: BSDataTableCell) {
         //
         // sorting of the data when the header cell is clicked
         //
@@ -248,9 +237,9 @@ export class BSDataTable extends BSDataTableBase {
      * Apply visibility and size settings from store cookie.
      * This helps the user not to re-arrange cols based on their needs all the time they open the screen
      * @param {BSDataTableCell} col
-     * @param {object} settings
+     * @param {any} settings
      */
-    applyColSettings(col, settings) {
+    applyColSettings(col: BSDataTableCell, settings: any) {
 
         if (this.isEmptyObj(settings)) return;
 
@@ -847,13 +836,7 @@ export class BSDataTable extends BSDataTableBase {
         this.registerCallback(id, appDataEvents.ON_GRID_DATA_BOUND, (ev) => this.onGridDataBound(ev), ds, verifyDSName);
         this.registerCallback(id, appDataEvents.ON_FETCH_GRID_RECORD, (ev) => this.onFetchData(ev), ds, verifyDSName);
         this.registerCallback(id, appDataEvents.ON_FETCH_GRID_RECORD_ERROR, (ev) => this.onFetchDataError(ev), ds, verifyDSName);
-    } onGridConfigurationChanged(ev: any) {
-        throw new Error("Method not implemented.");
-    }
-    onGridDataBound(ev: any) {
-        throw new Error("Method not implemented.");
-    }
-    ;
+    } 
 }
 
 export class BSDataTableMarker extends BSDataTableBase {
@@ -892,7 +875,7 @@ export class BSDataTableTextInput extends BSDataTableInput {
 }
 
 export class BSDataTableCheckBox extends BSDataTableInput {
-    constructor(options) {
+    constructor(options: { dataSourceName: string; inputType?: "checkbox" }) {
         super(options);
         this.render();
     }
@@ -905,7 +888,7 @@ export class BSDataTableCheckBox extends BSDataTableInput {
     /**
      * @param {string} v
      */
-    set val(v) {
+    set val(v: string) {
         this.element.val(v);
     }
 
@@ -926,13 +909,13 @@ export class BSDataTableCheckBox extends BSDataTableInput {
 }
 
 export class BSDataTableSelectOption extends BSDataTableBase {
-    options: any;
+    options: BSDataTableSelectListItem;
 
     /**
      * 
      * @param {BSDataTableSelectListItem} options 
      */
-    constructor(options) {
+    constructor(options: BSDataTableSelectListItem) {
         super();
         this.options = options;
         this.render();
@@ -993,7 +976,7 @@ export class BSDataTableButton extends BSDataTableInput {
     /**
      * @param {{ inputType: string; dataSourceName: string; icon?:string; handler?:  (arg0: MouseEvent) => void}} options
      */
-    constructor(options) {
+    constructor(options: { inputType: string; dataSourceName: string; icon?: string; handler?: (arg0: MouseEvent) => void; }) {
         super(options);
         this.options = options;
         this.render();
@@ -1022,14 +1005,14 @@ export class BSDataTableButton extends BSDataTableInput {
 export class BSDataTableSelector extends BSDataTableInput {
 
     /**
-     * @type {any}
+     * @type {BSDataTableButton}
      */
-    btnElement;
+    btnElement: BSDataTableButton;
 
     /**
      * @type {BSDataTableTextInput}
      */
-    txtElement;
+    txtElement: BSDataTableTextInput;
 
     /**
      * @param {{dataSourceName:string, 
@@ -1041,7 +1024,16 @@ export class BSDataTableSelector extends BSDataTableInput {
      * elementId: string,
      * btnClick: (sender:BSDataTableSelector, e:any)=> void }} options
      */
-    constructor(options) {
+    constructor(options: {
+        dataSourceName: string;
+        propName: string;
+        inputType: string;
+        cssClass: string;
+        placeHolder: string;
+        btnId: string;
+        elementId: string;
+        btnClick: (sender: BSDataTableSelector, e: any) => void;
+    }) {
         super(options);
         this.options = options;
         this.render();
@@ -1051,7 +1043,7 @@ export class BSDataTableSelector extends BSDataTableInput {
      * @param {BSDataTableSelectorWindow} sender
      * @param {any} e
      */
-    onItemSelected(sender, e) {
+    onItemSelected(sender: BSDataTableSelectorWindow, e: any) {
 
         console.log('row selected', sender.grid.body.getSelectedRow());
 
@@ -1104,14 +1096,15 @@ export class BSDataTableCell extends BSDataTableBase {
     /**
      * @type {boolean}
      */
-    isHeader;
-    options: any;
+    isHeader: boolean;
+    options: BSDataTableColDefinition;
     /**
      * @param {BSDataTableColDefinition} [options]
      */
-    constructor(options) {
+    constructor(options: BSDataTableColDefinition, isHeader = false) {
         super();
         this.options = options || new BSDataTableColDefinition();
+        this.isHeader = isHeader
         this.render();
     }
 
@@ -1134,10 +1127,9 @@ export class BSDataTableCell extends BSDataTableBase {
     clone() {
         // debugger;
         var sc = super.clone();
-        var c = new BSDataTableCell(this.shClone(this.options));
+        var c = new BSDataTableCell(this.shClone(this.options), this.isHeader);
         c.children = sc.children;
         c.element = sc.element;
-        c.isHeader = this.isHeader;
         return c;
     }
 }
@@ -1148,7 +1140,7 @@ export class BSDataTableActions extends BSDataTableBase {
     /**
      * @type {string}
      */
-    dataSourceName;
+    dataSourceName: string;
     constructor() {
         super();
         this.render();
@@ -1161,7 +1153,7 @@ export class BSDataTableActions extends BSDataTableBase {
     /**
      * @param {(arg0: object) => any} [callback]
      */
-    addDeleteAction(callback) {
+    addDeleteAction(callback: (arg0: object) => any) {
         var btn = this.jquery(`<button type="button" class="btn btn-sm btn-outline-danger grid-toolbar-action" 
                                     id="btnDeleteRow_${this.dataSourceName}"><i class="bi bi-trash"></i>
                                 </button>`);
@@ -1173,7 +1165,7 @@ export class BSDataTableActions extends BSDataTableBase {
     /**
      * @param {(arg0: object) => any} [callback]
      */
-    addNewRecordAction(callback) {
+    addNewRecordAction(callback: (arg0: object) => any) {
         var btn = this.jquery(`<button type="button" class="btn btn-sm btn-outline-primary grid-toolbar-action" 
                                     id="btnAddRow_${this.dataSourceName}"><i class="bi bi-plus-circle"></i>
                                 </button>'`);
@@ -1197,19 +1189,17 @@ export class BSDataTableRowCollection extends BSDataTableBase {
     /**
      * @type BSDataTableRow[]
      */
-    rows = [];
-    options: any;
+    rows: BSDataTableRow[] = [];
 
-    constructor(options) {
+    constructor() {
         super();
-        this.options = options;
     }
 
     /**
      * 
      * @param {BSDataTableRow} row 
      */
-    addRow(row) {
+    addRow(row: BSDataTableRow) {
         this.element.append(row.element);
         var index = this.getNextRowIndex();
         row.prop('data-rowindex', index);
@@ -1240,8 +1230,8 @@ export class BSDataTableRowCollection extends BSDataTableBase {
 export class BSDataTableHeader extends BSDataTableRowCollection {
 
 
-    constructor(options) {
-        super(options);
+    constructor() {
+        super();
         this.render();
     }
 
@@ -1253,8 +1243,8 @@ export class BSDataTableHeader extends BSDataTableRowCollection {
 
 export class BSDataTableBody extends BSDataTableRowCollection {
 
-    constructor(options) {
-        super(options);
+    constructor() {
+        super();
         this.render();
     }
 
@@ -1265,7 +1255,7 @@ export class BSDataTableBody extends BSDataTableRowCollection {
     /**
     * @param {BSDataTableRow} row
     */
-    rowSiblings(row) {
+    rowSiblings(row: BSDataTableRow) {
         return this.rows.filter((v, i) => {
             if (v !== row) return v; // return all except the current row
         })
@@ -1274,7 +1264,7 @@ export class BSDataTableBody extends BSDataTableRowCollection {
     /**
      * @param {BSDataTableRow} row
      */
-    focusRow(row) {
+    focusRow(row: BSDataTableRow) {
         row.removeClass('table-active').addClass('table-active');
         var siblings = this.rowSiblings(row);
         siblings.forEach((v, i) => v.removeClass('table-active'));
@@ -1341,7 +1331,7 @@ export class BSDataTableBody extends BSDataTableRowCollection {
      * Removes the row from rows collection
      * @param {BSDataTableRow} row 
      */
-    removeRow(row) {
+    removeRow(row: BSDataTableRow) {
 
         // this.find(`tr[data-rowcategory='${row.rowCategory}']`).remove();
         row.element.remove();
@@ -1358,13 +1348,16 @@ export class BSDataTableRow extends BSDataTableBase {
     /**
      * @type BSDataTableCell[]
      */
-    cells = [];
+    cells: BSDataTableCell[] = [];
     options: any;
 
     /**
      * @param {{ dataSourceName: string; gridId: string; gridHeader?: boolean; isTemplateRow?: boolean; containerId?:string}} options
      */
-    constructor(options) {
+    constructor(options: {
+        dataSourceName: string; gridId: string;
+        gridHeader?: boolean; isTemplateRow?: boolean; containerId?: string;
+    }) {
         super();
         this.options = options;
         this.render();
@@ -1382,7 +1375,7 @@ export class BSDataTableRow extends BSDataTableBase {
     * 
     * @param {BSDataTableCell} cell 
     */
-    addCell(cell) {
+    addCell(cell: BSDataTableCell) {
         this.element.append(cell.element);
         this.cells.push(cell);
     }
@@ -1390,7 +1383,7 @@ export class BSDataTableRow extends BSDataTableBase {
     /**
      * @param {BSDataTableCell[]} cells
      */
-    addCells(cells) {
+    addCells(cells: any[]) {
         cells.forEach((cell) => this.addCell(cell));
     }
 
@@ -1403,7 +1396,7 @@ export class BSDataTableRow extends BSDataTableBase {
      * 
      * @returns {BSDataTableRow}
      */
-    clone() {
+    clone(): BSDataTableRow {
         //var clone = this.element.clone();
         //return new BSDataTableRow({ element: clone, dataSourceName: this.dataSourceName });
         //let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this);
@@ -1457,7 +1450,7 @@ export class BSDataTableRow extends BSDataTableBase {
      * @param {BSDataTable} grid instance
      * @returns {BSDataTableCell} returns the grid cell containing the input
      */
-    createInputFor(model, grid) {
+    createInputFor(model: BSDataTableColDefinition, grid: BSDataTable): BSDataTableCell {
         var ds = this.options.dataSourceName;
         var gid = this.options.gridId;
 
@@ -1527,7 +1520,7 @@ export class BSDataTableRow extends BSDataTableBase {
             input.setCss('user-select', 'none');
         }
 
-        var td = new BSDataTableCell({});
+        var td = new BSDataTableCell(new BSDataTableColDefinition());
         td.append(input);
         return td;
 
@@ -1536,9 +1529,8 @@ export class BSDataTableRow extends BSDataTableBase {
     /**
      * @param {BSDataTableColDefinition} model
      */
-    createHeaderFor(model) {
-        var th = new BSDataTableCell(model);
-        th.isHeader = true;
+    createHeaderFor(model: BSDataTableColDefinition) {
+        var th = new BSDataTableCell(model, true);
         th.addClass('sorting').addClass('ds-col');
         th.setText(model.name);
         th.prop('data-th-propname', model.propName);
@@ -1587,10 +1579,10 @@ export class BSDataTableRow extends BSDataTableBase {
 }
 
 export class BSDataTableOptions {
-    gridId: any;
-    containerId: any;
-    colDefinition: any;
-    dataSource: any;
+    gridId: string;
+    containerId: string;
+    colDefinition: BSDataTableColDefinition[];
+    dataSource: BSDataTableDataSource;
     isReadonly: boolean;
     enableInfiniteScroll: boolean;
 
@@ -1602,7 +1594,8 @@ export class BSDataTableOptions {
      * @param {BSDataTableDataSource} dataSource 
      * @param {boolean} isReadonly
      */
-    constructor(gridId, containerId, colDefinition, dataSource, isReadonly = false) {
+    constructor(gridId: string, containerId: string,
+        colDefinition: BSDataTableColDefinition[], dataSource: BSDataTableDataSource, isReadonly: boolean = false) {
         this.gridId = gridId;
         this.containerId = containerId;
         this.colDefinition = colDefinition;
@@ -1613,16 +1606,16 @@ export class BSDataTableOptions {
 }
 
 export class BSDataTableColDefinition {
-    name: any;
-    dataType: any;
-    width: any;
-    propName: any;
-    isKey: any;
-    dataSource: any;
-    colSpan: any;
-    rowSpan: any;
-    selectorDataCB: any;
-    selectorCols: any;
+    name: string;
+    dataType: string;
+    width: string;
+    propName: string;
+    isKey: boolean;
+    dataSource: BSDataTableSelectListItem[];
+    colSpan: number;
+    rowSpan: number;
+    selectorDataCB: getUrlCallback;
+    selectorCols: BSDataTableColDefinition[];
 
     /**
      * @param {string} [name]
@@ -1636,8 +1629,9 @@ export class BSDataTableColDefinition {
      * @param {getUrlCallback} [selectorDataCB] - a cb to return the page url
      * @param {BSDataTableColDefinition[]} [selectorCols] - cols def for selector
      */
-    constructor(name?, dataType?, width?, propName?, isKey?,
-        dataSource?, colSpan?, rowSpan?, selectorDataCB?, selectorCols?) {
+    constructor(name?: string, dataType?: string, width?: string, propName?: string, isKey?: boolean,
+        dataSource?: BSDataTableSelectListItem[], colSpan?: number, rowSpan?: number,
+        selectorDataCB?: getUrlCallback, selectorCols?: BSDataTableColDefinition[]) {
         this.name = name;
         this.dataType = dataType;
         this.width = width;
@@ -1648,7 +1642,6 @@ export class BSDataTableColDefinition {
         this.rowSpan = rowSpan;
         this.selectorDataCB = selectorDataCB;
         this.selectorCols = selectorCols;
-
     }
 }
 
@@ -1660,6 +1653,7 @@ export class BSDataTableColDefinition {
  * @param {number} pageIndex
  * @returns {string} url to access next page
  */
+interface getUrlCallback { (pageIndex: number): string };
 
 /**
  * A callback type to get the next page in the offline mode
@@ -1669,6 +1663,9 @@ export class BSDataTableColDefinition {
  * @param {BSDataTablePagingMetaData} metadata - dataseta metadata
  * @returns {object[]} returns the data model for the request page
  */
+
+interface getNextPageOffline { (pageIndex: number, data: object[], metaData: BSDataTablePagingMetaData): object[] };
+
 
 
 export class BSDataTableDataSource {
@@ -1686,7 +1683,8 @@ export class BSDataTableDataSource {
      * @param {getUrlCallback} url - A cb that will accept a page number and returns the url to the next page
      * @param {getNextPageOffline} getPageOffline - A callback type to get the next page in the offline mode
      */
-    constructor(name, initData, isRemote, url = (page) => undefined, getPageOffline = undefined) {
+    constructor(name: string, initData: { initData: object[]; metaData: BSDataTablePagingMetaData; },
+        isRemote: boolean, url: getUrlCallback = (page) => undefined, getPageOffline: getNextPageOffline = undefined) {
         this.name = name;
         this.data = initData;
         this.isRemote = isRemote;
@@ -1706,7 +1704,7 @@ export class BSDataTableSelectListItem {
      * @param {string} value
      * @param {boolean} isSelected
      */
-    constructor(text, value, isSelected = false) {
+    constructor(text: string, value: string, isSelected: boolean = false) {
         this.text = text;
         this.value = value;
         this.isSelected = isSelected;
@@ -1726,7 +1724,7 @@ export class BSDataTableEventArgs {
      * @param {string} dsName
      * @param {string} idField
      */
-    constructor(source, eventData, dsName, asc = true, idField = undefined) {
+    constructor(source: BSDataTable, eventData: object, dsName: string, asc = true, idField: string = undefined) {
         this.source = source;
         this.eventData = eventData;
         this.dsName = dsName;
@@ -2203,40 +2201,20 @@ BSDataTable.prototype.onGridDataBound = function (eventArgs) {
     // make the grid resixeable
     //
     this.resizableGrid();
-};
-
-export class BSDataTableConfigOptions {
-
-
-    /**
-     * @type {BSDataTableColSettings[]}
-     */
-    colSettings;
-    /**
-     * @param {BSDataTableColSettings[]} colSettings
-     */
-    constructor(colSettings) {
-        this.colSettings = colSettings;
-    }
-
-    // TODO: is it needed?
-    toJson() {
-
-    }
 }
 
 export class BSDataTableColSettings {
-    width: any;
-    visible: any;
-    sort: any;
-    position: any;
+    width: string;
+    visible: boolean;
+    sort: string;
+    position: number;
     /**
      * @param {string} width
      * @param {boolean} visible
      * @param {string} sort asc|desc
      * @param {number} position
      */
-    constructor(width, visible, sort, position) {
+    constructor(width: string, visible: boolean, sort: string, position: number) {
         this.width = width;
         this.visible = visible;
         this.sort = sort;
@@ -2247,7 +2225,7 @@ export class BSDataTableColSettings {
 export class BSDataTableHttpClient extends BSDataTableBase {
     sessionStorage: SessionStorageService;
     dataSourceName: string;
-    
+
     constructor(sessionStorage: SessionStorageService, dataSourceName: string) {
         super();
         this.appDataEvents = appDataEvents;
@@ -2259,7 +2237,7 @@ export class BSDataTableHttpClient extends BSDataTableBase {
     /**
      * @param {BSDataTableHttpClientOptions} options
      */
-    get(options) {
+    get(options: BSDataTableHttpClientOptions) {
         // debugger;
         var key = JSON.stringify(options);
         var value = this.sessionStorage.getItem(key);
@@ -2285,11 +2263,11 @@ export class BSDataTableHttpClient extends BSDataTableBase {
 
     };
 
-    notifyResponse(response) {
+    notifyResponse(response: any) {
         this.notifyListeners(this.appDataEvents.ON_FETCH_GRID_RECORD, { dataSourceName: this.dataSourceName, eventData: response });
     }
 
-    nofifyError(error, options) {
+    nofifyError(error: JQuery.jqXHR<any>, options: BSDataTableHttpClientOptions) {
         this.notifyListeners(this.appDataEvents.ON_FETCH_GRID_RECORD_ERROR,
             { dataSourceName: this.dataSourceName, eventData: error, recordId: options.recordId });
     }
@@ -2308,7 +2286,7 @@ export class BSDataTableHttpClientOptions {
      * @param {object[]} headers
      * @param {string} recordId
      */
-    constructor(url, method, headers = undefined, recordId = undefined) {
+    constructor(url: string, method: string, headers: object[] = undefined, recordId: string = undefined) {
         this.url = url;
         this.method = method;
         this.headers = headers;
@@ -2326,7 +2304,7 @@ export class BSDataTablePaginationOptions {
      * @param {string} dsName
      * @param {BSDataTablePagingMetaData} pagingMetaData
      */
-    constructor(dsName, pagingMetaData, nextPageCallback = (/** @type {Number} */ page) => { }) {
+    constructor(dsName: string, pagingMetaData: BSDataTablePagingMetaData, nextPageCallback = (page: number) => { }) {
         this.dsName = dsName;
         this.pagingMetaData = pagingMetaData;
         this.nextPageCallback = nextPageCallback;
@@ -2334,14 +2312,14 @@ export class BSDataTablePaginationOptions {
 }
 
 export class BSDataTablePagination extends BSDataTableBase {
-    options: any;
+    options: BSDataTablePaginationOptions;
     listId: string;
     containerId: string;
 
     /**
      * @param {BSDataTablePaginationOptions} options
      */
-    constructor(options) {
+    constructor(options: BSDataTablePaginationOptions) {
         super();
         this.options = options;
         this.listId = `pg_list_${this.options.dsName}`;
@@ -2389,28 +2367,25 @@ export class BSDataTableInfiniteScroll extends BSDataTableBase {
     /**
      * @type {BSDataTablePagingMetaData} metadata
      */
-    initMetaData;
+    initMetaData: BSDataTablePagingMetaData;
 
     /**
      * @type {number}
      */
-    currentPage;
+    currentPage: number;
 
-    /**
-     * @type {object[]}
-     */
-    initData;
-    gridElement: any;
-    httpClient: any;
-    s_area: any;
-    observer: any;
-    target: any;
-    nextPageCallback: any;
+    initData: object[];
+    gridElement: JQuery;
+    httpClient: BSDataTableHttpClient;
+    s_area: string;
+    observer: IntersectionObserver;
+    target: HTMLElement;
+    nextPageCallback: (page: number) => void;
 
     /**
      * @param {{ gridElement: any; httpClient: BSDataTableHttpClient }} options
      */
-    constructor(options) {
+    constructor(options: { gridElement: JQuery; httpClient: BSDataTableHttpClient; }) {
         super();
         this.gridElement = options.gridElement;
         this.httpClient = options.httpClient;
@@ -2431,7 +2406,7 @@ export class BSDataTableInfiniteScroll extends BSDataTableBase {
      * @param {IntersectionObserverEntry[]} entries
      * @param {IntersectionObserver} sender
      */
-    observerCB(entries, sender) {
+    observerCB(entries: IntersectionObserverEntry[], sender: IntersectionObserver) {
         var entry = entries[0];
         // console.log(entry);
         if (entry.isIntersecting === true) {
@@ -2450,7 +2425,7 @@ export class BSDataTableInfiniteScroll extends BSDataTableBase {
         }
     }
 
-    observe(el) {
+    observe(el: HTMLElement) {
         this.target = el;
         this.observer.observe(el);
     }
@@ -2493,7 +2468,7 @@ export class BSDataTablePagingMetaData {
      * @param {number} pageSize
      * @param {number} totalRecords
      */
-    constructor(pageIndex = 1, pageSize = 10, totalRecords = 10) {
+    constructor(pageIndex: number = 1, pageSize: number = 10, totalRecords: number = 10) {
         this.pageIndex = pageIndex;
         this.pageSize = !pageSize || pageSize <= 0 ? 10 : pageSize;
         this.totalRecords = totalRecords;
@@ -2504,7 +2479,7 @@ export class BSDataTablePagingMetaData {
 export class BSDataTableSelectorWindowCollection extends BSDataTableBase {
 
     /**@type BSDataTableSelectorWindow[] */
-    items;
+    items: BSDataTableSelectorWindow[];
 
     constructor() {
         super();
@@ -2514,7 +2489,7 @@ export class BSDataTableSelectorWindowCollection extends BSDataTableBase {
     /**
      * @param {BSDataTableSelectorWindow} item
      */
-    add(item) {
+    add(item: BSDataTableSelectorWindow) {
         if (!this.find(item.options.propName))
             this.items.push(item);
     }
@@ -2523,40 +2498,37 @@ export class BSDataTableSelectorWindowCollection extends BSDataTableBase {
      * @param {string} propName
      * @returns {BSDataTableSelectorWindow} Item that mataches the propName
      */
-    find(propName) {
+    findSelector(propName: string): BSDataTableSelectorWindow {
         return this.items.find((item) => item.options.propName === propName);
     }
 }
 
 export class BSDataTableSelectorWindow extends BSDataTableBase {
 
-    selectorModal;
-    grid: any;
-    options: any;
-    parentContainerId: any;
+    selectorModal: Modal;
+    grid: BSDataTable;
+    options: { propName: string; containerId: string; urlCb: getUrlCallback; gridCols?: BSDataTableColDefinition[]; };
+    parentContainerId: string;
     modalId: string;
     modalTitleId: string;
     containerId: string;
     gridId: string;
-    gridCols: any;
     onItemSelected: (sender: any, e: any) => void;
 
     /**
      * @param {{ propName: string; containerId: string; urlCb: getUrlCallback; gridCols: BSDataTableColDefinition[]}} options
      */
-    constructor(options) {
+    constructor(options: { propName: string; containerId: string; urlCb: getUrlCallback; gridCols: BSDataTableColDefinition[]; }) {
         super();
         this.options = options;
-
         this.parentContainerId = this.options.containerId;
         this.modalId = `${this.parentContainerId}_bs_${this.options.propName}`;
         this.modalTitleId = `${this.parentContainerId}_lbs_${this.options.propName}`;
         this.containerId = `${this.parentContainerId}_cbs_${this.options.propName}`;
         this.gridId = `${this.parentContainerId}_g_${this.options.propName}`;
-        this.gridCols = options.gridCols;
         this.render();
         this.grid = this.renderGrid();
-        this.onItemSelected = (/** @type {BSDataTable} */ sender, /** @type {any} */ e) => { console.log(); };
+        this.onItemSelected = (/** @type {BSDataTable} */ sender: BSDataTable, /** @type {any} */ e: any) => { console.log(); };
     }
 
 
@@ -2618,7 +2590,7 @@ export class BSDataTableSelectorWindow extends BSDataTableBase {
             this.options.urlCb
         );
 
-        var bs = new BSDataTableOptions(this.gridId, this.containerId, this.gridCols, dataSource, true);
+        var bs = new BSDataTableOptions(this.gridId, this.containerId, this.options.gridCols, dataSource, true);
         // bs.enableInfiniteScroll = false;
 
         var grid = new BSDataTable(bs);
@@ -2643,3 +2615,5 @@ export class BSDataTableSelectorWindow extends BSDataTableBase {
         return grid;
     }
 }
+
+

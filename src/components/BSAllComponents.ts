@@ -1,11 +1,15 @@
 
-import { appActions as gridActions, appDataEvents, dataEventsService, CookieHelper, SessionStorageService } from "../services"
+// import { appActions as gridActions, appDataEvents, dataEventsService, CookieHelper, SessionStorageService } from "../services"
 import { Tooltip, Modal } from "bootstrap"
 import { BSDataTableBase } from "./BSDataTableBase";
 import { BSDataTableInput } from "./BSInput";
 import '../services/string.extensions'
+import { SessionStorageService } from "../services/session-storage-service";
+import { dataEventsService } from "../services/data-events-service";
+import { appDataEvents, appActions } from "../services/data-events";
+import { CookieHelper } from "../services/CookieHelper";
 
-export class BSDataTable extends BSDataTableBase {
+class BSDataTable extends BSDataTableBase {
 
     options: BSDataTableOptions;
     head: BSDataTableHeader;
@@ -839,7 +843,7 @@ export class BSDataTable extends BSDataTableBase {
     } 
 }
 
-export class BSDataTableMarker extends BSDataTableBase {
+class BSDataTableMarker extends BSDataTableBase {
     constructor() {
         super();
         this.render();
@@ -854,7 +858,7 @@ export class BSDataTableMarker extends BSDataTableBase {
     }
 }
 
-export class BSDataTableTextInput extends BSDataTableInput {
+class BSDataTableTextInput extends BSDataTableInput {
     constructor(options = { dataSourceName: "", inputType: 'text' }) {
         super(options);
         this.render();
@@ -874,7 +878,7 @@ export class BSDataTableTextInput extends BSDataTableInput {
     }
 }
 
-export class BSDataTableCheckBox extends BSDataTableInput {
+class BSDataTableCheckBox extends BSDataTableInput {
     constructor(options: { dataSourceName: string; inputType?: "checkbox" }) {
         super(options);
         this.render();
@@ -908,7 +912,7 @@ export class BSDataTableCheckBox extends BSDataTableInput {
 
 }
 
-export class BSDataTableSelectOption extends BSDataTableBase {
+class BSDataTableSelectOption extends BSDataTableBase {
     options: BSDataTableSelectListItem;
 
     /**
@@ -937,7 +941,7 @@ export class BSDataTableSelectOption extends BSDataTableBase {
     }
 }
 
-export class BSDataTableSelect extends BSDataTableInput {
+class BSDataTableSelect extends BSDataTableInput {
     constructor(options) {
         super(options);
         this.render();
@@ -972,7 +976,7 @@ export class BSDataTableSelect extends BSDataTableInput {
 
 }
 
-export class BSDataTableButton extends BSDataTableInput {
+class BSDataTableButton extends BSDataTableInput {
     /**
      * @param {{ inputType: string; dataSourceName: string; icon?:string; handler?:  (arg0: MouseEvent) => void}} options
      */
@@ -1002,7 +1006,7 @@ export class BSDataTableButton extends BSDataTableInput {
     }
 }
 
-export class BSDataTableSelector extends BSDataTableInput {
+class BSDataTableSelector extends BSDataTableInput {
 
     /**
      * @type {BSDataTableButton}
@@ -1090,7 +1094,7 @@ export class BSDataTableSelector extends BSDataTableInput {
 
 }
 
-export class BSDataTableCell extends BSDataTableBase {
+class BSDataTableCell extends BSDataTableBase {
 
 
     /**
@@ -1134,7 +1138,7 @@ export class BSDataTableCell extends BSDataTableBase {
     }
 }
 
-export class BSDataTableActions extends BSDataTableBase {
+class BSDataTableActions extends BSDataTableBase {
 
 
     /**
@@ -1185,7 +1189,7 @@ export class BSDataTableActions extends BSDataTableBase {
 
 }
 
-export class BSDataTableRowCollection extends BSDataTableBase {
+class BSDataTableRowCollection extends BSDataTableBase {
     /**
      * @type BSDataTableRow[]
      */
@@ -1227,7 +1231,7 @@ export class BSDataTableRowCollection extends BSDataTableBase {
     }
 }
 
-export class BSDataTableHeader extends BSDataTableRowCollection {
+class BSDataTableHeader extends BSDataTableRowCollection {
 
 
     constructor() {
@@ -1241,7 +1245,7 @@ export class BSDataTableHeader extends BSDataTableRowCollection {
 
 }
 
-export class BSDataTableBody extends BSDataTableRowCollection {
+class BSDataTableBody extends BSDataTableRowCollection {
 
     constructor() {
         super();
@@ -1343,7 +1347,7 @@ export class BSDataTableBody extends BSDataTableRowCollection {
 
 }
 
-export class BSDataTableRow extends BSDataTableBase {
+class BSDataTableRow extends BSDataTableBase {
 
     /**
      * @type BSDataTableCell[]
@@ -1578,7 +1582,7 @@ export class BSDataTableRow extends BSDataTableBase {
     }
 }
 
-export class BSDataTableOptions {
+class BSDataTableOptions {
     gridId: string;
     containerId: string;
     colDefinition: BSDataTableColDefinition[];
@@ -1605,7 +1609,7 @@ export class BSDataTableOptions {
     }
 }
 
-export class BSDataTableColDefinition {
+class BSDataTableColDefinition {
     name: string;
     dataType: string;
     width: string;
@@ -1668,7 +1672,7 @@ interface getNextPageOffline { (pageIndex: number, data: object[], metaData: BSD
 
 
 
-export class BSDataTableDataSource {
+class BSDataTableDataSource {
     name: any;
     data: any;
     isRemote: any;
@@ -1694,7 +1698,7 @@ export class BSDataTableDataSource {
 
 }
 
-export class BSDataTableSelectListItem {
+class BSDataTableSelectListItem {
     text: any;
     value: any;
     isSelected: boolean;
@@ -1712,7 +1716,7 @@ export class BSDataTableSelectListItem {
 
 }
 
-export class BSDataTableEventArgs {
+class BSDataTableEventArgs {
     source: any;
     eventData: any;
     dsName: any;
@@ -1834,7 +1838,7 @@ BSDataTable.prototype.configurableGrid = function () {
                 { dataSourceName: dataSourceName, eventData: e, source: this });
 
             this.notifyListeners(appDataEvents.ON_GRID_CONFIG_UPDATED,
-                { dataSourceName: dataSourceName, eventData: e, source: this, action: gridActions.COL_SHOW_HIDE });
+                { dataSourceName: dataSourceName, eventData: e, source: this, action: appActions.COL_SHOW_HIDE });
 
         });
     });
@@ -1905,7 +1909,7 @@ BSDataTable.prototype.resizableGrid = function () {
                         dataSourceName: dataSourceName,
                         eventData: { e, curCol },
                         source: table,
-                        action: gridActions.COL_RESIZED
+                        action: appActions.COL_RESIZED
                     });
 
             }
@@ -2096,7 +2100,7 @@ BSDataTable.prototype.enableColumnReordering = function () {
                     { dataSourceName: dataSourceName, eventData: e, source: _this });
 
                 _this.notifyListeners(appDataEvents.ON_GRID_CONFIG_UPDATED,
-                    { dataSourceName: dataSourceName, eventData: e, source: _this, action: gridActions.COL_REORDER });
+                    { dataSourceName: dataSourceName, eventData: e, source: _this, action: appActions.COL_REORDER });
 
                 // jq('.wait-reorder').css({ 'cursor': '' }).hide();
             }, 500);
@@ -2203,7 +2207,7 @@ BSDataTable.prototype.onGridDataBound = function (eventArgs) {
     this.resizableGrid();
 }
 
-export class BSDataTableColSettings {
+class BSDataTableColSettings {
     width: string;
     visible: boolean;
     sort: string;
@@ -2222,7 +2226,7 @@ export class BSDataTableColSettings {
     }
 }
 
-export class BSDataTableHttpClient extends BSDataTableBase {
+class BSDataTableHttpClient extends BSDataTableBase {
     sessionStorage: SessionStorageService;
     dataSourceName: string;
 
@@ -2273,7 +2277,7 @@ export class BSDataTableHttpClient extends BSDataTableBase {
     }
 }
 
-export class BSDataTableHttpClientOptions {
+class BSDataTableHttpClientOptions {
     url: any;
     method: any;
     headers: any;
@@ -2295,7 +2299,7 @@ export class BSDataTableHttpClientOptions {
     }
 }
 
-export class BSDataTablePaginationOptions {
+class BSDataTablePaginationOptions {
     dsName: any;
     pagingMetaData: any;
     nextPageCallback: (page: any) => void;
@@ -2311,7 +2315,7 @@ export class BSDataTablePaginationOptions {
     }
 }
 
-export class BSDataTablePagination extends BSDataTableBase {
+class BSDataTablePagination extends BSDataTableBase {
     options: BSDataTablePaginationOptions;
     listId: string;
     containerId: string;
@@ -2362,7 +2366,7 @@ export class BSDataTablePagination extends BSDataTableBase {
     }
 }
 
-export class BSDataTableInfiniteScroll extends BSDataTableBase {
+class BSDataTableInfiniteScroll extends BSDataTableBase {
 
     /**
      * @type {BSDataTablePagingMetaData} metadata
@@ -2458,7 +2462,7 @@ export class BSDataTableInfiniteScroll extends BSDataTableBase {
     }
 }
 
-export class BSDataTablePagingMetaData {
+class BSDataTablePagingMetaData {
     pageIndex: number;
     pageSize: number;
     totalRecords: number;
@@ -2476,7 +2480,7 @@ export class BSDataTablePagingMetaData {
     }
 }
 
-export class BSDataTableSelectorWindowCollection extends BSDataTableBase {
+class BSDataTableSelectorWindowCollection extends BSDataTableBase {
 
     /**@type BSDataTableSelectorWindow[] */
     items: BSDataTableSelectorWindow[];
@@ -2503,7 +2507,7 @@ export class BSDataTableSelectorWindowCollection extends BSDataTableBase {
     }
 }
 
-export class BSDataTableSelectorWindow extends BSDataTableBase {
+class BSDataTableSelectorWindow extends BSDataTableBase {
 
     selectorModal: Modal;
     grid: BSDataTable;
@@ -2616,4 +2620,7 @@ export class BSDataTableSelectorWindow extends BSDataTableBase {
     }
 }
 
-
+export {
+    BSDataTable, BSDataTableOptions, BSDataTableColDefinition, BSDataTableDataSource,
+    BSDataTableEventArgs, BSDataTableColSettings, BSDataTablePagingMetaData
+}

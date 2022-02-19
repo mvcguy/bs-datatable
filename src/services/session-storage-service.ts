@@ -1,4 +1,4 @@
-export class SessionStorageService {
+class SessionStorageService {
     constructor() {
         console.log('Session storage is initialized');
     }
@@ -106,3 +106,5 @@ export class SessionStorageService {
         }
     }
 }
+
+export {SessionStorageService}

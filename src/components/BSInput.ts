@@ -1,8 +1,8 @@
 import { BSDataTableBase } from "./BSDataTableBase";
 
-export class BSDataTableInput extends BSDataTableBase {
+class BSDataTableInput extends BSDataTableBase {
     options: any;
-   
+
     constructor(options: { dataSourceName: string; inputType?: string; }) {
         super();
         this.options = options;
@@ -42,7 +42,7 @@ export class BSDataTableInput extends BSDataTableBase {
     }
 
     set readonly(v) {
-        var val = v === true? "true" : "false";
+        var val = v === true ? "true" : "false";
         this.element.attr('readonly', val);
     }
 
@@ -79,3 +79,5 @@ export class BSDataTableInput extends BSDataTableBase {
         this.element.change();
     }
 }
+
+export { BSDataTableInput }

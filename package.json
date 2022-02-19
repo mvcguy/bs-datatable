@@ -1,9 +1,17 @@
 {
   "name": "bs-datatable",
-  "version": "1.0.18",
+  "version": "1.0.40",
   "description": "A data table based on Bootstrap 5 and jquery 3.5",
-  "main": "dist/index.js",
-  "scripts": {
+  "main": "dist/bs-datatable.js",
+  "module": "src/index.ts",
+  "type": "module",
+  "files": [
+    "index.d.ts",
+    "index.ts",
+    "/dist",
+    "/src"
+  ],
+  "scripts": {    
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-dev": "webpack --mode=development",
     "build": "webpack --mode=production"
@@ -21,6 +29,9 @@
   "author": "Shahid Ali",
   "license": "MIT",
   "devDependencies": {
+    "@babel/core": "^7.17.5",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/register": "^7.17.0",
     "@types/bootstrap": "^5.1.9",
     "@types/jquery": "^3.5.13",
     "@types/node": "~17.0.17",

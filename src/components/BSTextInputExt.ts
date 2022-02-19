@@ -1,6 +1,6 @@
 import { BSDataTableInput } from "./BSInput";
 
-export class BSDataTableTextInputExt extends BSDataTableInput {
+class BSDataTableTextInputExt extends BSDataTableInput {
     /**
      * @param {{ inputType: string, elementId: string; dataSourceName:string }} options
      */
@@ -14,3 +14,5 @@ export class BSDataTableTextInputExt extends BSDataTableInput {
         this.element = this.jquery(`#${this.options.elementId}`)
     }
 }
+
+export { BSDataTableTextInputExt }

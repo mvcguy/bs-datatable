@@ -1,7 +1,10 @@
 import * as $ from "jquery"
-import { dataEventsService, appDataEvents, appActions, CookieHelper } from "../services"
+import { CookieHelper } from "../services/CookieHelper";
+import { appActions, appDataEvents } from "../services/data-events";
+import { dataEventsService } from "../services/data-events-service";
+// import { dataEventsService, appDataEvents, appActions, CookieHelper } from "../services"
 
-export class BSDataTableBase {
+class BSDataTableBase {
 
     element: JQuery;
     children: BSDataTableBase[];
@@ -12,7 +15,7 @@ export class BSDataTableBase {
 
     constructor() {
 
-        this.jquery = $;     
+        this.jquery = $;
         this.children = [];
         this.appDataEvents = appDataEvents;
         this.appActions = appActions;
@@ -171,3 +174,5 @@ export class BSDataTableBase {
         return Object.assign(Object.create(Object.getPrototypeOf(obj)), obj);
     }
 }
+
+export { BSDataTableBase }

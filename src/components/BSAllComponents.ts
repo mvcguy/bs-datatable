@@ -18,14 +18,13 @@ class BSDataTable extends BSDataTableBase {
     paginator: BSDataTablePagination;
     httpClient: BSDataTableHttpClient;
     sessionCache: SessionStorageService;
-    infiniteScroller: BSDataTableInfiniteScroll;    
+    infiniteScroller: BSDataTableInfiniteScroll;
     gridActions: BSDataTableActions;
     configurableGrid: () => void;
     resizableGrid: () => void;
     enableColumnReordering: () => void;
     onGridConfigurationChanged: (eventArgs: any) => void;
     onGridDataBound: (eventArgs: any) => void;
-    
 
     constructor(options: BSDataTableOptions) {
         super();
@@ -41,6 +40,8 @@ class BSDataTable extends BSDataTableBase {
 
         this.sessionCache = new SessionStorageService();
         this.httpClient = new BSDataTableHttpClient(this.sessionCache, this.options.dataSource.name);
+        this.httpClient.cacheResponses = this.options.cacheResponses;
+
         this.infiniteScroller = null;
         this.gridActions = null;
     }
@@ -63,7 +64,7 @@ class BSDataTable extends BSDataTableBase {
 
     render() {
 
-        this.element = this.jquery('<table class="table table-bordered table-hover table-sm resizable navTable nowrap"></table>');
+        this.element = this.jquery('<table class="table table-bordered table-hover table-sm resizable navTable nowrap bs-table"></table>');
 
         this.id = this.options.gridId;
         this.prop('data-datasource', this.options.dataSource.name);
@@ -840,7 +841,7 @@ class BSDataTable extends BSDataTableBase {
         this.registerCallback(id, appDataEvents.ON_GRID_DATA_BOUND, (ev) => this.onGridDataBound(ev), ds, verifyDSName);
         this.registerCallback(id, appDataEvents.ON_FETCH_GRID_RECORD, (ev) => this.onFetchData(ev), ds, verifyDSName);
         this.registerCallback(id, appDataEvents.ON_FETCH_GRID_RECORD_ERROR, (ev) => this.onFetchDataError(ev), ds, verifyDSName);
-    } 
+    }
 }
 
 class BSDataTableMarker extends BSDataTableBase {
@@ -1588,7 +1589,8 @@ class BSDataTableOptions {
     colDefinition: BSDataTableColDefinition[];
     dataSource: BSDataTableDataSource;
     isReadonly: boolean;
-    enableInfiniteScroll: boolean;
+    enableInfiniteScroll: boolean;    
+    cacheResponses: boolean;
 
     /**
      * 
@@ -1606,6 +1608,7 @@ class BSDataTableOptions {
         this.dataSource = dataSource;
         this.isReadonly = isReadonly;
         this.enableInfiniteScroll = true;
+        this.cacheResponses = false;
     }
 }
 
@@ -1648,7 +1651,6 @@ class BSDataTableColDefinition {
         this.selectorCols = selectorCols;
     }
 }
-
 
 
 /**
@@ -2229,12 +2231,14 @@ class BSDataTableColSettings {
 class BSDataTableHttpClient extends BSDataTableBase {
     sessionStorage: SessionStorageService;
     dataSourceName: string;
+    cacheResponses: boolean;
 
     constructor(sessionStorage: SessionStorageService, dataSourceName: string) {
         super();
         this.appDataEvents = appDataEvents;
         this.sessionStorage = sessionStorage;
         this.dataSourceName = dataSourceName;
+        this.cacheResponses = false;
     }
 
 
@@ -2243,22 +2247,28 @@ class BSDataTableHttpClient extends BSDataTableBase {
      */
     get(options: BSDataTableHttpClientOptions) {
         // debugger;
-        var key = JSON.stringify(options);
-        var value = this.sessionStorage.getItem(key);
-        if (value) {
-            this.notifyResponse(value);
-            return;
-        }
+
 
         var _this = this;
+        var cache = _this.cacheResponses;
+        if (cache === true) {
+            var key = JSON.stringify(options);
+            var value = this.sessionStorage.getItem(key);
+            if (value) {
+                _this.notifyResponse(value);
+                return;
+            }
+        }
+
         var ajaxOptions = {
             url: options.url,
             method: 'GET',
             headers: options.headers ? options.headers : {}
         };
         this.jquery.ajax(ajaxOptions).then(function done(response) {
-            // console.log(response);
-            _this.sessionStorage.addItem(key, response, new Date(Date.now() + (10 * 60 * 1000)));// expires in 10 minutes
+            if (cache === true) {
+                _this.sessionStorage.addItem(key, response, new Date(Date.now() + (10 * 60 * 1000)));// expires in 10 minutes
+            }
             _this.notifyResponse(response)
 
         }, function error(error) {
@@ -2282,7 +2292,6 @@ class BSDataTableHttpClientOptions {
     method: any;
     headers: any;
     recordId: any;
-    cacheResponse: boolean;
 
     /**
      * @param {string} url
@@ -2295,7 +2304,6 @@ class BSDataTableHttpClientOptions {
         this.method = method;
         this.headers = headers;
         this.recordId = recordId;
-        this.cacheResponse = true;
     }
 }
 
@@ -2336,7 +2344,7 @@ class BSDataTablePagination extends BSDataTableBase {
 
         this.element =
             this.jquery(
-                `<div class="bsgrid-pagination" id="${this.containerId}">
+                `<div class="bs-pagination" id="${this.containerId}">
                         <nav aria-label="Page navigation">
                             
                         </nav>
@@ -2440,7 +2448,7 @@ class BSDataTableInfiniteScroll extends BSDataTableBase {
 
     enable() {
         this.s_area = 'scroll_area_' + this.gridElement.attr('id');
-        var scrollArea = this.jquery(`<div class="row" id="${this.s_area}" style="max-height: 200px; overflow-y: auto"></div>`);
+        var scrollArea = this.jquery(`<div class="row bs-scroll" id="${this.s_area}" style="max-height: 200px; overflow-y: auto"></div>`);
         this.gridElement.wrap(scrollArea);
 
         // var root = this.jquery.find(`#${this.s_area}`);

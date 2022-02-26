@@ -1,5 +1,5 @@
 import { BSDataTableInput } from "./BSDataTableInput";
-import { BSSelectorOptions } from "src/commonTypes/common-types";
+import { BSSelectorOptions } from "../commonTypes/common-types";
 import { BSDataTableTextInput } from "./BSDataTableTextInput";
 import { BSDataTableButton } from "./BSDataTableButton";
 import { BSDataTableSelectorWindow } from "./BSDataTableSelectorWindow";

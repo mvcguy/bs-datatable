@@ -1,7 +1,6 @@
 import { BSDataTableBase } from "./BSDataTableBase";
-import { SessionStorageService } from "../services/session-storage-service";
-import { appDataEvents } from "../services/data-events";
-import { BSFetchRecordErrorEvent, BSDataTableHttpClientOptions } from "src/commonTypes/common-types";
+import { SessionStorageService, appDataEvents } from "../services";
+import { BSFetchRecordErrorEvent, BSDataTableHttpClientOptions } from "../commonTypes/common-types";
 
 export class BSDataTableHttpClient extends BSDataTableBase {
     sessionStorage: SessionStorageService;

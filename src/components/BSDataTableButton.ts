@@ -1,5 +1,5 @@
 import { BSDataTableInput } from "./BSDataTableInput";
-import { BSButtonOptions } from "src/commonTypes/common-types";
+import { BSButtonOptions } from "../commonTypes/common-types";
 
 export class BSDataTableButton extends BSDataTableInput {
 

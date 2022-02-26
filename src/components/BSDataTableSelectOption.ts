@@ -1,5 +1,5 @@
 import { BSDataTableBase } from "./BSDataTableBase";
-import { BSDataTableSelectListItem } from "src/commonTypes/common-types";
+import { BSDataTableSelectListItem } from "../commonTypes/common-types";
 
 export class BSDataTableSelectOption extends BSDataTableBase {
     options: BSDataTableSelectListItem;

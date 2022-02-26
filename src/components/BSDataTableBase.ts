@@ -1,7 +1,5 @@
 import * as $ from "jquery"
-import { CookieHelper } from "../services/CookieHelper";
-import { appActions, appDataEvents } from "../services/data-events";
-import { dataEventsService } from "../services/data-events-service";
+import { CookieHelper, dataEventsService, appActions, appDataEvents } from "../services";
 import { BSEvent } from "../commonTypes/common-types";
 
 
@@ -40,7 +38,7 @@ class BSDataTableBase {
 
     _dataSourceName: string;
 
-    get dataSourceName():string {
+    get dataSourceName(): string {
         return this._dataSourceName;
     }
 
@@ -49,7 +47,7 @@ class BSDataTableBase {
     }
 
     _isReadOnly: boolean;
-    get isReadOnly(): boolean{
+    get isReadOnly(): boolean {
         return this._isReadOnly;
     }
 
@@ -57,7 +55,7 @@ class BSDataTableBase {
         this._isReadOnly = v;
     }
 
-    get records(): object[]{
+    get records(): object[] {
         return [];
     }
 
@@ -78,7 +76,7 @@ class BSDataTableBase {
             this.element.show();
     }
 
-    getCss(t:string) {
+    getCss(t: string) {
         return this.element.css(t);
     }
 

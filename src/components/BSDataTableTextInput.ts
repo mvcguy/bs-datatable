@@ -1,5 +1,5 @@
 import { BSDataTableInput } from "./BSDataTableInput";
-import { BSInputOptions } from "src/commonTypes/common-types";
+import { BSInputOptions } from "../commonTypes/common-types";
 
 export class BSDataTableTextInput extends BSDataTableInput {
     constructor(dataSourceName: string, inputType: string = "text") {

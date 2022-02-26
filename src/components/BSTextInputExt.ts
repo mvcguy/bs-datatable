@@ -1,4 +1,4 @@
-import { BSInputOptions } from "src/commonTypes/common-types";
+import { BSInputOptions } from "../commonTypes/common-types";
 import { BSDataTableInput } from "./BSDataTableInput";
 
 class BSDataTableTextInputExt extends BSDataTableInput {

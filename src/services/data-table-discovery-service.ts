@@ -1,4 +1,4 @@
-import { BSDataTableBase } from "src";
+import { BSDataTableBase } from "../components";
 
 /**
  * Service used to discover data-tables by its identify
@@ -7,7 +7,7 @@ import { BSDataTableBase } from "src";
  */
 class BSDataTableDiscoveryService {
 
-    DataTables: BSDataTableBase[];
+    DataTables: BSDataTableBase[] = [];
 
     Add(datatable: BSDataTableBase) {
         this.DataTables.push(datatable);
@@ -32,8 +32,8 @@ class BSDataTableDiscoveryService {
     GetByDSName(dsName: string): BSGridDataModel {
         var find = this.DataTables.find((dt) => dt.dataSourceName === dsName);
         if (find)
-            return { DataSourceName: find.dataSourceName, Data: find.records }       
-        
+            return { DataSourceName: find.dataSourceName, Data: find.records }
+
     }
 
 }

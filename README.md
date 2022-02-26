@@ -21,4 +21,5 @@ NPM:
 
 # Usage:
 
-![image](https://user-images.githubusercontent.com/12786083/154862272-659c148c-44b9-4fad-a820-d74ae52500b1.png)
+![image](https://user-images.githubusercontent.com/12786083/155841574-cc19f980-e8ac-46c5-8b2f-53e9deeac6d3.png)
+

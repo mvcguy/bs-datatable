@@ -1,8 +1,9 @@
 
+import { BSEventSubscriberModel, BSWinPopEvent, BSEvent } from "../commonTypes/common-types";
 import { appDataEvents } from "./data-events";
 
 class DataEventsService {
-    callbacks: any[];
+    callbacks: BSEventSubscriberModel[];
     constructor() {
         this.callbacks = [];
         this.registerWinPopState();
@@ -10,24 +11,21 @@ class DataEventsService {
 
 
     registerWinPopState() {
-        var _this = this;
-        window.onpopstate = function (e) {
+        window.onpopstate = (e: PopStateEvent) => {
             if (e.state && e.state.eventData) {
                 console.log(e.state);
-                _this.notifyListeners(appDataEvents.ON_FETCH_RECORD, { eventData: e.state.eventData, skipPush: true });
+                let ev: BSWinPopEvent = { EventData: e.state.eventData, SkipPush: true, DataSourceName: "" };
+                this.Emit(appDataEvents.ON_FETCH_RECORD, window, ev);
             }
         };
     };
 
-    notifyListeners(eventType: string, eventArgs: { eventData?: string; skipPush?: boolean; dataSourceName?: string; }) {
-        if (!eventType) return;
+    Emit(eventName: string, source: any, eventArgs: BSEvent) {
+        if (!eventName) return;
         try {
             this.callbacks.forEach((cb) => {
-                // TODO: Check for datasourcname???
-                if (cb.eventType !== eventType || (cb.dataSourceName !== eventArgs.dataSourceName && cb.verifyDSName === true)) return;
-                // if (this.eventType !== eventType) return;
-
-                cb.callback(eventArgs);
+                if (cb.EventName !== eventName || (cb.DataSourceName !== eventArgs.DataSourceName && cb.VerifyDataSourceName === true)) return;
+                cb.Callback(source, eventArgs);
             });
 
         } catch (error) {
@@ -35,53 +33,24 @@ class DataEventsService {
         }
     };
 
-    unRegisterCallback(keyX: string, eventTypeX: string, dataSourceNameX: string) {
+    Unsubscribe(model: BSEventSubscriberModel) {
 
         var filtered = this.callbacks
-            .filter((cb) => !(cb.key === keyX && cb.eventType === eventTypeX && cb.dataSourceName === dataSourceNameX));
+            .filter((cb) => !(cb.Key === model.Key
+                || cb.EventName === model.EventName
+                || cb.DataSourceName === model.DataSourceName));
 
         this.callbacks = filtered;
 
     }
 
-    registerCallback(keyX: string, eventTypeX: string, callback: any, dataSourceNameX: string, verifyDSName = false) {
+    Subscribe(model: BSEventSubscriberModel) {
         //
-        // search if callback exist from before : TODO: No need to do a lookup if handler exist from before
+        // No need to do a lookup if handler exist from before
         //
-        if (!eventTypeX) return;
-        // var index = this.callbacks
-        //     .findIndex(({ key, eventType, dataSourceName }) => key === keyX
-        //         && eventType === eventTypeX
-        //         && dataSourceName === dataSourceNameX);
-        //  console.log('index: ', index);
-        //if (index === -1) {
-
-        this.callbacks.push({
-            key: keyX,
-            eventType: eventTypeX,
-            callback: callback,
-            dataSourceName: dataSourceNameX,
-            verifyDSName
-        });
-        //}
+        if (!model.EventName) return;
+        this.callbacks.push(model);
     };
-
-    invokeCallback(eventType: string, payload: any) {
-        var resultArray = [];
-
-        this.callbacks.forEach((cb) => {
-            if (cb.eventType === eventType) {
-                var result = cb.callback(payload);
-                var dataSourceName = cb.dataSourceName;
-                resultArray.push({ data: result, dataSourceName: dataSourceName });
-                console.log("invokeCallback: Event:", eventType, " payload: ", payload, " Result: ", result);
-            }
-
-        });
-
-        return resultArray;
-    }
-
 }
 
 export const dataEventsService = new DataEventsService();

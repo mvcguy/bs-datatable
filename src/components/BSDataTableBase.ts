@@ -2,7 +2,8 @@ import * as $ from "jquery"
 import { CookieHelper } from "../services/CookieHelper";
 import { appActions, appDataEvents } from "../services/data-events";
 import { dataEventsService } from "../services/data-events-service";
-// import { dataEventsService, appDataEvents, appActions, CookieHelper } from "../services"
+import { BSEvent } from "../commonTypes/common-types";
+
 
 class BSDataTableBase {
 
@@ -12,17 +13,15 @@ class BSDataTableBase {
     appDataEvents: typeof appDataEvents;
     appActions: typeof appActions;
 
-
     constructor() {
-
         this.jquery = $;
         this.children = [];
         this.appDataEvents = appDataEvents;
         this.appActions = appActions;
     }
 
-    notifyListeners(eventType, payload) {
-        dataEventsService.notifyListeners(eventType, payload);
+    notifyListeners(eventType: string, payload: BSEvent) {
+        dataEventsService.Emit(eventType, this, payload);
     }
 
     getGridSettings(gridId) {
@@ -38,6 +37,29 @@ class BSDataTableBase {
             return undefined;
         }
     };
+
+    _dataSourceName: string;
+
+    get dataSourceName():string {
+        return this._dataSourceName;
+    }
+
+    set dataSourceName(v: string) {
+        this._dataSourceName = v;
+    }
+
+    _isReadOnly: boolean;
+    get isReadOnly(): boolean{
+        return this._isReadOnly;
+    }
+
+    set isReadOnly(v: boolean) {
+        this._isReadOnly = v;
+    }
+
+    get records(): object[]{
+        return [];
+    }
 
     get width() {
         return this.element.css('width');
@@ -56,7 +78,7 @@ class BSDataTableBase {
             this.element.show();
     }
 
-    getCss(t) {
+    getCss(t:string) {
         return this.element.css(t);
     }
 

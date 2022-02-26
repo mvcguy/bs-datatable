@@ -1,15 +1,25 @@
 import { BSDataTableBase } from "./BSDataTableBase";
+import { BSInputOptions } from "../commonTypes/common-types";
 
 class BSDataTableInput extends BSDataTableBase {
-    options: any;
+    options: BSInputOptions
 
-    constructor(options: { dataSourceName: string; inputType?: string; }) {
+    constructor(options: BSInputOptions) {
         super();
         this.options = options;
     }
 
+    render() {
+        if (this.options.InputType === 'select')
+            this.element = this.jquery("<select></select>");
+        if (this.options.InputType === 'button')
+            this.element = this.jquery(`<button class="btn btn-outline-primary" type="button"></button>`);
+        else
+            this.element = this.jquery(`<input type='${this.options.InputType}' /> `);
+    }
+
     get val(): string | number | string[] {
-        if (this.options.inputType === 'date' && this.element.val())
+        if (this.options.InputType === 'date' && this.element.val())
             return new Date(this.element.val().toString()).toString();
 
         return this.element.val();
@@ -70,8 +80,7 @@ class BSDataTableInput extends BSDataTableBase {
 
     addDoubleClickEvent() {
         this.element.on('dblclick', (e) => {
-            this.notifyListeners(this.appDataEvents.ON_ROW_DOUBLE_CLICKED,
-                { dataSourceName: this.options.dataSourceName, eventData: e, source: this });
+            this.notifyListeners(this.appDataEvents.ON_ROW_DOUBLE_CLICKED, { EventData: { Event: e }, DataSourceName: this.options.DataSourceName });
         })
     }
 

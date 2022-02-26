@@ -1,6 +1,6 @@
 import { BSDataTableBase } from "./BSDataTableBase";
 import { SessionStorageService, appDataEvents } from "../services";
-import { BSFetchRecordErrorEvent, BSDataTableHttpClientOptions } from "../commonTypes/common-types";
+import { BSFetchRecordErrorEvent, BSDataTableHttpClientOptions, BSFetchRecordEvent, BSDataTablePagingMetaData } from "../commonTypes/common-types";
 
 export class BSDataTableHttpClient extends BSDataTableBase {
     sessionStorage: SessionStorageService;
@@ -49,7 +49,21 @@ export class BSDataTableHttpClient extends BSDataTableBase {
     };
 
     notifyResponse(response: any) {
-        this.notifyListeners(this.appDataEvents.ON_FETCH_GRID_RECORD, { DataSourceName: this.dataSourceName, EventData: { Event: response } });
+
+        try {
+            var fetchRecordEvent: BSFetchRecordEvent = {
+                DataSourceName: this.dataSourceName,
+                EventData: {
+                    Data: response.items,
+                    MetaData: new BSDataTablePagingMetaData(response.metaData.pageIndex, response.metaData.pageSize, response.metaData.totalRecords)
+                }
+            };
+        } catch (error) {
+            console.log('invalid response. Make sure response have fields: items{array[object]}, metaData {pageIndex, pageSize, totalRecords}');
+            return;
+        }
+
+        this.notifyListeners(this.appDataEvents.ON_FETCH_GRID_RECORD, fetchRecordEvent);
     }
 
     nofifyError(error: JQuery.jqXHR<any>, options: BSDataTableHttpClientOptions) {

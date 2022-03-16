@@ -1,6 +1,6 @@
 {
   "name": "bs-datatable",
-  "version": "1.0.49",
+  "version": "1.0.51",
   "description": "A data table based on Bootstrap 5 and jquery 3.5",
   "main": "dist/bsdatatable.js",
   "files": [

@@ -14,8 +14,8 @@ import {
     , BSColsReorderedEvent
     , BSFetchRecordEvent, BSGridUpdatedEvent, BSRowUpdatedEvent
     , BSFieldUpdatedEvent, BSDataTablePagingMetaData, BSDataTablePaginationOptions
-    , BSDataTableOptions, BSDataTableColSettings
-    , BSDataTableHttpClientOptions, BSEvent, BSFetchRecordErrorEvent
+    , BSDataTableOptions, BSDataTableHttpClientOptions, BSEvent,
+    BSFetchRecordErrorEvent, BSColumnSettings
 } from "../commonTypes/common-types";
 
 import { BSDataTableCheckBox } from "./BSDataTableCheckBox";
@@ -122,7 +122,7 @@ export class BSDataTable extends BSDataTableBase {
 
         gridBodyRow.css = { 'display': 'none' };
 
-        var gridColumns = this.applyColSorting(settings);
+        var gridColumns = this.applyColOrdering(settings);
 
         //
         // add row markers - this helps to improve the visual appearance of selected row
@@ -143,7 +143,10 @@ export class BSDataTable extends BSDataTableBase {
             // the grid stores a cookie which contains info about the visiblity and size of the column
             // we will use this info to size and visualize the grid data
             //
-            var colSettings = settings[gc.propName] || {};
+
+            if (!gc.PropName) return;
+
+            var colSettings = settings[gc.PropName];
 
             var th = gridHeaderRow.createHeaderFor(gc);
             var td = gridBodyRow.createInputFor(gc, this);
@@ -259,7 +262,7 @@ export class BSDataTable extends BSDataTableBase {
             //
             // notify that we need sorting of the column
             //
-            var prop = th.getProp('data-th-propname');
+            var prop = th.options.PropName;
 
             //
             // TODO: fix
@@ -285,16 +288,16 @@ export class BSDataTable extends BSDataTableBase {
      * @param {BSDataTableCell} col
      * @param {any} settings
      */
-    applyColSettings(col: BSDataTableCell, settings: any) {
+    applyColSettings(col: BSDataTableCell, settings: BSColumnSettings) {
 
-        if (this.isEmptyObj(settings)) return;
+        if (!settings || this.isEmptyObj(settings)) return;
 
-        if (settings.visible === false) {
+        if (settings.Visible === false) {
             col.element.hide();
         }
 
-        if (settings.width) {
-            col.css = { 'position': 'relative', 'width': settings.width };
+        if (settings.Width) {
+            col.css = { 'position': 'relative', 'width': settings.Width };
         }
     };
 
@@ -304,17 +307,21 @@ export class BSDataTable extends BSDataTableBase {
      * @param {*} settings 
      * @returns {BSDataTableColDefinition[]}
      */
-    applyColSorting(settings) {
+    applyColOrdering(settings: { [x: string]: BSColumnSettings; }): BSDataTableColDefinition[] {
 
         if (!settings || this.isEmptyObj(settings)) return this.options.colDefinition;
-        var sortedCols = [];
+        var orderedCols = [];
 
-        this.options.colDefinition.forEach((v, i) => {
-            var set = settings[v.PropName];
-            sortedCols[set.position] = v;
+        this.options.colDefinition.forEach((colDef, i) => {
+            let colSetting: BSColumnSettings = settings[colDef.PropName];
+            if (!colSetting) return;
+            orderedCols[colSetting.Position] = colDef;
         });
 
-        return sortedCols;
+        // in case the col settings stored in cookie are not matching, we return the current col definition
+        if (orderedCols.length !== this.options.colDefinition.length) return this.options.colDefinition;
+
+        return orderedCols;
     }
 
     /**
@@ -902,7 +909,7 @@ export class BSDataTable extends BSDataTableBase {
         var colsList = modalElem.find('.grid-config-cols');
         headers.forEach((header, index) => {
 
-            var propName = header.getProp('data-th-propname');
+            var propName = header.options.PropName;
             if (!propName) return;
 
             var colsListItem = this.jquery('<li class="list-group-item"></li>');
@@ -929,8 +936,7 @@ export class BSDataTable extends BSDataTableBase {
                 if (!prop) return;
 
                 var headerRow = this.head.getGridTitlesRow();
-                // var col = this.find('th[data-th-propname=' + prop + ']');
-                var col = headerRow.cells.find((cell) => cell.getProp('data-th-propname') === prop);
+                var col = headerRow.cells.find((cell) => cell.options.PropName === prop);
                 if (!col) return;
 
                 var bodyRows = this.body.rows;
@@ -1295,13 +1301,14 @@ export class BSDataTable extends BSDataTableBase {
         var colsObj = {};
         cols.forEach((col, index) => {
 
-            var sort = 'asc';
+            var prop = col.options.PropName;
+            if (!prop) return;
+
+            var asc = true;
             if (col.hasClass('sorting_desc'))
-                sort = 'desc';
+                asc = false;
 
-            var prop = col.getProp('data-th-propname');
-
-            var colAttr = new BSDataTableColSettings(col.getCss('width'), col.visible, sort, index);
+            var colAttr: BSColumnSettings = { Width: col.getCss('width'), Visible: col.visible, Ascending: asc, Position: index }
 
             colsObj[prop] = colAttr;
         });

@@ -1,6 +1,6 @@
 import * as $ from "jquery"
 import { CookieHelper, dataEventsService, appActions, appDataEvents } from "../services";
-import { BSEvent } from "../commonTypes/common-types";
+import { BSColumnSettings, BSEvent } from "../commonTypes/common-types";
 
 
 class BSDataTableBase {
@@ -22,7 +22,7 @@ class BSDataTableBase {
         dataEventsService.Emit(eventType, this, payload);
     }
 
-    getGridSettings(gridId) {
+    getGridSettings(gridId): { [x: string]: BSColumnSettings; } {
         try {
             // debugger;
             var gridSettings = CookieHelper.getJSON(gridId);

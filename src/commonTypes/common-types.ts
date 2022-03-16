@@ -178,7 +178,7 @@ export class BSDataTableColDefinition {
  * @returns {object[]} returns the data model for the request page
  */
 
- interface getNextPageOffline { (pageIndex: number, data: object[], metaData: BSDataTablePagingMetaData): object[] };
+interface getNextPageOffline { (pageIndex: number, data: object[], metaData: BSDataTablePagingMetaData): object[] };
 
 
 
@@ -295,23 +295,30 @@ export class BSDataTableHttpClientOptions {
 }
 
 
-export class BSDataTableColSettings {
-    width: string;
-    visible: boolean;
-    sort: string;
-    position: number;
-    /**
-     * @param {string} width
-     * @param {boolean} visible
-     * @param {string} sort asc|desc
-     * @param {number} position
-     */
-    constructor(width: string, visible: boolean, sort: string, position: number) {
-        this.width = width;
-        this.visible = visible;
-        this.sort = sort;
-        this.position = position;
-    }
+// export class BSDataTableColSettings {
+//     width: string;
+//     visible: boolean;
+//     sort: string;
+//     position: number;
+//     /**
+//      * @param {string} width
+//      * @param {boolean} visible
+//      * @param {string} sort asc|desc
+//      * @param {number} position
+//      */
+//     constructor(width: string, visible: boolean, sort: string, position: number) {
+//         this.width = width;
+//         this.visible = visible;
+//         this.sort = sort;
+//         this.position = position;
+//     }
+// }
+
+export interface BSColumnSettings {
+    Width: string
+    Visible: boolean
+    Ascending: boolean
+    Position: number
 }
 
 

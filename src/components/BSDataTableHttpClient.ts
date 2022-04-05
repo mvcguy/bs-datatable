@@ -31,20 +31,22 @@ export class BSDataTableHttpClient extends BSDataTableBase {
             }
         }
 
-        var ajaxOptions = {
-            url: options.url,
+        var request = {
             method: 'GET',
             headers: options.headers ? options.headers : {}
         };
-        this.jquery.ajax(ajaxOptions).then(function done(response) {
-            if (cache === true) {
-                _this.sessionStorage.addItem(key, response, new Date(Date.now() + (10 * 60 * 1000))); // expires in 10 minutes
-            }
-            _this.notifyResponse(response);
 
-        }, function error(error) {
-            _this.nofifyError(error, options);
-        });
+        fetch(options.url, request)
+            .then(response => response.json())
+            .then(data => {
+                if (cache === true) {
+                    _this.sessionStorage.addItem(key, data, new Date(Date.now() + (10 * 60 * 1000))); // expires in 10 minutes
+                }
+                _this.notifyResponse(data);
+            })
+            .catch(error => {
+                _this.nofifyError(error, options);
+            })
 
     };
 

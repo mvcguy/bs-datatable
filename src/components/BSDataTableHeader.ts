@@ -9,6 +9,7 @@ export class BSDataTableHeader extends BSDataTableRowCollection {
     }
 
     render() {
-        this.element = this.jquery('<thead class="table-light"></thead>');
+        this.element = document.createElement('thead');
+        this.addClass('table-light')
     }
 }

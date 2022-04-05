@@ -58,8 +58,13 @@ export class BSDataTableSelector extends BSDataTableInput {
             Handler: (e) => this.options.BtnClick(this, e)
         });
 
-        var wrapper = this.jquery('<div class="input-group input-group-sm"></div>');
-        this.element = wrapper.append(this.txtElement.element).append(this.btnElement.element);
+        // var wrapper = this.jquery('<div class="input-group input-group-sm"></div>');
+        var wrapper = document.createElement('div');
+        wrapper.classList.add('input-group', 'input-group-sm');
+        wrapper.appendChild(this.txtElement.element);
+        wrapper.appendChild(this.btnElement.element);
+
+        this.element = wrapper;
     }
 
     clone() {

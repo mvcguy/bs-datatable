@@ -1,5 +1,6 @@
 import { BSDataTableBase } from "./BSDataTableBase";
 import { BSInputOptions } from "../commonTypes/common-types";
+// import { Event } from "jquery";
 
 class BSDataTableInput extends BSDataTableBase {
     options: BSInputOptions
@@ -11,22 +12,44 @@ class BSDataTableInput extends BSDataTableBase {
 
     render() {
         if (this.options.InputType === 'select')
-            this.element = this.jquery("<select></select>");
-        if (this.options.InputType === 'button')
-            this.element = this.jquery(`<button class="btn btn-outline-primary" type="button"></button>`);
+            this.element = document.createElement('select');
+
+        else if (this.options.InputType === 'button') {
+            this.element = document.createElement('button');
+            this.element.classList.add('btn btn-outline-primary');
+        }
+        else {
+            this.element = document.createElement('input');
+            this.element['type'] = this.options.InputType;
+        }
+    }
+
+    get val(): boolean | string | number | string[] {
+        if (!this.element) return undefined;
+        
+        let value = this.element['value'];
+        if (this.options.InputType === 'date' && value)
+            return new Date(value.toString()).toString();
+
+        if (this.options.InputType === 'checkbox')
+            return this.element['checked'];
+
+        return value;
+    }
+
+    set val(v: boolean | string | number | string[]) {
+
+        if (!this.element) return;
+
+        if (this.options.InputType === 'checkbox')
+            this.element['checked'] = v;
         else
-            this.element = this.jquery(`<input type='${this.options.InputType}' /> `);
-    }
+            this.element['value'] = v;
 
-    get val(): string | number | string[] {
-        if (this.options.InputType === 'date' && this.element.val())
-            return new Date(this.element.val().toString()).toString();
-
-        return this.element.val();
-    }
-
-    set val(v: string | number | string[]) {
-        this.element.val(v);
+        // invoke change event if its a select input
+        if (this.options.InputType === 'select') {
+            this.change();
+        }
     }
 
     /**
@@ -34,9 +57,9 @@ class BSDataTableInput extends BSDataTableBase {
      * this method ensure that 'change' is called after 'val' so that value of the selector is set properly
      * @param {string} v - value
      */
-    set valExt(v) {
-        this.element.val(v);
-        this.element.change();
+    set valExt(v: string | number | string[]) {
+        this.val = v;
+        this.change();
     }
 
     get modelName() {
@@ -48,21 +71,38 @@ class BSDataTableInput extends BSDataTableBase {
     }
 
     get readonly() {
-        return this.element.is("readonly");
+        if (this.element instanceof HTMLInputElement)
+            return this.element.readOnly;
+
+        return false;
     }
 
     set readonly(v) {
-        var val = v === true ? "true" : "false";
-        this.element.attr('readonly', val);
+        if (this.element instanceof HTMLInputElement) {
+            this.element.readOnly = v;
+        }
+
     }
 
     get disabled(): boolean {
-        return this.element.is("disabled");
+        if (this.element instanceof HTMLInputElement || this.element instanceof HTMLSelectElement) {
+            return this.element.disabled;
+        }
+
+        var val = this.getProp('disabled') === 'true' ? true : false;
+        return val;
+
     }
 
     set disabled(v: boolean) {
+
+        if (this.element instanceof HTMLInputElement || this.element instanceof HTMLSelectElement) {
+            this.element.disabled = v;
+            return;
+        }
+
         var val = v === true ? "true" : "false";
-        this.element.attr('disabled', val);
+        this.prop('disabled', val);
     }
 
     get isKey() {
@@ -79,14 +119,15 @@ class BSDataTableInput extends BSDataTableBase {
     }
 
     addDoubleClickEvent() {
-        this.element.on('dblclick', (e) => {
+        this.element.addEventListener('dblclick', (e) => {
             this.notifyListeners(this.appDataEvents.ON_ROW_DOUBLE_CLICKED, { EventData: { Event: e }, DataSourceName: this.options.DataSourceName });
         })
     }
 
     change() {
-        this.element.change();
+        this.element.dispatchEvent(new Event('change'));
     }
+
 }
 
 export { BSDataTableInput }

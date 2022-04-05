@@ -13,14 +13,19 @@ export class BSDataTableButton extends BSDataTableInput {
 
     render() {
         super.render();
-        var icon = this.options.Icon ? `<i class="bi bi-${this.options.Icon}"></i>` : '';
-        this.element.append(icon);
+        //var icon = this.options.Icon ? `<i class="bi bi-${this.options.Icon}"></i>` : '';
+        if (this.options.Icon) {
+            var icon = document.createElement('i');
+            icon.classList.add('bi', `bi-${this.options.Icon}`);
+            this.element.appendChild(icon);
+        }
+        
         if (this.options.Handler)
             this.addClickHandler();
     }
 
     addClickHandler() {
-        this.element.on('click', (e) => this.options.Handler(e));
+        this.element.addEventListener('click', (e) => this.options.Handler(e));
     }
 
     clone() {

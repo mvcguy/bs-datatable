@@ -20,34 +20,65 @@ export class BSDataTablePagination extends BSDataTableBase {
         if (this.element)
             this.element.remove();
 
-        this.element =
-            this.jquery(
-                `<div class="bs-pagination" id="${this.containerId}">
-                        <nav aria-label="Page navigation">
-                            
-                        </nav>
-                    </div>`);
-        var pageList = this.jquery(`<ul class="pagination justify-content-end" id="${this.listId}"></ul>`);
+        // this.element =
+        //     this.jquery(
+        //         `<div class="bs-pagination" id="${this.containerId}">
+        //                 <nav aria-label="Page navigation">
+
+        //                 </nav>
+        //             </div>`);
+
+        this.element = document.createElement('div');
+        this.element.id = this.containerId;
+        this.addClass('bs-pagination');
+
+        var pager = document.createElement('nav');
+        pager.setAttribute('aria-labale', "Page navigation");
+
+        this.element.appendChild(pager);
+
+        // var pageList = this.jquery(`<ul class="pagination justify-content-end" id="${this.listId}"></ul>`);
+        var pageList = document.createElement('ul');
+        pageList.id = this.listId;
+        pageList.classList.add('pagination', 'justify-content-end');
+
 
         for (let index = 1; index <= this.options.pagingMetaData.totalPages && index <= 5; index++) {
-            var li = this.jquery('<li class="page-item"></li>');
-            var link = this.jquery(`<a class="page-link" href="#" data-p-index="${index}">${index}</a>`);
-            li.append(link);
-            pageList.append(li);
+            // var li = this.jquery('<li class="page-item"></li>');
+            var li = document.createElement('li');
+            li.classList.add('page-item');
 
-            link.on('click', (e) => {
+            // var link = this.jquery(`<a class="page-link" href="#" data-p-index="${index}">${index}</a>`);
+            var link = document.createElement('a');
+            link.classList.add('page-link');
+            link.href = '#';
+            link.classList.add('data-p-index');
+            link.innerText = `${index}`;
+
+            li.appendChild(link);
+            pageList.appendChild(li);
+
+
+            link.addEventListener('click', (e) => {
                 e.preventDefault();
-                var index = this.jquery(e.target).attr('data-p-index');
+                if (e.target instanceof HTMLElement) {
+                    var index = e.target.getAttribute('data-p-index');
 
-                if (this.options.nextPageCallback)
-                    this.options.nextPageCallback(parseInt(index));
+                    if (this.options.nextPageCallback)
+                        this.options.nextPageCallback(parseInt(index));
+                }
+
             });
         };
 
-        this.element.find('nav').append(pageList);
+        pager.appendChild(pageList);
     }
 
     clear() {
-        this.jquery('#' + this.listId).children('li').remove();
+        var list = this.element.querySelector('#' + this.listId);
+        
+        // remove all the children of the list
+        // ref: https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
+        list.replaceChildren();
     }
 }

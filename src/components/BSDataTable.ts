@@ -41,6 +41,7 @@ export class BSDataTable extends BSDataTableBase {
     infiniteScroller: BSDataTableInfiniteScroll;
     gridActions: BSDataTableActions;
     discoverable: boolean;
+    containerElement: HTMLElement;
 
     constructor(options: BSDataTableOptions) {
         super();
@@ -61,6 +62,7 @@ export class BSDataTable extends BSDataTableBase {
         this.infiniteScroller = null;
         this.gridActions = null;
         this.discoverable = true;
+        this.containerElement = document.getElementById(this.options.containerId);
     }
 
     setDiscoverable() {
@@ -97,7 +99,10 @@ export class BSDataTable extends BSDataTableBase {
 
     render() {
 
-        this.element = this.jquery('<table class="table table-bordered table-hover table-sm resizable navTable nowrap bs-table"></table>');
+        //this.element = this.jquery('<table class="table table-bordered table-hover table-sm resizable navTable nowrap bs-table"></table>');
+        this.element = document.createElement('table');
+        this.element.classList.add('table', 'table-bordered', 'table-hover', 'table-sm', 'resizable', 'navTable', 'nowrap', 'bs-table');
+
 
         this.id = this.options.gridId;
         this.prop('data-datasource', this.options.dataSource.name);
@@ -178,12 +183,12 @@ export class BSDataTable extends BSDataTableBase {
         //
         // add actions for the grid to the container
         //
-        this.jquery('#' + this.options.containerId).append(this.gridActions.element);
+        this.containerElement.appendChild(this.gridActions.element);
 
         //
         // add grid to the provided container
         //
-        this.jquery('#' + this.options.containerId).append(this.element);
+        this.containerElement.appendChild(this.element);
 
         //
         // enable infinite scroll
@@ -243,7 +248,7 @@ export class BSDataTable extends BSDataTableBase {
         // sorting of the data when the header cell is clicked
         //
         var _this = this;
-        th.element.on('click', function (e) {
+        th.addEventHandler('click', function (e) {
 
             var asc = true;
             if (th.hasClass('sorting_asc')) {
@@ -257,7 +262,9 @@ export class BSDataTable extends BSDataTableBase {
             //
             // supports sorting on only one column.
             //
-            th.element.siblings('th').removeClass('sorting_asc').removeClass('sorting_desc');
+            th.siblings('th').forEach((x) => {
+                x.classList.remove('sorting_asc', 'sorting_desc');
+            });
 
             //
             // notify that we need sorting of the column
@@ -275,7 +282,9 @@ export class BSDataTable extends BSDataTableBase {
     }
 
     clearGrid() {
-        this.find('.grid-row').remove();
+
+        var rows = this.findElements('.grid-row');
+        rows.forEach((row) => this.removeElement(row));
 
         // remove all except the template row
         var templateRow = this.body.getTemplateRow();
@@ -293,7 +302,7 @@ export class BSDataTable extends BSDataTableBase {
         if (!settings || this.isEmptyObj(settings)) return;
 
         if (settings.Visible === false) {
-            col.element.hide();
+            col.visible = false;
         }
 
         if (settings.Width) {
@@ -360,7 +369,7 @@ export class BSDataTable extends BSDataTableBase {
             if (lastRow) {
 
                 this.infiniteScroller.unobserve();
-                this.infiniteScroller.observe(lastRow.element[0]);
+                this.infiniteScroller.observe(lastRow.element);
             }
         }
     }
@@ -372,7 +381,8 @@ export class BSDataTable extends BSDataTableBase {
     bindPaginator(paginationModel: BSDataTablePagingMetaData = new BSDataTablePagingMetaData()) {
         this.paginator.options.pagingMetaData = paginationModel;
         this.paginator.render();
-        this.jquery('#' + this.options.containerId).append(this.paginator.element);
+        var container = document.getElementById('#' + this.options.containerId);
+        container.appendChild(this.paginator.element);
     }
 
     /**
@@ -423,7 +433,7 @@ export class BSDataTable extends BSDataTableBase {
                 input.readonly = false;
             }
 
-            input.element.on('change', (e) => {
+            input.element.addEventListener('change', (e) => {
 
                 row.prop('data-isdirty', true);
 
@@ -435,7 +445,7 @@ export class BSDataTable extends BSDataTableBase {
                 // remove any previous errors
                 input.removeClass('is-invalid').prop('title', '');
 
-                var tooltip = Tooltip.getInstance(e.target);
+                var tooltip = Tooltip.getInstance(e.target as Element);
                 if (tooltip)
                     tooltip.dispose();
 
@@ -453,12 +463,12 @@ export class BSDataTable extends BSDataTableBase {
 
             });
 
-            input.element.on('focus', function (e) {
+            input.element.addEventListener('focus', function (e) {
                 _this.body.focusRow(row);
             });
         });
 
-        row.element.on('click', function (e) {
+        row.element.addEventListener('click', function (e) {
             _this.body.focusRow(row);
         });
 
@@ -469,7 +479,7 @@ export class BSDataTable extends BSDataTableBase {
         if (visibleInputs.length > 0) {
             var lastInput = visibleInputs[visibleInputs.length - 1];
 
-            lastInput.element.on('keydown', (e) => this.onInputKeyDown(row, e));
+            lastInput.element.addEventListener('keydown', (e) => this.onInputKeyDown);
         }
 
         return row;
@@ -504,7 +514,7 @@ export class BSDataTable extends BSDataTableBase {
      * @param {*} e 
      * @returns 
      */
-    onInputKeyDown(row: BSDataTableRow, e: JQuery.KeyDownEvent<HTMLElement, undefined, HTMLElement, HTMLElement>) {
+    onInputKeyDown(e: KeyboardEvent) {
 
         //
         // insert a new row if its the last input in the row
@@ -515,7 +525,11 @@ export class BSDataTable extends BSDataTableBase {
         var visibleRows = this.body.getVisibleRows();
         if (visibleRows.length <= 0) return;
         var lastRowIndex = visibleRows[visibleRows.length - 1].getRowIndex();
-        var parentIndex = row.getRowIndex();
+
+        var row = (e.target as Element).closest('tr');
+        if (!row) return;
+
+        var parentIndex = parseInt(row.getAttribute('data-rowindex'));
 
         // console.log(gridRows, currentRowIndex);
         if (lastRowIndex === parentIndex) {
@@ -539,7 +553,7 @@ export class BSDataTable extends BSDataTableBase {
         this.notifyListeners(this.appDataEvents.ON_GRID_UPDATED, gridUpdateEvent);
 
         this.infiniteScroller.unobserve();
-        this.infiniteScroller.observe(emptyRow.element[0]);
+        this.infiniteScroller.observe(emptyRow.element);
 
         return emptyRow;
     };
@@ -673,21 +687,17 @@ export class BSDataTable extends BSDataTableBase {
                     var propName = col.PropName.toPascalCaseJson();
                     var inputError = errors[dsName + '[' + serverIndex + '].' + propName];
                     if (inputError && inputError.length > 0) {
-                        var input = errorRow.find("input[data-propname=" + col.PropName + "]");
 
-                        if (!input || input.length <= 0) {
-                            input = errorRow.find("select[data-propname=" + col.PropName + "]");
-                            console.log('select found');
-                        }
+                        var input = errorRow.getInputs().find((inp) => inp.modelName === col.PropName);
 
-                        if (input && input.length > 0) {
+                        if (input) {
                             input.addClass('is-invalid');
                             //console.log(inputError);
                             var allErrors = '';
                             Array.from(inputError).forEach(function (er) {
                                 allErrors += er + ' ';
                             });
-                            input.attr('title', allErrors);
+                            input.prop('title', allErrors);
                             var tooltip = new Tooltip(input[0], { customClass: 'tooltip-error' });
                         }
                     }
@@ -709,21 +719,19 @@ export class BSDataTable extends BSDataTableBase {
     sortTable(th: BSDataTableCell, ascX: boolean) {
 
         //  console.log('sorting', ascX);
-        const getCellValue = (/** @type {BSDataTableRow} */ tr, /** @type {number} */ idx) => {
-            var child = tr.cells[idx].element;
+        const getCellValue = (tr: BSDataTableRow, idx: number) => {
+            var child = tr.cells[idx];
             // console.log('idx: ', idx,  child);
-            var text = child.find('input, select').is(":checked") || child.find('input, select').val() || child.text();
-            //console.log(text);
-            return text;
+            return child.getCellText();
         };
 
 
         // Returns a function responsible for sorting a specific column index 
         // (idx = columnIndex, asc = ascending order?).
-        var comparer = function (/** @type {number} */ idx, /** @type {boolean} */ asc) {
+        var comparer = function (idx: number, asc: boolean) {
             //console.log('idx: ', idx, 'asc: ', asc);
             // This is used by the array.sort() function...
-            return function (/** @type {BSDataTableRow} */ a, /** @type {BSDataTableRow} */ b) {
+            return function (a: BSDataTableRow, b: BSDataTableRow) {
                 //console.log('a: ', a, 'b: ', b);
 
                 // This is a transient function, that is called straight away. 
@@ -732,9 +740,10 @@ export class BSDataTable extends BSDataTableBase {
                 return function (v1, v2) {
                     //  console.log('v1: ', v1, 'v2: ', v2);
                     // sort based on a numeric or localeCompare, based on type...
-                    return (v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2))
-                        ? v1 - v2
-                        : v1.toString().localeCompare(v2);
+                    // return (v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2))
+                    //     ? v1 - v2
+                    //     : v1.toString().localeCompare(v2);
+                    return v1.toString().localeCompare(v2.toString())
                 }(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
             }
         };
@@ -761,19 +770,19 @@ export class BSDataTable extends BSDataTableBase {
     onSortingRequest(eventArgs: BSSortingRequestEvent) {
         // console.log(eventArgs);
 
-        var $target = this.jquery(eventArgs.EventData.Event.target);
+        var target = eventArgs.EventData.Event.target as Element;
 
-        var isTh = $target.prop('tagName').toLowerCase() === 'th';
+        var isTh = target.tagName.toLowerCase() === 'th';
 
         if (!isTh) {
-            var th = $target.parents('th');
-            if (!th || th.length === 0) return;
+            var th = target.closest('th');
+            if (!th) return;
 
-            eventArgs.EventData.Event.target = th[0];
-
-
+            target = th;
         }
-        var thx = this.head.getGridTitlesRow().cells.find((v, i) => v.element[0] === eventArgs.EventData.Event.target);
+        var thx = this.head.getGridTitlesRow().cells.find((v, i) => v.element === target);
+        if (!thx) return;
+
         // debugger;
         this.sortTable(thx, eventArgs.EventData.Asc);
     };
@@ -797,16 +806,23 @@ export class BSDataTable extends BSDataTableBase {
 
 
         grid.body.rows.forEach((row, i) => {
+
             var inputs = row.getInputs();
-            inputs.forEach((inp) => { inp.element.off('keydown') });
+            inputs.forEach((inp) => { inp.element.removeEventListener('keydown', this.onInputKeyDown) });
             var visibleInputs = row.getVisibleInputs();
             if (visibleInputs.length <= 0) return;
             var lastInput = visibleInputs[visibleInputs.length - 1];
-            lastInput.element.on('keydown', (e) => { this.onInputKeyDown(row, e) });
+            lastInput.element.addEventListener('keydown', this.onInputKeyDown);
         });
 
-    };
+    }
 
+    /**
+     * Add handler to the events raised by the data table
+     * @param eventName 
+     * @param callback 
+     * @param verifyDSName 
+     */
     addHandler(eventName: string, callback: BSEventHandler, verifyDSName = false) {
         let model: BSEventSubscriberModel = {
             Key: this.options.gridId,
@@ -873,7 +889,7 @@ export class BSDataTable extends BSDataTableBase {
     configurableGrid() {
         // console.log('configurableGrid is reached', this);
         var headers = this.head.getGridTitlesRow().cells;
-        var dataSourceName = this.options.dataSource.name;
+        var ds = this.options.dataSource.name;
 
         //
         // A modal for configuring grid columns.
@@ -881,13 +897,13 @@ export class BSDataTable extends BSDataTableBase {
         // the checks can be used to show/hide a particular grid column
         //
         var modelTemplate =
-            `<div class="settings-menu grid-config-template">
-            <div class="modal fade" id="staticBackdrop_${this.options.dataSource.name}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            `
+            <div class="modal fade" id="staticBackdrop_${ds}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
             aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="staticBackdropLabel_${this.options.dataSource.name}">Configure columns</h5>
+                            <h5 class="modal-title" id="staticBackdropLabel_${ds}">Configure columns</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -900,39 +916,61 @@ export class BSDataTable extends BSDataTableBase {
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>`;
-        var modalElem = this.jquery(modelTemplate);
-        this.jquery('#' + this.options.containerId).append(modalElem);
+            </div>`;
+        // var modalElem = this.jquery(modelTemplate);
+
+        var modalElem = document.createElement('div');
+        modalElem.classList.add('settings-menu', 'grid-config-template');
+        modalElem.innerHTML = modelTemplate;
+
+        var container = this.findById(this.options.containerId); // TODO: Store reference to container for faster updates
+
+        if (container) {
+            container.append(modalElem);
+        }
+
+
+        // this.jquery('#' + this.options.containerId).append(modalElem);
         // this.append(modalElem, false);
 
-        var colsList = modalElem.find('.grid-config-cols');
+        var colsList = modalElem.querySelector('.grid-config-cols');
         headers.forEach((header, index) => {
 
             var propName = header.options.PropName;
             if (!propName) return;
 
-            var colsListItem = this.jquery('<li class="list-group-item"></li>');
+            //var colsListItem = this.jquery('<li class="list-group-item"></li>');
+            var colsListItem = document.createElement('li');
+            colsListItem.classList.add('list-group-item');
 
-            var chk = this.jquery('<input type="checkbox" value="" class="form-check-input me-1" />');
+            //var chk = this.jquery('<input type="checkbox" value="" class="form-check-input me-1" />');
+            var chk = document.createElement('input');
+            chk.type = 'checkbox';
+            chk.value = '';
+            chk.classList.add('form-check-input', 'me-1');
+
             var chkId = 'col_config_chk_' + propName;
-            chk.attr('id', chkId);
-            chk.attr('data-config-propname', propName);
+            chk.setAttribute('id', chkId);
+            chk.setAttribute('data-config-propname', propName);
             if (header.visible === true) {
-                chk.attr('checked', 'checked');
+                chk.checked = true;
             }
 
-            var chkLbl = this.jquery('<label for="' + chkId + '"></label>');
+            //var chkLbl = this.jquery('<label for="' + chkId + '"></label>');
+            var chkLbl = document.createElement('label');
+            chkLbl.setAttribute('for', chkId);
+
             // debugger;
-            chkLbl.text(header.getText());
+            chkLbl.textContent = header.getText();
 
-            colsListItem.append(chk);
-            colsListItem.append(chkLbl);
-            colsList.append(colsListItem);
+            colsListItem.appendChild(chk);
+            colsListItem.appendChild(chkLbl);
+            colsList.appendChild(colsListItem);
 
-            chk.on('click', (e) => {
-                var $chk = this.jquery(e.target);
-                var prop = $chk.attr('data-config-propname');
+            chk.addEventListener('click', (e) => {
+                var chkElement = e.target as HTMLInputElement;
+
+                var prop = chkElement.getAttribute('data-config-propname');
                 if (!prop) return;
 
                 var headerRow = this.head.getGridTitlesRow();
@@ -956,7 +994,7 @@ export class BSDataTable extends BSDataTableBase {
 
                     if (!cell) return;
 
-                    if ($chk.is(':checked') === true) {
+                    if (chkElement.checked) {
                         // $(cell).show();
                         cell.visible = true;
                     }
@@ -967,11 +1005,11 @@ export class BSDataTable extends BSDataTableBase {
                 });
 
                 this.notifyListeners(appDataEvents.ON_COLS_REORDERED, {
-                    DataSourceName: dataSourceName,
+                    DataSourceName: ds,
                     EventData: { Event: e }
                 });
 
-                let confEvent: BSConfigUpdatedEvent = { EventData: { Event: e, Action: appActions.COL_SHOW_HIDE }, DataSourceName: dataSourceName };
+                let confEvent: BSConfigUpdatedEvent = { EventData: { Event: e, Action: appActions.COL_SHOW_HIDE }, DataSourceName: ds };
                 this.notifyListeners(appDataEvents.ON_GRID_CONFIG_UPDATED, confEvent);
 
             });
@@ -988,7 +1026,7 @@ export class BSDataTable extends BSDataTableBase {
 
         this.setCss('overflow', 'hidden');
 
-        var tableHeight = this.element[0].offsetHeight;
+        var tableHeight = this.element.offsetHeight;
 
         for (var i = 0; i < cols.length; i++) {
             var div = createDiv(tableHeight);
@@ -999,17 +1037,21 @@ export class BSDataTable extends BSDataTableBase {
 
         /**
          * @param {HTMLDivElement} div
+         * @param {BSDataTableCell} col         
          * @param {BSDataTable} table
-         * @param {BSDataTableCell} col
          */
-        function setListeners(div, col, table) {
-            var pageX, /** @type {HTMLTableCellElement} */curCol, curColWidth, nxtColWidth, tableWidth;
+        function setListeners(div: HTMLDivElement, col: BSDataTableCell, table: BSDataTable) {
+            var pageX: number
+                , curCol: HTMLTableCellElement
+                , curColWidth: number
+                , nxtColWidth: number
+                , tableWidth: number;
 
             div.addEventListener('mousedown', function (e) {
 
-                tableWidth = table.element[0].offsetWidth;
+                tableWidth = table.element.offsetWidth;
 
-                curCol = col.element[0];
+                curCol = col.element as HTMLTableCellElement;
                 pageX = e.pageX;
 
                 var padding = paddingDiff(curCol);
@@ -1030,7 +1072,7 @@ export class BSDataTable extends BSDataTableBase {
                     var diffX = e.pageX - pageX;
 
                     curCol.style.width = (curColWidth + diffX) + 'px';
-                    table.element[0].style.width = tableWidth + diffX + "px";
+                    table.element.style.width = tableWidth + diffX + "px";
 
                 }
             });
@@ -1038,14 +1080,15 @@ export class BSDataTable extends BSDataTableBase {
             document.addEventListener('mouseup', function (e) {
 
                 if (curCol) {
-                    table.notifyListeners(appDataEvents.ON_GRID_CONFIG_UPDATED,
-                        {
-                            dataSourceName: dataSourceName,
-                            eventData: { e, curCol },
-                            source: table,
-                            action: appActions.COL_RESIZED
-                        });
 
+
+                    let confEvent: BSConfigUpdatedEvent = {
+                        EventData: {
+                            Event: e, CurrentCol: curCol
+                            , Action: appActions.COL_RESIZED
+                        }, DataSourceName: dataSourceName
+                    };
+                    table.notifyListeners(appDataEvents.ON_GRID_CONFIG_UPDATED, confEvent);
                 }
 
                 curCol = undefined;
@@ -1093,7 +1136,6 @@ export class BSDataTable extends BSDataTableBase {
         // console.log('enableColumnReordering is reached', this);
 
         var dataSourceName = this.options.dataSource.name;
-        var jq = this.jquery;
         var _this = this;
         //var gridId = $table.attr('id');
         //console.log('datasource-name', dataSourceName);
@@ -1110,139 +1152,163 @@ export class BSDataTable extends BSDataTableBase {
             // _this.element.append(caption);
         };
 
-        var thWrap = jq('<div draggable="true" class="grid-header"></div>');
+        var wrapper = document.createElement('div');
+        wrapper.draggable = true;
+        wrapper.classList.add('grid-header');
 
         var headerRow = _this.head.getGridTitlesRow();
         var cells = headerRow.cells;
 
         cells.forEach((cell) => {
-            var childs = cell.element.children();
+            var childs = cell.childrenNodes();
+
             if (childs.length === 0) {
-                var txt = cell.element.text();
-                cell.element.text('');
-                childs = jq('<div></div>').text(txt);
-                cell.element.append(childs);
+                var txt = cell.getText();
+                cell.setText('');
+
+                var el = document.createElement('div');
+                el.textContent = txt;
+                cell.appendChild(el);
+
+                this.wrap(wrapper, el);
             }
-            jq(childs).wrap(thWrap);
+            else {
+                this.wrap(wrapper, childs);
+            }
+
         });
 
         // addWaitMarker();
 
-        var srcElement;
+        var srcElement: HTMLElement;
 
         //jQuery.event.props.push('dataTransfer');
-        _this.find('.grid-header').on({
-            dragstart: function (e) {
-                if (!jq(this).hasClass('grid-header')) {
-                    srcElement = undefined;
-                    return;
-                };
+        // _this.find('.grid-header').on();
 
-                srcElement = e.target;
-                jq(this).css('opacity', '0.5');
-            },
-            dragleave: function (e) {
-                e.preventDefault();
-                if (!srcElement) return;
+        this.findElements('.grid-header').forEach((el) => {
 
-                if (!jq(this).hasClass('grid-header')) return;
-                jq(this).removeClass('over');
-            },
-            dragenter: function (e) {
-                e.preventDefault();
-                if (!srcElement) return;
+            //
+            // attach drag handlers to the element
+            //
+            this.addDragHandlers(el, {
+                dragStart: function (e) {
+                    if (!this.classList.contains('grid-header')) {
+                        srcElement = undefined;
+                        return;
+                    };
 
-                if (!jq(this).hasClass('grid-header')) return;
-                jq(this).addClass('over');
-                // e.preventDefault();
-            },
-            dragover: function (e) {
-                e.preventDefault();
-                if (!srcElement) return;
+                    srcElement = this;
+                    this.style.opacity = '0.5';
+                },
+                dragLeave: function (e) {
+                    e.preventDefault();
+                    if (!srcElement) return;
 
-                if (!jq(this).hasClass('grid-header')) return;
-                jq(this).addClass('over');
+                    if (!this.classList.contains('grid-header')) return;
+                    this.classList.remove('over');
+                },
+                dragEnter: function (e) {
+                    e.preventDefault();
+                    if (!srcElement) return;
+
+                    if (!this.classList.contains('grid-header')) return;
+
+                    this.classList.add('over');
+                    // e.preventDefault();
+                },
+                dragOver: function (e) {
+                    e.preventDefault();
+                    if (!srcElement) return;
+
+                    if (!this.classList.contains('grid-header')) return;
+                    this.classList.add('over');
 
 
-            },
-            dragend: function (e) {
-                e.preventDefault();
-                if (!srcElement) return;
-                jq(this).css('opacity', '1');
-            },
-            drop: function (e) {
-                e.preventDefault();
-                if (!srcElement) return;
-                var $this = jq(this);
-                $this.removeClass('over');
-                var destElement = e.target;
-                if (!$this.hasClass('grid-header')) return;
-                if (srcElement === destElement) return;
+                },
+                dragEnd: function (e) {
+                    e.preventDefault();
+                    if (!srcElement) return;
+                    this.style.opacity = '1';
+                },
+                drop: function (e) {
+                    e.preventDefault();
+                    if (!srcElement) return;
+                    // var $this = jq(this);
+                    this.classList.remove('over');
+                    var destElement = this;
+                    if (!this.classList.contains('grid-header')) return;
+                    if (srcElement === destElement) return;
 
-                //var cols = _this.head.rows[0].cells;
+                    //var cols = _this.head.rows[0].cells;
 
-                // dest
-                var destParent = $this.parents('th');
-                if (!destParent || destParent.length <= 0) return;
+                    // dest
 
-                // lookup in cells
-                var desParentCell = cells.find((el) => el.element[0] === destParent[0]);
-                if (!desParentCell) return;
+                    var destParent = this.closest('th');
+                    if (!destParent) return;
 
-                var toIndex = cells.indexOf(desParentCell);
+                    // lookup in cells
+                    var desParentCell = cells.find((el) => el.element === destParent);
+                    if (!desParentCell) return;
 
-                // src
-                var srcParent = jq(srcElement).parents('th');
-                if (!srcParent || srcParent.length <= 0) return;
+                    var toIndex = cells.indexOf(desParentCell);
 
-                // lookup in cells
-                var srcParentCell = cells.find((el) => el.element[0] === srcParent[0]);
-                if (!desParentCell) return;
+                    // src
+                    var srcParent = srcElement.closest('th');
+                    if (!srcParent) return;
 
-                var fromIndex = cells.indexOf(srcParentCell);
+                    // lookup in cells
+                    var srcParentCell = cells.find((el) => el.element === srcParent);
+                    if (!desParentCell) return;
 
-                //console.log(toIndex, fromIndex);
+                    var fromIndex = cells.indexOf(srcParentCell);
 
-                if (toIndex == fromIndex) return;
+                    //console.log(toIndex, fromIndex);
 
-                //
-                // apply new order to the headers
-                //
-                reOrder(headerRow, cells, fromIndex, toIndex);
+                    if (toIndex == fromIndex) return;
 
-                var rows = _this.body.rows;
-                // jq('.wait-reorder').css({ 'cursor': 'progress' }).show();
-
-                //
-                // apply new order to all the rows in the grid
-                //
-                setTimeout(() => {
-                    //console.log('Reordering started, ', new Date());
-                    for (let index = 0; index < rows.length; index++) {
-                        // debugger;
-                        var row = rows[index];
-                        var cells = row.cells
-                        if (toIndex == fromIndex) return;
-                        reOrder(row, cells, fromIndex, toIndex);
-                    }
-
-                    //console.log('Reordering completed, ', new Date());
                     //
-                    // notify about column re-ordering
+                    // apply new order to the headers
                     //
-                    _this.notifyListeners(appDataEvents.ON_COLS_REORDERED,
-                        { DataSourceName: dataSourceName, EventData: { Event: e } });
+                    reOrder(headerRow, cells, fromIndex, toIndex);
 
-                    let confEvent: BSConfigUpdatedEvent = { EventData: { Event: e, Action: appActions.COL_REORDER }, DataSourceName: dataSourceName };
-                    _this.notifyListeners(appDataEvents.ON_GRID_CONFIG_UPDATED, confEvent);
+                    var rows = _this.body.rows;
+                    // jq('.wait-reorder').css({ 'cursor': 'progress' }).show();
 
-                    // jq('.wait-reorder').css({ 'cursor': '' }).hide();
-                }, 500);
+                    //
+                    // apply new order to all the rows in the grid
+                    //
+                    setTimeout(() => {
+                        //console.log('Reordering started, ', new Date());
+                        for (let index = 0; index < rows.length; index++) {
+                            // debugger;
+                            var row = rows[index];
+                            var cells = row.cells
+                            if (toIndex == fromIndex) return;
+                            reOrder(row, cells, fromIndex, toIndex);
+                        }
 
-            }
+                        //console.log('Reordering completed, ', new Date());
+                        //
+                        // notify about column re-ordering
+                        //
+                        _this.notifyListeners(appDataEvents.ON_COLS_REORDERED,
+                            { DataSourceName: dataSourceName, EventData: { Event: e } });
+
+                        let confEvent: BSConfigUpdatedEvent = { EventData: { Event: e, Action: appActions.COL_REORDER }, DataSourceName: dataSourceName };
+                        _this.notifyListeners(appDataEvents.ON_GRID_CONFIG_UPDATED, confEvent);
+
+                        // jq('.wait-reorder').css({ 'cursor': '' }).hide();
+                    }, 500);
+
+                }
+            })
+
         });
 
-        var reOrder = function (/** @type {BSDataTableRow} */ row, /** @type {BSDataTableCell[]} */ cells, /** @type {number} */ fromIndex, /** @type {number} */ toIndex) {
+        var reOrder = function (/** @type {BSDataTableRow} */ row: BSDataTableRow
+            , /** @type {BSDataTableCell[]} */ cells: BSDataTableCell[]
+            , /** @type {number} */ fromIndex: number
+            , /** @type {number} */ toIndex: number) {
 
             // debugger;
             if (fromIndex == toIndex) return;
@@ -1267,19 +1333,25 @@ export class BSDataTable extends BSDataTableBase {
             //jq(row).append(cells);
         };
 
-        var swapRtl = function (/** @type {BSDataTableCell[]} */ cells, /** @type {number} */ fromIndex, /** @type {number} */ toIndex) {
+        var swapRtl = function (/** @type {BSDataTableCell[]} */ cells: BSDataTableCell[]
+            , /** @type {number} */ fromIndex: number
+            , /** @type {number} */ toIndex: number) {
             for (let i = fromIndex; i > toIndex; i--) {
                 swap(cells, i, i - 1);
             }
         };
 
-        var swapLtr = function (/** @type {BSDataTableCell[]} */ cells, /** @type {number} */ fromIndex, /** @type {number} */ toIndex) {
+        var swapLtr = function (/** @type {BSDataTableCell[]} */ cells: BSDataTableCell[]
+            , /** @type {number} */ fromIndex: number
+            , /** @type {number} */ toIndex: number) {
             for (let i = fromIndex; i < toIndex; i++) {
                 swap(cells, i, i + 1);
             }
         };
 
-        var swap = function (/** @type {BSDataTableCell[]} */ arr, /** @type {number} */ ia, /** @type {number} */ ib) {
+        var swap = function (/** @type {BSDataTableCell[]} */ arr: BSDataTableCell[]
+            , /** @type {number} */ ia: number
+            , /** @type {number} */ ib: number) {
             var temp = arr[ia];
             arr[ia] = arr[ib];
             arr[ib] = temp;

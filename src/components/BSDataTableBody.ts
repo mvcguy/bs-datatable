@@ -9,7 +9,7 @@ export class BSDataTableBody extends BSDataTableRowCollection {
     }
 
     render() {
-        this.element = this.jquery("<tbody></tbody>");
+        this.element = document.createElement('tbody');
     }
 
     /**

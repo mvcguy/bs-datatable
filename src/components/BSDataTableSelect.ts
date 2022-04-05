@@ -8,15 +8,6 @@ export class BSDataTableSelect extends BSDataTableInput {
         this.render();
     }
 
-    set val(v) {
-        this.element.val(v);
-        this.element.change();
-    }
-
-    get val() {
-        return this.element.val();
-    }
-
     clone() {
         var sc = super.clone();
         var c = new BSDataTableSelect(this.shClone(this.options));

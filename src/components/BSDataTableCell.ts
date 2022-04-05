@@ -1,5 +1,7 @@
 import { BSDataTableColDefinition } from "../commonTypes/common-types";
 import { BSDataTableBase } from "./BSDataTableBase";
+import { BSDataTableCheckBox } from "./BSDataTableCheckBox";
+import { BSDataTableInput } from "./BSDataTableInput";
 
 export class BSDataTableCell extends BSDataTableBase {
 
@@ -25,14 +27,36 @@ export class BSDataTableCell extends BSDataTableBase {
 
         this.element =
             this.isHeader === true
-                ? this.jquery("<th class='sorting ds-col'></th>")
-                : this.jquery("<td></td>");
+                ? document.createElement('th')
+                : document.createElement('td')
 
+        if (this.isHeader) {
+            this.element.classList.add('sorting', 'ds-col');
+        }
+        
         if (rowSpan)
-            this.element.attr('rowSpan', rowSpan);
+            this.prop('rowSpan', rowSpan);
 
         if (colSpan)
-            this.element.attr('colSpan', colSpan);
+            this.prop('colSpan', colSpan);
+    }
+
+    getCellText(): string | number | boolean | string[] {
+        var child = this.children[0];
+        if (!child) return "";
+
+        if (child.element instanceof HTMLInputElement) {
+            if (child instanceof BSDataTableCheckBox) {
+                return child.element.checked + "";
+            }
+            else if (child instanceof BSDataTableInput) {
+                return child.val;
+            }
+        }
+
+        return child.getText();
+
+
     }
 
     clone() {

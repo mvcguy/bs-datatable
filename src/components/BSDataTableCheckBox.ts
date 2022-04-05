@@ -8,17 +8,17 @@ export class BSDataTableCheckBox extends BSDataTableInput {
         this.render();
     }
 
-    get val() {
-        var val = this.element.is(':checked');
-        return val === true ? "true" : "false";
-    }
+    // get val() {
+    //     if (this.element instanceof HTMLInputElement)
+    //         return this.element.checked;
+    // }
 
-    /**
-     * @param {string} v
-     */
-    set val(v: string) {
-        this.element.val(v);
-    }
+    // /**
+    //  * @param {string} v
+    //  */
+    // set val(v: string) {
+    //     this.element.val(v);
+    // }
 
     clone() {
         var sc = super.clone();

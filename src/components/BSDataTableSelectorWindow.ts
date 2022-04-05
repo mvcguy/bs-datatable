@@ -35,37 +35,43 @@ export class BSDataTableSelectorWindow extends BSDataTableBase {
 
     render() {
 
-        var find = this.jquery('#' + this.parentContainerId).find('#' + this.modalId);
-        if (find && find.length === 1) {
-            this.element = find;
-            this.selectorModal = Modal.getOrCreateInstance(find[0]);
+        //var find = this.jquery('#' + this.parentContainerId).find('#' + this.modalId);
+        var modal = document.getElementById(this.modalId);
+
+        if (modal) {
+            this.element = modal;
+            this.selectorModal = Modal.getOrCreateInstance(modal);
         }
         else {
-            var modelTemplate = `<div class="modal" id="${this.modalId}">
-                        <div class="modal-dialog modal-dialog-scrollable">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="${this.modalTitleId}">Select a value</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div id="${this.containerId}">
+            this.element = document.createElement('div');
+            this.element.id = this.modalId;
+            this.element.classList.add('modal');
 
+            this.element.innerHTML = `<div class="modal-dialog modal-dialog-scrollable">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="${this.modalTitleId}">Select a value</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div id="${this.containerId}">
+
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ok</button>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ok</button>
-                                </div>
-                            </div>
-                        </div>
-                </div>`;
+                                </div>`;
 
-            this.element = this.jquery(modelTemplate);
-            this.jquery('#' + this.parentContainerId).append(this.element);
+            var parentContainer = document.getElementById(this.parentContainerId);
+            if (parentContainer) {
+                parentContainer.appendChild(this.element);
+            }
 
-            this.selectorModal = new Modal(this.element[0]);
+            this.selectorModal = new Modal(this.element);
 
-            this.element[0].addEventListener('shown.bs.modal', (e) => {
+            this.element.addEventListener('shown.bs.modal', (e) => {
                 this.grid.clearGrid();
                 this.grid.infiniteScroller.currentPage = 1;
                 this.grid.fetchGridPage(1);

@@ -98,7 +98,7 @@ export interface BSInputOptions {
 
 export interface BSButtonOptions extends BSInputOptions {
     Icon?: string;
-    Handler?: (arg0: JQuery.ClickEvent) => void;
+    Handler?: (arg0: MouseEvent) => void;
 }
 
 export interface BSSelectorOptions extends BSInputOptions {

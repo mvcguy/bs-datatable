@@ -15,17 +15,18 @@ export class BSDataTableSelectOption extends BSDataTableBase {
     }
 
     render() {
-        this.element = this.jquery("<option></option>");
-        this.element.val(this.options.value);
-        this.element.text(this.options.text);
-
+        var opt = document.createElement('option');
+        opt.value = this.options.value;
+        opt.text = this.options.text;
         if (this.options.isSelected)
-            this.element.attr('selected', 'selected');
+            opt.selected = true;
+        
+        this.element = opt;
     }
 
     clone() {
         var clone = super.clone();
-        clone.setText(this.element.text());
+        clone.setText(this.options.text);
         return clone;
     }
 }

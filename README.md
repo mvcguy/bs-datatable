@@ -1,5 +1,7 @@
 # bs-datatable
-A data table based on bootstrap 5 and jquery 3.5
+A data table based on bootstrap 5.
+
+Note: The dependency from jquery has been removed from version 1.1.0
 
 I have prepared a demo application here on github to demonstrate how to use the datatable in your project. Please have a look here.
 

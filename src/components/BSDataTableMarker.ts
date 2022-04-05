@@ -7,7 +7,8 @@ export class BSDataTableMarker extends BSDataTableBase {
     }
 
     render() {
-        this.element = this.jquery(`<i class="bi bi-caret-right row-marker"></i>`);
+        this.element = document.createElement('i');
+        this.element.classList.add('bi', 'bi-caret-right', 'row-marker')
     }
 
     clone() {

@@ -15,7 +15,7 @@ export class BSDataTableInfiniteScroll extends BSDataTableBase {
     currentPage: number;
 
     initData: object[];
-    gridElement: JQuery;
+    gridElement: Element;
     httpClient: BSDataTableHttpClient;
     s_area: string;
     observer: IntersectionObserver;
@@ -25,7 +25,7 @@ export class BSDataTableInfiniteScroll extends BSDataTableBase {
     /**
      * @param {{ gridElement: any; httpClient: BSDataTableHttpClient }} options
      */
-    constructor(options: { gridElement: JQuery; httpClient: BSDataTableHttpClient; }) {
+    constructor(options: { gridElement: Element; httpClient: BSDataTableHttpClient; }) {
         super();
         this.gridElement = options.gridElement;
         this.httpClient = options.httpClient;
@@ -74,14 +74,20 @@ export class BSDataTableInfiniteScroll extends BSDataTableBase {
     }
 
     enable() {
-        this.s_area = 'scroll_area_' + this.gridElement.attr('id');
-        var scrollArea = this.jquery(`<div class="row bs-scroll" id="${this.s_area}" style="max-height: 200px; overflow-y: auto"></div>`);
-        this.gridElement.wrap(scrollArea);
+        this.s_area = 'scroll_area_' + this.gridElement.id;
+        // var scrollArea = this.jquery(`<div class="row bs-scroll" id="${this.s_area}" style="max-height: 200px; overflow-y: auto"></div>`);
+
+        var scrollArea = document.createElement('div');
+        scrollArea.id = this.s_area;
+
+        scrollArea.classList.add('row', 'bs-scroll');
+
+        this.wrap(scrollArea, this.gridElement);
 
         // var root = this.jquery.find(`#${this.s_area}`);
+        var root = document.getElementById(this.s_area);
         let options = {
-            // root: root[0],
-            root: this.jquery(`#${this.s_area}`)[0],
+            root: root,
             rootMargin: '0px',
             threshold: 0.3,
             trackVisibility: false
@@ -89,7 +95,7 @@ export class BSDataTableInfiniteScroll extends BSDataTableBase {
 
         this.observer = new IntersectionObserver((entries, sender) => this.observerCB(entries, sender), options);
 
-        var rows = this.gridElement.find('tr');
+        var rows = this.gridElement.querySelectorAll('tr');
         var lastRow = rows[rows.length - 1];
         var target = lastRow;
         // console.log(target, root);

@@ -2,7 +2,7 @@ import { BSInputOptions } from "../commonTypes/common-types";
 import { BSDataTableInput } from "./BSDataTableInput";
 
 class BSDataTableTextInputExt extends BSDataTableInput {
-    
+
     constructor(options: BSInputOptions) {
         super(options);
         this.options = options;
@@ -10,7 +10,7 @@ class BSDataTableTextInputExt extends BSDataTableInput {
     }
 
     render() {
-        this.element = this.jquery(`#${this.options.ElementId}`)
+        this.element = document.getElementById(this.options.ElementId);
     }
 }
 

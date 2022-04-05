@@ -31,11 +31,11 @@ export class BSDataTableRow extends BSDataTableBase {
     }
 
     get rowCategory() {
-        return this.element.prop('data-rowcategory');
+        return this.getProp('data-rowcategory');
     }
 
     set rowCategory(v) {
-        this.element.prop('data-rowcategory', v);
+        this.prop('data-rowcategory', v);
     }
 
     /**
@@ -56,7 +56,7 @@ export class BSDataTableRow extends BSDataTableBase {
 
     render() {
         if (!this.element)
-            this.element = this.jquery("<tr></tr>");
+            this.element = document.createElement('tr')
     }
 
     /**
@@ -92,11 +92,11 @@ export class BSDataTableRow extends BSDataTableBase {
         /**
          * @type BSDataTableInput[]
          */
-        var inputs = [];
+        var inputs: BSDataTableInput[] = [];
 
         // debugger;
-        this.cells.forEach((val, idx) => {
-            var children = val.children;
+        this.cells.forEach((cell, idx) => {
+            var children = cell.children;
             if (children.length > 0) {
                 children.forEach((v, i) => {
                     if (v instanceof BSDataTableSelector)
@@ -128,7 +128,7 @@ export class BSDataTableRow extends BSDataTableBase {
             input = new BSDataTableSelect(ds);
             model.DataSource
                 .forEach((opt) => input.append(new BSDataTableSelectOption(opt)));
-            input.addClass('form-select form-select-sm');
+            input.addClass('form-select', 'form-select-sm');
         }
         else if (model.DataType === 'checkbox') {
             input = new BSDataTableCheckBox(ds);
@@ -162,7 +162,7 @@ export class BSDataTableRow extends BSDataTableBase {
         }
         else {
             input = new BSDataTableTextInput(ds, model.DataType);
-            input.addClass('form-control form-control-sm');
+            input.addClass('form-control', 'form-control-sm');
         }
         // TODO: Fix two types of settings!!!
         if (model.DataType !== 'selector')

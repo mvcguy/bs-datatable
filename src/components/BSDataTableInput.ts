@@ -16,7 +16,7 @@ class BSDataTableInput extends BSDataTableBase {
 
         else if (this.options.InputType === 'button') {
             this.element = document.createElement('button');
-            this.element.classList.add('btn btn-outline-primary');
+            this.element.classList.add('btn', 'btn-outline-primary');
         }
         else {
             this.element = document.createElement('input');

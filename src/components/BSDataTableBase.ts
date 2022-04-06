@@ -144,7 +144,9 @@ class BSDataTableBase {
     }
 
     addClass(cssClass: string) {
-        this.element.classList.add(cssClass);
+        var split = cssClass.split(' ');
+        
+        this.element.classList.add(...split);
         return this;
     }
 

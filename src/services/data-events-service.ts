@@ -24,7 +24,8 @@ class DataEventsService {
         if (!eventName) return;
         try {
             this.callbacks.forEach((cb) => {
-                if (cb.EventName !== eventName || (cb.DataSourceName !== eventArgs.DataSourceName && cb.VerifyDataSourceName === true)) return;
+                if (cb.EventName !== eventName || (cb.DataSourceName !== eventArgs.DataSourceName && cb.VerifyDataSourceName === true))
+                    return;
                 cb.Callback(source, eventArgs);
             });
 
@@ -36,9 +37,9 @@ class DataEventsService {
     Unsubscribe(model: BSEventSubscriberModel) {
 
         var filtered = this.callbacks
-            .filter((cb) => !(cb.Key === model.Key
-                || cb.EventName === model.EventName
-                || cb.DataSourceName === model.DataSourceName));
+            .filter((cb) => (cb.Key === model.Key
+                && cb.EventName === model.EventName
+                && cb.DataSourceName === model.DataSourceName) === false);
 
         this.callbacks = filtered;
 

@@ -1,7 +1,7 @@
 import { BSDataTableBase } from "./BSDataTableBase";
 import { BSDataTableInput } from "./BSDataTableInput";
 import { BSDataTableCell } from "./BSDataTableCell";
-import { BSDataTableColDefinition } from "../commonTypes/common-types";
+import { BSDataTableColDefinition, BSRowOptions } from "../commonTypes/common-types";
 import { BSDataTableTextInput } from "./BSDataTableTextInput";
 import { BSDataTableCheckBox } from "./BSDataTableCheckBox";
 import { BSDataTableSelectOption } from "./BSDataTableSelectOption";
@@ -16,15 +16,12 @@ export class BSDataTableRow extends BSDataTableBase {
      * @type BSDataTableCell[]
      */
     cells: BSDataTableCell[] = [];
-    options: any;
+    options: BSRowOptions;
 
     /**
      * @param {{ dataSourceName: string; gridId: string; gridHeader?: boolean; isTemplateRow?: boolean; containerId?:string}} options
      */
-    constructor(options: {
-        dataSourceName: string; gridId: string;
-        gridHeader?: boolean; isTemplateRow?: boolean; containerId?: string;
-    }) {
+    constructor(options: BSRowOptions) {
         super();
         this.options = options;
         this.render();
@@ -70,7 +67,7 @@ export class BSDataTableRow extends BSDataTableBase {
         //return clone;
         var parentClone = super.clone();
         //debugger;
-        let optClone = this.shClone(this.options);
+        let optClone: BSRowOptions = this.shClone(this.options);
         optClone.isTemplateRow = false;
         var cloneRow = new BSDataTableRow(optClone);
         cloneRow.element = parentClone.element;

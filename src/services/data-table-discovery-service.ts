@@ -18,7 +18,7 @@ class BSDataTableDiscoveryService {
         this.DataTables.forEach((dt) => {
             if (dt.isReadOnly) return;
 
-            var model: BSGridDataModel = { DataSourceName: dt.dataSourceName, Data: dt.records };
+            var model: BSGridDataModel = { DataSourceName: dt.dataSourceName, Data: dt.dirtyRecords };
             result.push(model);
         })
 
@@ -32,7 +32,7 @@ class BSDataTableDiscoveryService {
     GetByDSName(dsName: string): BSGridDataModel {
         var find = this.DataTables.find((dt) => dt.dataSourceName === dsName);
         if (find)
-            return { DataSourceName: find.dataSourceName, Data: find.records }
+            return { DataSourceName: find.dataSourceName, Data: find.dirtyRecords }
 
     }
 

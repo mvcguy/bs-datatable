@@ -321,4 +321,12 @@ export interface BSColumnSettings {
     Position: number
 }
 
+export interface BSRowOptions {
+    dataSourceName: string;
+    gridId: string;
+    gridHeader?: boolean;
+    isTemplateRow?: boolean;
+    containerId?: string
+}
+
 

@@ -62,6 +62,20 @@ export class BSDataTableBody extends BSDataTableRowCollection {
         return records;
     }
 
+    getAllRecords() {
+        //
+        // all rows except the template row
+        //
+
+        var rows = this.rows.filter((row) => row.options.isTemplateRow === false);
+        var records = [];
+        rows.forEach((row) => {
+            records.push(row.getRowData());
+        });
+
+        return records;
+    }
+
     getSelectedRow() {
         return this.rows.find((v, i) => v.hasClass('table-active'));
     }

@@ -77,8 +77,12 @@ export class BSDataTable extends BSDataTableBase {
         return this.options.isReadonly;
     }
 
-    get records(): object[] {
+    get dirtyRecords(): object[] {
         return this.body.getDirtyRecords();
+    }
+
+    get allRecords(): object[]{
+        return this.body.getAllRecords();
     }
 
     /**

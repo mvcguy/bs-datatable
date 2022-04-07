@@ -65,7 +65,7 @@ class BSDataTableBase {
         this._isReadOnly = v;
     }
 
-    get records(): object[] {
+    get dirtyRecords(): object[] {
         return [];
     }
 

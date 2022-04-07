@@ -13,6 +13,13 @@ export class BSDataTableActions extends BSDataTableBase {
         this.element.classList.add('row', 'actions-container');
     }
 
+    addAction(id: string, type: string, icon: string, callback: (e: MouseEvent) => any) {
+        var btn = this.getButton(id, type, icon);
+        btn.addEventListener('click', callback);
+        this.element.appendChild(btn);
+        return this;
+    }
+
     /**
      * @param {(arg0: object) => any} [callback]
      */
@@ -21,10 +28,7 @@ export class BSDataTableActions extends BSDataTableBase {
         //                             id="btnDeleteRow_${this.dataSourceName}"><i class="bi bi-trash"></i>
         //                         </button>`);
 
-        var btn = this.getButton('btnDeleteRow', 'danger', 'trash');
-        btn.addEventListener('click', callback);
-        this.element.appendChild(btn);
-        return this;
+        return this.addAction('btnDeleteRow', 'danger', 'trash', callback);
     }
 
     /**
@@ -34,11 +38,8 @@ export class BSDataTableActions extends BSDataTableBase {
         // var btn = this.jquery(`<button type="button" class="btn btn-sm btn-outline-primary grid-toolbar-action" 
         //                             id="btnAddRow_${this.dataSourceName}"><i class="bi bi-plus-circle"></i>
         //                         </button>'`);
-        
-        var btn = this.getButton('btnAddRow', 'primary', 'plus-circle');
-        btn.addEventListener('click', callback);
-        this.element.append(btn);
-        return this;
+
+        return this.addAction('btnAddRow', 'primary', 'plus-circle', callback);
     }
 
     addGridSettingsAction() {
@@ -46,7 +47,7 @@ export class BSDataTableActions extends BSDataTableBase {
         //                             data-bs-toggle="modal" data-bs-target="#staticBackdrop_${this.dataSourceName}" 
         //                             id="btnSettings_${this.dataSourceName}"><i class="bi bi-gear"></i>
         //                         </button>`);
-        
+
         var btn = this.getButton('btnSettings', 'primary', 'gear');
         btn.setAttribute('data-bs-toggle', 'modal');
         btn.setAttribute('data-bs-target', `#staticBackdrop_${this.dataSourceName}`);

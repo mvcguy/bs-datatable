@@ -19,10 +19,12 @@ export class BSDataTableSelect extends BSDataTableInput {
 
     clone() {
         var sc = super.clone();
-        var c = new BSDataTableSelect(this.shClone(this.options));
+        var optClone:BSSelectOptions = this.shClone(this.options);
+        optClone.SelectOptions = this.shClone(this.SelectOptions);
+        
+        var c = new BSDataTableSelect(optClone);
         c.element = sc.element;
         c.children = sc.children;
-        c.SelectOptions = this.shClone(this.SelectOptions);
         this.addDoubleClickEvent();
 
         return c;

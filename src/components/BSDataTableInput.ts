@@ -25,16 +25,18 @@ class BSDataTableInput extends BSDataTableBase {
     }
 
     get val(): boolean | string | number | string[] {
+
         if (!this.element) return undefined;
-        
-        let value = this.element['value'];
-        if (this.options.InputType === 'date' && value)
-            return new Date(value.toString()).toString();
 
-        if (this.options.InputType === 'checkbox')
-            return this.element['checked'];
+        if (this.element instanceof HTMLInputElement) {
+            if (this.options.InputType === 'checkbox')
+                return this.element.checked;
+            else if (this.options.InputType === 'number')
+                return this.element.valueAsNumber;
+            else return this.element.value;
+        }
 
-        return value;
+        return this.element['value'];
     }
 
     set val(v: boolean | string | number | string[]) {

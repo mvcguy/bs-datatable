@@ -55,8 +55,6 @@ it('tests clone of the select component', () => {
 
     var select = clone.element as HTMLSelectElement;
     expect(select.options.length).toBe(3);
-
-
 });
 
 

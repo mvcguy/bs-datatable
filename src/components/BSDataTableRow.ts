@@ -155,7 +155,7 @@ export class BSDataTableRow extends BSDataTableBase {
         }
         else {
             input = new BSDataTableTextInput(ds, model.DataType);
-            input.addClass('form-control', 'form-control-sm');
+            input.addClass('form-control form-control-sm');
         }
         // TODO: Fix two types of settings!!!
         if (model.DataType !== 'selector')

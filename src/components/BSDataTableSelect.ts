@@ -1,11 +1,20 @@
 import { BSDataTableInput } from "./BSDataTableInput";
-import { BSInputOptions } from "../commonTypes/common-types";
+import { BSDataTableSelectListItem, BSSelectOptions } from "../commonTypes/common-types";
+import { BSDataTableSelectOption } from "./BSDataTableSelectOption";
 
 export class BSDataTableSelect extends BSDataTableInput {
-    constructor(dataSourceName: string) {
-        let options: BSInputOptions = { DataSourceName: dataSourceName, InputType: 'select' };
-        super(options);
+
+    SelectOptions: BSDataTableSelectListItem[];
+    constructor(options: BSSelectOptions) {
+        super({ DataSourceName: options.DataSourceName, InputType: 'select' });
+        this.SelectOptions = options.SelectOptions;
         this.render();
+    }
+
+    render(): void {
+        super.render();
+        this.SelectOptions.forEach((opt) => this.append(new BSDataTableSelectOption(opt)));
+        this.addClass('form-select form-select-sm');
     }
 
     clone() {
@@ -13,6 +22,7 @@ export class BSDataTableSelect extends BSDataTableInput {
         var c = new BSDataTableSelect(this.shClone(this.options));
         c.element = sc.element;
         c.children = sc.children;
+        c.SelectOptions = this.shClone(this.SelectOptions);
         this.addDoubleClickEvent();
 
         return c;

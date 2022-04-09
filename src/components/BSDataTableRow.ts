@@ -4,7 +4,6 @@ import { BSDataTableCell } from "./BSDataTableCell";
 import { BSDataTableColDefinition, BSRowOptions } from "../commonTypes/common-types";
 import { BSDataTableTextInput } from "./BSDataTableTextInput";
 import { BSDataTableCheckBox } from "./BSDataTableCheckBox";
-import { BSDataTableSelectOption } from "./BSDataTableSelectOption";
 import { BSDataTableSelect } from "./BSDataTableSelect";
 import { BSDataTableSelector } from "./BSDataTableSelector";
 import { BSDataTableSelectorWindow } from "./BSDataTableSelectorWindow";
@@ -122,10 +121,7 @@ export class BSDataTableRow extends BSDataTableBase {
 
         //debugger;
         if (model.DataType === 'select') {
-            input = new BSDataTableSelect(ds);
-            model.DataSource
-                .forEach((opt) => input.append(new BSDataTableSelectOption(opt)));
-            input.addClass('form-select', 'form-select-sm');
+            input = new BSDataTableSelect({DataSourceName: ds, SelectOptions: model.DataSource});
         }
         else if (model.DataType === 'checkbox') {
             input = new BSDataTableCheckBox(ds);

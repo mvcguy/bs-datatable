@@ -145,12 +145,12 @@ class BSDataTableBase {
 
     addClass(cssClass: string) {
         var split = cssClass.split(' ');
-        
+
         this.element.classList.add(...split);
         return this;
     }
 
-    removeClass(cssClass) {
+    removeClass(cssClass: string) {
         this.element.classList.remove(cssClass);
         return this;
     }
@@ -172,13 +172,13 @@ class BSDataTableBase {
      * 
      * @param {BSDataTableBase} elem 
      */
-    append(elem, pushToArray = true) {
+    append(elem: BSDataTableBase, pushToArray = true) {
 
         if (pushToArray) {
             this.children.push(elem);
         }
 
-        this.element.append(elem.element);
+        this.element.appendChild(elem.element);
         return this;
     }
 

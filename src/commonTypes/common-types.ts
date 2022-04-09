@@ -96,6 +96,11 @@ export interface BSInputOptions {
     ElementId?: string;
 }
 
+export interface BSSelectOptions extends BSInputOptions
+{    
+    SelectOptions: BSDataTableSelectListItem[]
+}
+
 export interface BSButtonOptions extends BSInputOptions {
     Icon?: string;
     Handler?: (arg0: MouseEvent) => void;

@@ -8,18 +8,6 @@ export class BSDataTableCheckBox extends BSDataTableInput {
         this.render();
     }
 
-    // get val() {
-    //     if (this.element instanceof HTMLInputElement)
-    //         return this.element.checked;
-    // }
-
-    // /**
-    //  * @param {string} v
-    //  */
-    // set val(v: string) {
-    //     this.element.val(v);
-    // }
-
     clone() {
         var sc = super.clone();
         var c = new BSDataTableCheckBox(this.shClone(this.options));

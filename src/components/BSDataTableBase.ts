@@ -1,4 +1,3 @@
-// import * as $ from "jquery"
 import { CookieHelper, dataEventsService, appActions, appDataEvents } from "../services";
 import { BSColumnSettings, BSEvent } from "../commonTypes/common-types";
 
@@ -7,7 +6,6 @@ class BSDataTableBase {
 
     element: HTMLElement;
     children: BSDataTableBase[];
-    // jquery: JQueryStatic;
     appDataEvents: typeof appDataEvents;
     appActions: typeof appActions;
 
@@ -25,10 +23,7 @@ class BSDataTableBase {
      * Add handler to the events raised by the DOM
      */
     addEventHandler(eventName: string, handler: EventListener) {
-        // this.element.on('click', handler);
-        //
-        // moving away from jquery
-        //
+        
         this.element.addEventListener(eventName, handler);
     }
 

@@ -20,35 +20,24 @@ export class BSDataTablePagination extends BSDataTableBase {
         if (this.element)
             this.element.remove();
 
-        // this.element =
-        //     this.jquery(
-        //         `<div class="bs-pagination" id="${this.containerId}">
-        //                 <nav aria-label="Page navigation">
-
-        //                 </nav>
-        //             </div>`);
-
         this.element = document.createElement('div');
         this.element.id = this.containerId;
         this.addClass('bs-pagination');
 
         var pager = document.createElement('nav');
-        pager.setAttribute('aria-labale', "Page navigation");
+        pager.setAttribute('aria-label', "Page navigation");
 
         this.element.appendChild(pager);
 
-        // var pageList = this.jquery(`<ul class="pagination justify-content-end" id="${this.listId}"></ul>`);
         var pageList = document.createElement('ul');
         pageList.id = this.listId;
         pageList.classList.add('pagination', 'justify-content-end');
 
 
         for (let index = 1; index <= this.options.pagingMetaData.totalPages && index <= 5; index++) {
-            // var li = this.jquery('<li class="page-item"></li>');
             var li = document.createElement('li');
             li.classList.add('page-item');
 
-            // var link = this.jquery(`<a class="page-link" href="#" data-p-index="${index}">${index}</a>`);
             var link = document.createElement('a');
             link.classList.add('page-link');
             link.href = '#';

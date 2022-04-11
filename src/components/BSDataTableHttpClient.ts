@@ -1,17 +1,17 @@
 import { BSDataTableBase } from "./BSDataTableBase";
 import { SessionStorageService, appDataEvents } from "../services";
-import { BSFetchRecordErrorEvent, BSDataTableHttpClientOptions, BSFetchRecordEvent, BSDataTablePagingMetaData } from "../commonTypes/common-types";
+import { BSFetchRecordErrorEvent, BSDataTableHttpClientOptions, BSFetchRecordEvent, BSDataTablePagingMetaData, IBSDataTableHttpClient } from "../commonTypes/common-types";
 
-export class BSDataTableHttpClient extends BSDataTableBase {
+export class BSDataTableHttpClient extends BSDataTableBase implements IBSDataTableHttpClient {
     sessionStorage: SessionStorageService;
     cacheResponses: boolean;
 
-    constructor(sessionStorage: SessionStorageService, dataSourceName: string) {
+    constructor(sessionStorage: SessionStorageService, dataSourceName: string, cacheResponses: boolean = false) {
         super();
         this.appDataEvents = appDataEvents;
         this.sessionStorage = sessionStorage;
         this.dataSourceName = dataSourceName;
-        this.cacheResponses = false;
+        this.cacheResponses = cacheResponses;
     }
 
 
@@ -68,7 +68,7 @@ export class BSDataTableHttpClient extends BSDataTableBase {
         this.notifyListeners(this.appDataEvents.ON_FETCH_GRID_RECORD, fetchRecordEvent);
     }
 
-    nofifyError(error: JQuery.jqXHR<any>, options: BSDataTableHttpClientOptions) {
+    nofifyError(error: any, options: BSDataTableHttpClientOptions) {
         let errEvent: BSFetchRecordErrorEvent = { DataSourceName: this.dataSourceName, EventData: { Event: error, RecordId: options.recordId } };
         this.notifyListeners(this.appDataEvents.ON_FETCH_GRID_RECORD_ERROR, errEvent);
     }

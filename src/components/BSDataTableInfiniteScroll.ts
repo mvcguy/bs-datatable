@@ -1,5 +1,5 @@
 import { BSDataTableBase } from "./BSDataTableBase";
-import { BSDataTablePagingMetaData } from "../commonTypes/common-types";
+import { BSDataTablePagingMetaData, IBSDataTableHttpClient, InfiniteScrollOptions } from "../commonTypes/common-types";
 import { BSDataTableHttpClient } from "./BSDataTableHttpClient";
 
 export class BSDataTableInfiniteScroll extends BSDataTableBase {
@@ -16,16 +16,13 @@ export class BSDataTableInfiniteScroll extends BSDataTableBase {
 
     initData: object[];
     gridElement: Element;
-    httpClient: BSDataTableHttpClient;
+    httpClient: IBSDataTableHttpClient;
     s_area: string;
     observer: IntersectionObserver;
     target: HTMLElement;
     nextPageCallback: (page: number) => void;
 
-    /**
-     * @param {{ gridElement: any; httpClient: BSDataTableHttpClient }} options
-     */
-    constructor(options: { gridElement: Element; httpClient: BSDataTableHttpClient; }) {
+    constructor(options: InfiniteScrollOptions) {
         super();
         this.gridElement = options.gridElement;
         this.httpClient = options.httpClient;
@@ -75,7 +72,6 @@ export class BSDataTableInfiniteScroll extends BSDataTableBase {
 
     enable() {
         this.s_area = 'scroll_area_' + this.gridElement.id;
-        // var scrollArea = this.jquery(`<div class="row bs-scroll" id="${this.s_area}" style="max-height: 200px; overflow-y: auto"></div>`);
 
         var scrollArea = document.createElement('div');
         scrollArea.id = this.s_area;
@@ -84,7 +80,6 @@ export class BSDataTableInfiniteScroll extends BSDataTableBase {
 
         this.wrap(scrollArea, this.gridElement);
 
-        // var root = this.jquery.find(`#${this.s_area}`);
         var root = document.getElementById(this.s_area);
         let options = {
             root: root,

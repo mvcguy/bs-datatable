@@ -1,24 +1,26 @@
-class SessionStorageService {
+import { CachedItem, ISessionStorageService } from "src/commonTypes/common-types";
+
+class SessionStorageService implements ISessionStorageService {
     constructor() {
         console.log('Session storage is initialized');
     }
 
-    addItem(key, value, expiry) {
+    addItem(key: string, value: any, expiry: Date) {
         //
         // Here we are using sessionStorage instead of localStorage.
         // The later is not cleared even if the user closes the browser!
         //
 
-        var x = { value: value, type: 'prem', expiry: expiry.getTime() };
+        var item: CachedItem = { value: value, type: 'prem', expiry: expiry.getTime() };
 
         if (typeof value === 'object' && value !== undefined) {
-            x.type = 'object';
+            item.type = 'object';
         }
 
-        sessionStorage.setItem(key, JSON.stringify(x));
+        sessionStorage.setItem(key, JSON.stringify(item));
     }
 
-    appendItem(key, appendFactory) {
+    appendItem(key: string, appendFactory: (value: any) => any) {
         try {
             var item = this.getItemRaw(key);
             if (item) {
@@ -30,46 +32,36 @@ class SessionStorageService {
         }
     }
 
-    createExpiryKey(key) {
+    createExpiryKey(key: string): string {
         return key + '-expiry';
     }
 
-    getItemRaw(key) {
+    getItemRaw(key: string): CachedItem {
         var entry = sessionStorage.getItem(key);
         if (entry) {
 
-            var x = JSON.parse(entry);
+            var item: CachedItem = JSON.parse(entry);
 
-            var expiry = x.expiry;
-            if (Date.now() > parseInt(expiry)) {
+            if (Date.now() > item.expiry) {
                 this.removeItem(key);
-                console.log('entry expired, will be removed', x);
+                console.log('entry expired, will be removed', item);
                 return undefined;
             }
 
-            return x;
+            return item;
         }
         return null;
     }
 
-    getItem(key) {
-        var entry = sessionStorage.getItem(key);
-        if (entry) {
+    getItem(key: string): any {
+        var item = this.getItemRaw(key);
+        if (item)
+            return item.value;
 
-            var x = JSON.parse(entry);
-
-            var expiry = x.expiry;
-            if (Date.now() > parseInt(expiry)) {
-                this.removeItem(key);
-                return undefined;
-            }
-
-            return x.value;
-        }
         return null;
     }
 
-    removeItem(key) {
+    removeItem(key: string) {
         sessionStorage.removeItem(key)
     }
 
@@ -79,7 +71,7 @@ class SessionStorageService {
      * @param {string?} prefix optional
      * @returns 
      */
-    removeAll(prefix) {
+    removeAll(prefix: string) {
 
         if (!prefix) {
             sessionStorage.removeAll();
@@ -107,4 +99,4 @@ class SessionStorageService {
     }
 }
 
-export {SessionStorageService}
+export { SessionStorageService }

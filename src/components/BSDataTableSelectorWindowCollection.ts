@@ -15,7 +15,7 @@ export class BSDataTableSelectorWindowCollection extends BSDataTableBase {
      * @param {BSDataTableSelectorWindow} item
      */
     add(item: BSDataTableSelectorWindow) {
-        if (!this.findItem(item.options.propName))
+        if (!this.findItem(item.options.PropName))
             this.items.push(item);
     }
 
@@ -24,6 +24,6 @@ export class BSDataTableSelectorWindowCollection extends BSDataTableBase {
      * @returns {BSDataTableSelectorWindow} Item that mataches the propName
      */
     findItem(propName: string): BSDataTableSelectorWindow {
-        return this.items.find((item) => item.options.propName === propName);
+        return this.items.find((item) => item.options.PropName === propName);
     }
 }

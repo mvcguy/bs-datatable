@@ -96,8 +96,7 @@ export interface BSInputOptions {
     ElementId?: string;
 }
 
-export interface BSSelectOptions extends BSInputOptions
-{    
+export interface BSSelectOptions extends BSInputOptions {
     SelectOptions: BSDataTableSelectListItem[]
 }
 
@@ -113,6 +112,14 @@ export interface BSSelectorOptions extends BSInputOptions {
     BtnId: string,
     ElementId: string,
     BtnClick: (sender: object, e: any) => void
+}
+
+export interface BSSelectorWindowOptions {
+    PropName: string;
+    ContainerId: string;
+    UrlCb: getUrlCallback;
+    GridCols?: BSDataTableColDefinition[];
+    DataSourceName: string;
 }
 
 export class BSDataTableSelectListItem {
@@ -222,15 +229,8 @@ export class BSDataTableOptions {
     isReadonly: boolean;
     enableInfiniteScroll: boolean;
     cacheResponses: boolean;
+    httpClient: IBSDataTableHttpClient;
 
-    /**
-     * 
-     * @param {string} gridId 
-     * @param {string} containerId
-     * @param {BSDataTableColDefinition[]} colDefinition 
-     * @param {BSDataTableDataSource} dataSource 
-     * @param {boolean} isReadonly
-     */
     constructor(gridId: string, containerId: string,
         colDefinition: BSDataTableColDefinition[], dataSource: BSDataTableDataSource, isReadonly: boolean = false) {
         this.gridId = gridId;
@@ -331,7 +331,35 @@ export interface BSRowOptions {
     gridId: string;
     gridHeader?: boolean;
     isTemplateRow?: boolean;
-    containerId?: string
+    containerId?: string;
+}
+
+export interface ISessionStorageService {
+    addItem(key: string, value: any, expiry: Date): void;
+    appendItem(key: string, appendFactory: (value: any) => any): void;
+    createExpiryKey(key: string): string;
+    getItemRaw(key: string): CachedItem;
+    getItem(key: string): any;
+    removeItem(key: string): void;
+    removeAll(prefix: string): void;
+
+}
+
+export interface CachedItem {
+    value: any;
+    type: string;
+    expiry: number;
+}
+
+export interface IBSDataTableHttpClient {
+    get(options: BSDataTableHttpClientOptions): void;
+    notifyResponse(response: any): void;
+    nofifyError(error: any, options: BSDataTableHttpClientOptions): void;
+}
+
+export interface InfiniteScrollOptions{
+    gridElement: Element;
+    httpClient: IBSDataTableHttpClient;
 }
 
 

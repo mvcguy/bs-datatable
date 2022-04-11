@@ -1,6 +1,6 @@
 import { Modal } from "bootstrap";
 import { BSDataTableBase } from "./BSDataTableBase";
-import { BSDataTableColDefinition, getUrlCallback, BSDataTableDataSource, BSDataTableOptions } from "../commonTypes/common-types";
+import { BSDataTableDataSource, BSDataTableOptions, BSSelectorWindowOptions } from "../commonTypes/common-types";
 import { BSDataTable } from "./BSDataTable";
 
 
@@ -8,7 +8,7 @@ export class BSDataTableSelectorWindow extends BSDataTableBase {
 
     selectorModal: Modal;
     grid: BSDataTable;
-    options: { propName: string; containerId: string; urlCb: getUrlCallback; gridCols?: BSDataTableColDefinition[]; };
+    options: BSSelectorWindowOptions;
     parentContainerId: string;
     modalId: string;
     modalTitleId: string;
@@ -19,14 +19,14 @@ export class BSDataTableSelectorWindow extends BSDataTableBase {
     /**
      * @param {{ propName: string; containerId: string; urlCb: getUrlCallback; gridCols: BSDataTableColDefinition[]}} options
      */
-    constructor(options: { propName: string; containerId: string; urlCb: getUrlCallback; gridCols: BSDataTableColDefinition[]; }) {
+    constructor(options: BSSelectorWindowOptions) {
         super();
         this.options = options;
-        this.parentContainerId = this.options.containerId;
-        this.modalId = `${this.parentContainerId}_bs_${this.options.propName}`;
-        this.modalTitleId = `${this.parentContainerId}_lbs_${this.options.propName}`;
-        this.containerId = `${this.parentContainerId}_cbs_${this.options.propName}`;
-        this.gridId = `${this.parentContainerId}_g_${this.options.propName}`;
+        this.parentContainerId = this.options.ContainerId;
+        this.modalId = `${this.parentContainerId}_bs_${this.options.PropName}`;
+        this.modalTitleId = `${this.parentContainerId}_lbs_${this.options.PropName}`;
+        this.containerId = `${this.parentContainerId}_cbs_${this.options.PropName}`;
+        this.gridId = `${this.parentContainerId}_g_${this.options.PropName}`;
         this.render();
         this.grid = this.renderGrid();
         this.onItemSelected = (/** @type {BSDataTable} */ sender: BSDataTable, /** @type {any} */ e: any) => { console.log(); };
@@ -35,12 +35,11 @@ export class BSDataTableSelectorWindow extends BSDataTableBase {
 
     render() {
 
-        //var find = this.jquery('#' + this.parentContainerId).find('#' + this.modalId);
         var modal = document.getElementById(this.modalId);
 
         if (modal) {
             this.element = modal;
-            this.selectorModal = Modal.getOrCreateInstance(modal);
+            this.selectorModal = Modal.getOrCreateInstance(modal);            
         }
         else {
             this.element = document.createElement('div');
@@ -87,16 +86,16 @@ export class BSDataTableSelectorWindow extends BSDataTableBase {
         //
         // grid shown in the selector window
         //
-        var dataSource = new BSDataTableDataSource('bsSelector',
+        var dataSource = new BSDataTableDataSource(this.options.DataSourceName,
             {
                 initData: [],
                 metaData: undefined
             },
             true,
-            this.options.urlCb
+            this.options.UrlCb
         );
 
-        var bs = new BSDataTableOptions(this.gridId, this.containerId, this.options.gridCols, dataSource, true);
+        var bs = new BSDataTableOptions(this.gridId, this.containerId, this.options.GridCols, dataSource, true);
         // bs.enableInfiniteScroll = false;
         var grid = new BSDataTable(bs);
         grid.registerCallbacks();

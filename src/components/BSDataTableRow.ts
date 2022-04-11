@@ -121,7 +121,7 @@ export class BSDataTableRow extends BSDataTableBase {
 
         //debugger;
         if (model.DataType === 'select') {
-            input = new BSDataTableSelect({DataSourceName: ds, SelectOptions: model.DataSource});
+            input = new BSDataTableSelect({ DataSourceName: ds, SelectOptions: model.DataSource });
         }
         else if (model.DataType === 'checkbox') {
             input = new BSDataTableCheckBox(ds);
@@ -129,10 +129,11 @@ export class BSDataTableRow extends BSDataTableBase {
         else if (model.DataType === 'selector') {
             // TODO: Fix two types of settings!!!
             var sWindow = new BSDataTableSelectorWindow({
-                propName: model.PropName,
-                containerId: this.options.containerId,
-                urlCb: model.SelectorDataCB,
-                gridCols: model.SelectorCols
+                PropName: model.PropName,
+                ContainerId: this.options.containerId,
+                UrlCb: model.SelectorDataCB,
+                GridCols: model.SelectorCols,
+                DataSourceName: model.PropName + "_selector"
             });
 
             grid.selectors.add(sWindow);

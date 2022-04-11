@@ -8,7 +8,6 @@ export class BSDataTableActions extends BSDataTableBase {
     }
 
     render() {
-        //this.element = this.jquery('<div class="row actions-container"></div>');
         this.element = document.createElement('div');
         this.element.classList.add('row', 'actions-container');
     }
@@ -24,9 +23,6 @@ export class BSDataTableActions extends BSDataTableBase {
      * @param {(arg0: object) => any} [callback]
      */
     addDeleteAction(callback: (arg0: MouseEvent) => any) {
-        // var btn = this.jquery(`<button type="button" class="btn btn-sm btn-outline-danger grid-toolbar-action"
-        //                             id="btnDeleteRow_${this.dataSourceName}"><i class="bi bi-trash"></i>
-        //                         </button>`);
 
         return this.addAction('btnDeleteRow', 'danger', 'trash', callback);
     }
@@ -35,19 +31,12 @@ export class BSDataTableActions extends BSDataTableBase {
      * @param {(arg0: object) => any} [callback]
      */
     addNewRecordAction(callback: (arg0: MouseEvent) => any) {
-        // var btn = this.jquery(`<button type="button" class="btn btn-sm btn-outline-primary grid-toolbar-action" 
-        //                             id="btnAddRow_${this.dataSourceName}"><i class="bi bi-plus-circle"></i>
-        //                         </button>'`);
-
+        
         return this.addAction('btnAddRow', 'primary', 'plus-circle', callback);
     }
 
     addGridSettingsAction() {
-        // var btn = this.jquery(`<button type="button" class="btn btn-sm btn-outline-primary grid-toolbar-action" 
-        //                             data-bs-toggle="modal" data-bs-target="#staticBackdrop_${this.dataSourceName}" 
-        //                             id="btnSettings_${this.dataSourceName}"><i class="bi bi-gear"></i>
-        //                         </button>`);
-
+       
         var btn = this.getButton('btnSettings', 'primary', 'gear');
         btn.setAttribute('data-bs-toggle', 'modal');
         btn.setAttribute('data-bs-target', `#staticBackdrop_${this.dataSourceName}`);

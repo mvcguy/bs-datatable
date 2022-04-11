@@ -1,6 +1,5 @@
 import { BSDataTableBase } from "./BSDataTableBase";
 import { BSInputOptions } from "../commonTypes/common-types";
-// import { Event } from "jquery";
 
 class BSDataTableInput extends BSDataTableBase {
     options: BSInputOptions

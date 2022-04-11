@@ -35,6 +35,18 @@ it('test select values', () => {
     //
     inventoryId.btnElement.element.dispatchEvent(new Event('click'));
     expect(btnClicked).toBe(true);
+
+    //
+    // verify that a wrapper exist around the text box and the selector button
+    //
+    var parent = inventoryId.txtElement.element.parentElement;
+    expect(parent.tagName).toBe('DIV');
+    expect(parent.classList.contains('input-group')).toEqual(true);
+    expect(parent.classList.contains('input-group-sm')).toEqual(true);
+
+    expect(parent).toEqual(inventoryId.btnElement.element.parentElement);
+    expect(inventoryId.element).toEqual(parent);
+
 });
 
 it('tests clone of the select component', () => {
@@ -71,6 +83,18 @@ it('tests clone of the select component', () => {
     //
     clone.btnElement.element.dispatchEvent(new Event('click'));
     expect(btnClicked).toBe(true);
+
+    //
+    // verify that a wrapper exist around the text box and the selector button
+    //
+    var parent = clone.txtElement.element.parentElement;
+    expect(parent.tagName).toBe('DIV');
+    expect(parent.classList.contains('input-group')).toEqual(true);
+    expect(parent.classList.contains('input-group-sm')).toEqual(true);
+    expect(parent).toEqual(clone.btnElement.element.parentElement);
+    expect(clone.element).toEqual(parent);
+
+
 });
 
 

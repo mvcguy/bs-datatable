@@ -15,7 +15,7 @@ import {
     , BSFetchRecordEvent, BSGridUpdatedEvent, BSRowUpdatedEvent
     , BSFieldUpdatedEvent, BSDataTablePagingMetaData, BSDataTablePaginationOptions
     , BSDataTableOptions, BSDataTableHttpClientOptions, BSEvent,
-    BSFetchRecordErrorEvent, BSColumnSettings
+    BSFetchRecordErrorEvent, BSColumnSettings, IBSDataTableHttpClient
 } from "../commonTypes/common-types";
 
 import { BSDataTableCheckBox } from "./BSDataTableCheckBox";
@@ -36,8 +36,7 @@ export class BSDataTable extends BSDataTableBase {
     body: BSDataTableBody;
     selectors: BSDataTableSelectorWindowCollection;
     paginator: BSDataTablePagination;
-    httpClient: BSDataTableHttpClient;
-    sessionCache: SessionStorageService;
+    httpClient: IBSDataTableHttpClient;
     infiniteScroller: BSDataTableInfiniteScroll;
     gridActions: BSDataTableActions;
     discoverable: boolean;
@@ -55,9 +54,9 @@ export class BSDataTable extends BSDataTableBase {
                 new BSDataTablePagingMetaData(),
                 (page) => this.paginatorCallback(page)));
 
-        this.sessionCache = new SessionStorageService();
-        this.httpClient = new BSDataTableHttpClient(this.sessionCache, this.options.dataSource.name);
-        this.httpClient.cacheResponses = this.options.cacheResponses;
+        this.httpClient = options.httpClient ?? new BSDataTableHttpClient(new SessionStorageService()
+            , this.options.dataSource.name
+            , this.options.cacheResponses);
 
         this.infiniteScroller = null;
         this.gridActions = null;
@@ -81,7 +80,7 @@ export class BSDataTable extends BSDataTableBase {
         return this.body.getDirtyRecords();
     }
 
-    get allRecords(): object[]{
+    get allRecords(): object[] {
         return this.body.getAllRecords();
     }
 
@@ -103,7 +102,6 @@ export class BSDataTable extends BSDataTableBase {
 
     render() {
 
-        //this.element = this.jquery('<table class="table table-bordered table-hover table-sm resizable navTable nowrap bs-table"></table>');
         this.element = document.createElement('table');
         this.element.classList.add('table', 'table-bordered', 'table-hover', 'table-sm', 'resizable', 'navTable', 'nowrap', 'bs-table');
 
@@ -542,7 +540,6 @@ export class BSDataTable extends BSDataTableBase {
     };
 
     addEmptyRow() {
-        //var rowCount = this.jquery('#' + this.options.gridId).find('tbody>tr').length;
         var emptyRow = this.addNewRow(this.createEmptyRowData(), false);
 
         var inputs = emptyRow.getVisibleInputs();
@@ -921,7 +918,6 @@ export class BSDataTable extends BSDataTableBase {
                     </div>
                 </div>
             </div>`;
-        // var modalElem = this.jquery(modelTemplate);
 
         var modalElem = document.createElement('div');
         modalElem.classList.add('settings-menu', 'grid-config-template');
@@ -934,8 +930,6 @@ export class BSDataTable extends BSDataTableBase {
         }
 
 
-        // this.jquery('#' + this.options.containerId).append(modalElem);
-        // this.append(modalElem, false);
 
         var colsList = modalElem.querySelector('.grid-config-cols');
         headers.forEach((header, index) => {
@@ -943,11 +937,9 @@ export class BSDataTable extends BSDataTableBase {
             var propName = header.options.PropName;
             if (!propName) return;
 
-            //var colsListItem = this.jquery('<li class="list-group-item"></li>');
             var colsListItem = document.createElement('li');
             colsListItem.classList.add('list-group-item');
 
-            //var chk = this.jquery('<input type="checkbox" value="" class="form-check-input me-1" />');
             var chk = document.createElement('input');
             chk.type = 'checkbox';
             chk.value = '';
@@ -960,7 +952,6 @@ export class BSDataTable extends BSDataTableBase {
                 chk.checked = true;
             }
 
-            //var chkLbl = this.jquery('<label for="' + chkId + '"></label>');
             var chkLbl = document.createElement('label');
             chkLbl.setAttribute('for', chkId);
 
@@ -1186,8 +1177,6 @@ export class BSDataTable extends BSDataTableBase {
 
         var srcElement: HTMLElement;
 
-        //jQuery.event.props.push('dataTransfer');
-        // _this.find('.grid-header').on();
 
         this.findElements('.grid-header').forEach((el) => {
 

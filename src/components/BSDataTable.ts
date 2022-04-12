@@ -76,11 +76,11 @@ export class BSDataTable extends BSDataTableBase {
         return this.options.isReadonly;
     }
 
-    get dirtyRecords(): object[] {
+    get dirtyRecords(): any[] {
         return this.body.getDirtyRecords();
     }
 
-    get allRecords(): object[] {
+    get allRecords(): any[] {
         return this.body.getAllRecords();
     }
 
@@ -119,15 +119,17 @@ export class BSDataTable extends BSDataTableBase {
         });
         gridHeaderRow.addClass('draggable').addClass('grid-cols');
 
-        var gridBodyRow = new BSDataTableRow({
+        var templateRow = new BSDataTableRow({
             isTemplateRow: true,
             dataSourceName: this.options.dataSource.name,
             gridId: this.options.gridId,
             containerId: this.options.containerId
         });
-        gridBodyRow.addClass('grid-rows');
+        templateRow.addClass('grid-rows');
 
-        gridBodyRow.css = { 'display': 'none' };
+        templateRow.css = { 'display': 'none' };
+        templateRow.visible = false;
+
 
         var gridColumns = this.applyColOrdering(settings);
 
@@ -141,7 +143,7 @@ export class BSDataTable extends BSDataTableBase {
         mb.append(marker);
 
         gridHeaderRow.addCell(mh);
-        gridBodyRow.addCell(mb);
+        templateRow.addCell(mb);
 
 
         gridColumns.forEach((gc) => {
@@ -156,7 +158,7 @@ export class BSDataTable extends BSDataTableBase {
             var colSettings = settings[gc.PropName];
 
             var th = gridHeaderRow.createHeaderFor(gc);
-            var td = gridBodyRow.createInputFor(gc, this);
+            var td = templateRow.createInputFor(gc, this);
 
             //
             // sorting of the data when the header cell is clicked
@@ -165,11 +167,11 @@ export class BSDataTable extends BSDataTableBase {
             this.applyColSettings(th, colSettings);
             this.applyColSettings(td, colSettings);
             gridHeaderRow.addCell(th);
-            gridBodyRow.addCell(td);
+            templateRow.addCell(td);
         });
 
         this.head.addRow(gridHeaderRow);
-        this.body.addRow(gridBodyRow)
+        this.body.addRow(templateRow)
 
         //
         // add grid actions toolbar
@@ -398,6 +400,7 @@ export class BSDataTable extends BSDataTableBase {
 
         row.addClass('grid-row');
         row.css = { 'display': 'table-row' };
+        row.visible = true;
 
         var _this = this;
 

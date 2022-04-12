@@ -15,6 +15,7 @@ export class BSDataTableSelectorWindow extends BSDataTableBase {
     containerId: string;
     gridId: string;
     onItemSelected: (sender: any, e: any) => void;
+    onWindowShown: (sender: BSDataTableSelectorWindow) => void;
 
     /**
      * @param {{ propName: string; containerId: string; urlCb: getUrlCallback; gridCols: BSDataTableColDefinition[]}} options
@@ -74,6 +75,7 @@ export class BSDataTableSelectorWindow extends BSDataTableBase {
                 this.grid.clearGrid();
                 this.grid.infiniteScroller.currentPage = 1;
                 this.grid.fetchGridPage(1);
+                this.onWindowShown(this);
             });
         }
     }

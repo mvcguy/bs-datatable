@@ -23,7 +23,7 @@ class BSDataTableBase {
      * Add handler to the events raised by the DOM
      */
     addEventHandler(eventName: string, handler: EventListener) {
-        
+
         this.element.addEventListener(eventName, handler);
     }
 
@@ -72,10 +72,13 @@ class BSDataTableBase {
     }
 
     get visible() {
+        //return !!(this.element.offsetWidth || this.element.offsetHeight || this.element.getClientRects().length);
         return this.element.hidden === false;
     }
     set visible(val) {
+        //this.element.style.display = val === false ? "none" : "block";
         this.element.hidden = val === false;
+
     }
 
     getCss(t: string) {

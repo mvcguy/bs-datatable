@@ -1,4 +1,4 @@
-import { CachedItem, ISessionStorageService } from "src/commonTypes/common-types";
+import { CachedItem, ISessionStorageService } from "../commonTypes/common-types";
 
 class SessionStorageService implements ISessionStorageService {
     constructor() {

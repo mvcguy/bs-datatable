@@ -204,7 +204,7 @@ export class BSDataTableRow extends BSDataTableBase {
      * This function returns the row containing the actual inputs
      * @returns A row record containing actual inputs
      */
-    getRowDataExt() {
+    getRowDataExt(): any {
         var rowInputs = this.getInputs();
         var record = {};
         rowInputs.forEach((rowInput, i) => {

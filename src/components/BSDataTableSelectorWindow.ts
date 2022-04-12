@@ -40,7 +40,7 @@ export class BSDataTableSelectorWindow extends BSDataTableBase {
 
         if (modal) {
             this.element = modal;
-            this.selectorModal = Modal.getOrCreateInstance(modal);            
+            this.selectorModal = Modal.getOrCreateInstance(modal);
         }
         else {
             this.element = document.createElement('div');
@@ -75,7 +75,9 @@ export class BSDataTableSelectorWindow extends BSDataTableBase {
                 this.grid.clearGrid();
                 this.grid.infiniteScroller.currentPage = 1;
                 this.grid.fetchGridPage(1);
-                this.onWindowShown(this);
+
+                if (this.onWindowShown)
+                    this.onWindowShown(this);
             });
         }
     }

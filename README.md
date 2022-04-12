@@ -23,5 +23,6 @@ NPM:
 
 # Usage:
 
-![image](https://user-images.githubusercontent.com/12786083/155841574-cc19f980-e8ac-46c5-8b2f-53e9deeac6d3.png)
+![image](https://user-images.githubusercontent.com/12786083/163065164-16f20151-3bbf-4358-a81a-b09f59d9befa.png)
+
 

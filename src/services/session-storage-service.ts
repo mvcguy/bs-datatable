@@ -2,7 +2,7 @@ import { CachedItem, ISessionStorageService } from "../commonTypes/common-types"
 
 class SessionStorageService implements ISessionStorageService {
     constructor() {
-        console.log('Session storage is initialized');
+        // console.log('Session storage is initialized');
     }
 
     addItem(key: string, value: any, expiry: Date) {

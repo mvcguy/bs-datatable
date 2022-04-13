@@ -7,6 +7,7 @@ class BSDataTableInput extends BSDataTableBase {
     constructor(options: BSInputOptions) {
         super();
         this.options = options;
+        this.dataSourceName = options.DataSourceName;
     }
 
     render() {
@@ -15,7 +16,7 @@ class BSDataTableInput extends BSDataTableBase {
 
         else if (this.options.InputType === 'button') {
             this.element = document.createElement('button');
-            this.element.classList.add('btn', 'btn-outline-primary');
+            this.addClass('btn btn-outline-primary');
         }
         else {
             this.element = document.createElement('input');

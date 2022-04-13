@@ -13,7 +13,7 @@ jest.mock('../../src/components/BSDataTableHttpClient', () => {
         BSDataTableHttpClient: jest.fn().mockImplementation(() => {
             return {
                 get: (options: BSDataTableHttpClientOptions) => {
-                    console.log('BSDataTableHttpClientOptions: ', options);
+                    // console.log('BSDataTableHttpClientOptions: ', options);
                     var response = {
                         items: [
                             { id: '1', name: 'Car tyres' },
@@ -51,7 +51,7 @@ describe('BSSelectorWindow', () => {
     const observeMock = {
         observe: (elem: HTMLElement) => null,
         unobserve: () => null,
-        disconnect: () => null // maybe not needed
+        disconnect: () => null 
     };
 
     var httpClientMock = jest.mocked(BSDataTableHttpClient, true);

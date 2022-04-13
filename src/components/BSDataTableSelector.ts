@@ -52,7 +52,6 @@ export class BSDataTableSelector extends BSDataTableInput {
             { key: "data-propname", value: this.options.PropName }]);
 
         this.btnElement = new BSDataTableButton({
-            InputType: 'button',
             DataSourceName: this.options.DataSourceName,
             Icon: 'search',
             Handler: (e) => this.options.BtnClick(this, e)

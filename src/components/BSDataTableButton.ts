@@ -6,6 +6,7 @@ export class BSDataTableButton extends BSDataTableInput {
     options: BSButtonOptions;
 
     constructor(options: BSButtonOptions) {
+        options.InputType = 'button';
         super(options);
         this.options = options;
         this.render();

@@ -8,6 +8,7 @@ import { BSDataTableSelect } from "./BSDataTableSelect";
 import { BSDataTableSelector } from "./BSDataTableSelector";
 import { BSDataTableSelectorWindow } from "./BSDataTableSelectorWindow";
 import { BSDataTable } from "./BSDataTable";
+import { appDataEvents } from "../services";
 
 export class BSDataTableRow extends BSDataTableBase {
 
@@ -147,8 +148,8 @@ export class BSDataTableRow extends BSDataTableBase {
                 InputType: "text",
                 PlaceHolder: model.Name,
                 BtnClick: (sender: BSDataTableSelector, e) => {
-                    sWindow.grid.removeHandler(this.appDataEvents.ON_ROW_DOUBLE_CLICKED);
-                    sWindow.grid.addHandler(this.appDataEvents.ON_ROW_DOUBLE_CLICKED, (s, ev) => sender.onItemSelected(sWindow, ev));
+                    sWindow.grid.removeHandler(appDataEvents.ON_ROW_DOUBLE_CLICKED);
+                    sWindow.grid.addHandler(appDataEvents.ON_ROW_DOUBLE_CLICKED, (s, ev) => sender.onItemSelected(sWindow, ev));
                     sWindow.show();
                 }
             });

@@ -1,3 +1,4 @@
+import { appDataEvents } from "../services";
 import { BSDataTableRow } from "./BSDataTableRow";
 import { BSDataTableRowCollection } from "./BSDataTableRowCollection";
 
@@ -100,7 +101,7 @@ export class BSDataTableBody extends BSDataTableRowCollection {
             row.rowCategory = 'DELETED';
         }
 
-        this.notifyListeners(this.appDataEvents.ON_GRID_UPDATED, { DataSourceName: row.options.dataSourceName, EventData: { Event: row } });
+        this.notifyListeners(appDataEvents.ON_GRID_UPDATED, { DataSourceName: row.options.dataSourceName, EventData: { Event: row } });
 
         this.focusRow(lastSibling);
     }

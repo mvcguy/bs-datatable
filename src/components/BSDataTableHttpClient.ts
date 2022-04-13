@@ -8,7 +8,6 @@ export class BSDataTableHttpClient extends BSDataTableBase implements IBSDataTab
 
     constructor(sessionStorage: SessionStorageService, dataSourceName: string, cacheResponses: boolean = false) {
         super();
-        this.appDataEvents = appDataEvents;
         this.sessionStorage = sessionStorage;
         this.dataSourceName = dataSourceName;
         this.cacheResponses = cacheResponses;
@@ -65,11 +64,11 @@ export class BSDataTableHttpClient extends BSDataTableBase implements IBSDataTab
             return;
         }
 
-        this.notifyListeners(this.appDataEvents.ON_FETCH_GRID_RECORD, fetchRecordEvent);
+        this.notifyListeners(appDataEvents.ON_FETCH_GRID_RECORD, fetchRecordEvent);
     }
 
     nofifyError(error: any, options: BSDataTableHttpClientOptions) {
         let errEvent: BSFetchRecordErrorEvent = { DataSourceName: this.dataSourceName, EventData: { Event: error, RecordId: options.recordId } };
-        this.notifyListeners(this.appDataEvents.ON_FETCH_GRID_RECORD_ERROR, errEvent);
+        this.notifyListeners(appDataEvents.ON_FETCH_GRID_RECORD_ERROR, errEvent);
     }
 }

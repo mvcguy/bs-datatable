@@ -2,6 +2,7 @@ import { Modal } from "bootstrap";
 import { BSDataTableBase } from "./BSDataTableBase";
 import { BSDataTableDataSource, BSDataTableOptions, BSSelectorWindowOptions } from "../commonTypes/common-types";
 import { BSDataTable } from "./BSDataTable";
+import { appDataEvents } from "../services";
 
 
 export class BSDataTableSelectorWindow extends BSDataTableBase {
@@ -108,11 +109,11 @@ export class BSDataTableSelectorWindow extends BSDataTableBase {
         //
         // following events are linked to parent (primary view/form) and are not needed for selector
         //
-        grid.removeHandler(this.appDataEvents.GRID_DATA);
-        grid.removeHandler(this.appDataEvents.ON_ADD_RECORD);
-        grid.removeHandler(this.appDataEvents.ON_FETCH_RECORD);
-        grid.removeHandler(this.appDataEvents.ON_SAVE_RECORD);
-        grid.removeHandler(this.appDataEvents.ON_SAVE_ERROR);
+        grid.removeHandler(appDataEvents.GRID_DATA);
+        grid.removeHandler(appDataEvents.ON_ADD_RECORD);
+        grid.removeHandler(appDataEvents.ON_FETCH_RECORD);
+        grid.removeHandler(appDataEvents.ON_SAVE_RECORD);
+        grid.removeHandler(appDataEvents.ON_SAVE_ERROR);
 
         grid.render();
 

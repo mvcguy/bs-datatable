@@ -1,5 +1,6 @@
 import { BSDataTableBase } from "./BSDataTableBase";
 import { BSInputOptions } from "../commonTypes/common-types";
+import { appDataEvents } from "../services";
 
 class BSDataTableInput extends BSDataTableBase {
     options: BSInputOptions
@@ -122,7 +123,7 @@ class BSDataTableInput extends BSDataTableBase {
 
     addDoubleClickEvent() {
         this.element.addEventListener('dblclick', (e) => {
-            this.notifyListeners(this.appDataEvents.ON_ROW_DOUBLE_CLICKED, { EventData: { Event: e }, DataSourceName: this.options.DataSourceName });
+            this.notifyListeners(appDataEvents.ON_ROW_DOUBLE_CLICKED, { EventData: { Event: e }, DataSourceName: this.options.DataSourceName });
         })
     }
 

@@ -100,6 +100,20 @@ export class BSDataTable extends BSDataTableBase {
         this.element.append(this.body.element);
     }
 
+    getGridSettings(gridId): { [x: string]: BSColumnSettings; } {
+        try {
+            // debugger;
+            var gridSettings = CookieHelper.getJSON(gridId);
+            //console.log('GridSettings Cookie: ', gridSettings ? 'settings found' : 'no settings found!');
+
+            return gridSettings;
+
+        } catch (error) {
+            console.log(error);
+            return undefined;
+        }
+    };
+
     render() {
 
         this.element = document.createElement('table');
@@ -212,12 +226,12 @@ export class BSDataTable extends BSDataTableBase {
                 MetaData: mdata
             }
         };
-        this.notifyListeners(this.appDataEvents.ON_FETCH_GRID_RECORD, fetchDataEvent);
+        this.notifyListeners(appDataEvents.ON_FETCH_GRID_RECORD, fetchDataEvent);
 
         //
         // notify that grid is data-bound
         //
-        this.notifyListeners(this.appDataEvents.ON_GRID_DATA_BOUND,
+        this.notifyListeners(appDataEvents.ON_GRID_DATA_BOUND,
             {
                 DataSourceName: this.options.dataSource.name,
                 EventData: {}
@@ -280,7 +294,7 @@ export class BSDataTable extends BSDataTableBase {
             //
             let event: BSSortingRequestEvent = { EventData: { Event: e, PropName: prop, Asc: asc }, DataSourceName: _this.options.dataSource.name };
 
-            th.notifyListeners(th.appDataEvents.ON_SORTING_REQUESTED, event);
+            th.notifyListeners(appDataEvents.ON_SORTING_REQUESTED, event);
 
         });
     }
@@ -462,9 +476,9 @@ export class BSDataTable extends BSDataTableBase {
                 let fieldUpdaedEvent: BSFieldUpdatedEvent = { EventData: { Event: e, Row: rowData, Field: input }, DataSourceName: ds };
 
 
-                row.notifyListeners(_this.appDataEvents.ON_GRID_UPDATED, gridUpdateEvent);
-                row.notifyListeners(_this.appDataEvents.ON_FIELD_UPDATED, fieldUpdaedEvent);
-                row.notifyListeners(_this.appDataEvents.ON_ROW_UPDATED, rowUpdatedEvent);
+                row.notifyListeners(appDataEvents.ON_GRID_UPDATED, gridUpdateEvent);
+                row.notifyListeners(appDataEvents.ON_FIELD_UPDATED, fieldUpdaedEvent);
+                row.notifyListeners(appDataEvents.ON_ROW_UPDATED, rowUpdatedEvent);
 
             });
 
@@ -554,7 +568,7 @@ export class BSDataTable extends BSDataTableBase {
         emptyRow.prop('data-isdirty', 'true');
 
         let gridUpdateEvent: BSGridUpdatedEvent = { EventData: { Grid: this, Event: emptyRow }, DataSourceName: this.options.dataSource.name };
-        this.notifyListeners(this.appDataEvents.ON_GRID_UPDATED, gridUpdateEvent);
+        this.notifyListeners(appDataEvents.ON_GRID_UPDATED, gridUpdateEvent);
 
         this.infiniteScroller.unobserve();
         this.infiniteScroller.observe(emptyRow.element);
@@ -614,7 +628,7 @@ export class BSDataTable extends BSDataTableBase {
                     MetaData: new BSDataTablePagingMetaData(pageIndex, mdata.pageSize, mdata.totalRecords)
                 }
             };
-            this.notifyListeners(this.appDataEvents.ON_FETCH_GRID_RECORD, fetchRecordEvent);
+            this.notifyListeners(appDataEvents.ON_FETCH_GRID_RECORD, fetchRecordEvent);
 
         }
 
@@ -767,7 +781,7 @@ export class BSDataTable extends BSDataTableBase {
         let colReorderEvent: BSColsReorderedEvent = { EventData: { CurrentCol: th, Asc: ascX }, DataSourceName: ds };
         this.notifyListeners(appDataEvents.ON_COLS_REORDERED, colReorderEvent);
 
-        this.notifyListeners(this.appDataEvents.ON_GRID_CONFIG_UPDATED, confEvent);
+        this.notifyListeners(appDataEvents.ON_GRID_CONFIG_UPDATED, confEvent);
 
     };
 

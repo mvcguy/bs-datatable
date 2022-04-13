@@ -1,18 +1,14 @@
-import { CookieHelper, dataEventsService, appActions, appDataEvents } from "../services";
-import { BSColumnSettings, BSEvent } from "../commonTypes/common-types";
+import { dataEventsService} from "../services";
+import { BSEvent } from "../commonTypes/common-types";
 
 
 class BSDataTableBase {
 
     element: HTMLElement;
     children: BSDataTableBase[];
-    appDataEvents: typeof appDataEvents;
-    appActions: typeof appActions;
 
     constructor() {
         this.children = [];
-        this.appDataEvents = appDataEvents;
-        this.appActions = appActions;
     }
 
     notifyListeners(eventType: string, payload: BSEvent) {
@@ -27,19 +23,7 @@ class BSDataTableBase {
         this.element.addEventListener(eventName, handler);
     }
 
-    getGridSettings(gridId): { [x: string]: BSColumnSettings; } {
-        try {
-            // debugger;
-            var gridSettings = CookieHelper.getJSON(gridId);
-            //console.log('GridSettings Cookie: ', gridSettings ? 'settings found' : 'no settings found!');
-
-            return gridSettings;
-
-        } catch (error) {
-            console.log(error);
-            return undefined;
-        }
-    };
+    
 
     _dataSourceName: string;
 

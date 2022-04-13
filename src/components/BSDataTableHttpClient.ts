@@ -1,6 +1,6 @@
 import { BSDataTableBase } from "./BSDataTableBase";
-import { SessionStorageService, appDataEvents } from "../services";
-import { BSFetchRecordErrorEvent, BSDataTableHttpClientOptions, BSFetchRecordEvent, BSDataTablePagingMetaData, IBSDataTableHttpClient } from "../commonTypes/common-types";
+import { SessionStorageService, appDataEvents, dataEventsService } from "../services";
+import { BSFetchRecordErrorEvent, BSDataTableHttpClientOptions, BSFetchRecordEvent, BSDataTablePagingMetaData, IBSDataTableHttpClient, BSEvent } from "../commonTypes/common-types";
 
 export class BSDataTableHttpClient extends BSDataTableBase implements IBSDataTableHttpClient {
     sessionStorage: SessionStorageService;
@@ -11,6 +11,10 @@ export class BSDataTableHttpClient extends BSDataTableBase implements IBSDataTab
         this.sessionStorage = sessionStorage;
         this.dataSourceName = dataSourceName;
         this.cacheResponses = cacheResponses;
+    }
+
+    notifyListeners(eventType: string, payload: BSEvent) {
+        dataEventsService.Emit(eventType, this, payload);
     }
 
 

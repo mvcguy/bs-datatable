@@ -63,6 +63,10 @@ export class BSDataTable extends BSDataTableBase {
         this.discoverable = true;
         this.containerElement = document.getElementById(this.options.containerId);
     }
+    
+    notifyListeners(eventType: string, payload: BSEvent) {
+        dataEventsService.Emit(eventType, this, payload);
+    }
 
     setDiscoverable() {
         bsDataTableDiscoveryService.Add(this);
@@ -294,7 +298,7 @@ export class BSDataTable extends BSDataTableBase {
             //
             let event: BSSortingRequestEvent = { EventData: { Event: e, PropName: prop, Asc: asc }, DataSourceName: _this.options.dataSource.name };
 
-            th.notifyListeners(appDataEvents.ON_SORTING_REQUESTED, event);
+            _this.notifyListeners(appDataEvents.ON_SORTING_REQUESTED, event);
 
         });
     }
@@ -476,9 +480,9 @@ export class BSDataTable extends BSDataTableBase {
                 let fieldUpdaedEvent: BSFieldUpdatedEvent = { EventData: { Event: e, Row: rowData, Field: input }, DataSourceName: ds };
 
 
-                row.notifyListeners(appDataEvents.ON_GRID_UPDATED, gridUpdateEvent);
-                row.notifyListeners(appDataEvents.ON_FIELD_UPDATED, fieldUpdaedEvent);
-                row.notifyListeners(appDataEvents.ON_ROW_UPDATED, rowUpdatedEvent);
+                _this.notifyListeners(appDataEvents.ON_GRID_UPDATED, gridUpdateEvent);
+                _this.notifyListeners(appDataEvents.ON_FIELD_UPDATED, fieldUpdaedEvent);
+                _this.notifyListeners(appDataEvents.ON_ROW_UPDATED, rowUpdatedEvent);
 
             });
 

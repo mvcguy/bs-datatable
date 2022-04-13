@@ -1,6 +1,6 @@
 import { BSDataTableBase } from "./BSDataTableBase";
-import { BSInputOptions } from "../commonTypes/common-types";
-import { appDataEvents } from "../services";
+import { BSEvent, BSInputOptions } from "../commonTypes/common-types";
+import { appDataEvents, dataEventsService } from "../services";
 
 class BSDataTableInput extends BSDataTableBase {
     options: BSInputOptions
@@ -9,6 +9,10 @@ class BSDataTableInput extends BSDataTableBase {
         super();
         this.options = options;
         this.dataSourceName = options.DataSourceName;
+    }
+
+    notifyListeners(eventType: string, payload: BSEvent) {
+        dataEventsService.Emit(eventType, this, payload);
     }
 
     render() {

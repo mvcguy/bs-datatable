@@ -1,4 +1,5 @@
-import { appDataEvents } from "../services";
+import { BSEvent } from "../commonTypes/common-types";
+import { appDataEvents, dataEventsService } from "../services";
 import { BSDataTableRow } from "./BSDataTableRow";
 import { BSDataTableRowCollection } from "./BSDataTableRowCollection";
 
@@ -11,6 +12,10 @@ export class BSDataTableBody extends BSDataTableRowCollection {
 
     render() {
         this.element = document.createElement('tbody');
+    }
+
+    notifyListeners(eventType: string, payload: BSEvent) {
+        dataEventsService.Emit(eventType, this, payload);
     }
 
     /**

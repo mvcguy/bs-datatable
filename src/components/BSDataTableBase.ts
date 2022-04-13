@@ -11,10 +11,6 @@ class BSDataTableBase {
         this.children = [];
     }
 
-    notifyListeners(eventType: string, payload: BSEvent) {
-        dataEventsService.Emit(eventType, this, payload);
-    }
-
     /**
      * Add handler to the events raised by the DOM
      */
@@ -22,8 +18,6 @@ class BSDataTableBase {
 
         this.element.addEventListener(eventName, handler);
     }
-
-    
 
     _dataSourceName: string;
 

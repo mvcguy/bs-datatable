@@ -1,4 +1,4 @@
-import { dataEventsService} from "../services";
+import { dataEventsService } from "../services";
 import { BSEvent } from "../commonTypes/common-types";
 
 
@@ -17,6 +17,14 @@ class BSDataTableBase {
     addEventHandler(eventName: string, handler: EventListener) {
 
         this.element.addEventListener(eventName, handler);
+    }
+
+    set title(val: string) {
+        this.element.title = val;
+    }
+
+    get title(): string {
+        return this.element.title;
     }
 
     _dataSourceName: string;

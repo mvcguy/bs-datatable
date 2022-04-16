@@ -25,10 +25,10 @@ export class BSDataTableSelectorWindow extends BSDataTableBase {
         super();
         this.options = options;
         this.parentContainerId = this.options.ContainerId;
-        this.modalId = `${this.parentContainerId}_bs_${this.options.PropName}`;
-        this.modalTitleId = `${this.parentContainerId}_lbs_${this.options.PropName}`;
-        this.containerId = `${this.parentContainerId}_cbs_${this.options.PropName}`;
-        this.gridId = `${this.parentContainerId}_g_${this.options.PropName}`;
+        this.modalId = `${this.parentContainerId}_bs_${this.options.ModelName}`;
+        this.modalTitleId = `${this.parentContainerId}_lbs_${this.options.ModelName}`;
+        this.containerId = `${this.parentContainerId}_cbs_${this.options.ModelName}`;
+        this.gridId = `${this.parentContainerId}_g_${this.options.ModelName}`;
         this.render();
         this.grid = this.renderGrid();
         this.onItemSelected = (/** @type {BSDataTable} */ sender: BSDataTable, /** @type {any} */ e: any) => { console.log(); };
@@ -88,10 +88,16 @@ export class BSDataTableSelectorWindow extends BSDataTableBase {
     }
 
     renderGrid() {
+
+        //
+        // if the grid exist from before, no need to render again
+        //
+        if (this.findById(this.gridId)) return;
+        
         //
         // grid shown in the selector window
         //
-        var dataSource = new BSDataTableDataSource(this.options.DataSourceName,
+        var dataSource = new BSDataTableDataSource(this.options.DataSourceName + "_" + this.options.ModelName,
             {
                 initData: [],
                 metaData: undefined

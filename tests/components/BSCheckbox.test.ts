@@ -1,41 +1,39 @@
 import { BSDataTableCheckBox } from '../../src/components/BSDataTableCheckBox'
 
 it('test checkbox setters and getters', () => {
-    const txtInput = new BSDataTableCheckBox('ds');
+    const input = new BSDataTableCheckBox({DataSourceName: 'ds', ModelName: 'showDetails'});
 
-    expect(txtInput.readonly).toBe(false);
+    expect(input.readonly).toBe(false);
 
-    txtInput.val = true;
-    expect(txtInput.val).toBe(true);
+    input.val = true;
+    expect(input.val).toBe(true);
 
-    txtInput.val = false;
-    expect(txtInput.val).toBe(false);
+    input.val = false;
+    expect(input.val).toBe(false);
 
-    txtInput.readonly = true;
-    txtInput.modelName = 'showDetails';
-    txtInput.disabled = true;
-    txtInput.isKey = true;
+    input.readonly = true;
+    input.disabled = true;
+    input.isKey = true;
 
-    expect(txtInput.readonly).toBe(true);
-    expect(txtInput.modelName).toBe('showDetails');
-    expect(txtInput.disabled).toBe(true);
-    expect(txtInput.isKey).toBe(true);
+    expect(input.readonly).toBe(true);
+    expect(input.options.ModelName).toBe('showDetails');
+    expect(input.disabled).toBe(true);
+    expect(input.isKey).toBe(true);
     
-    expect(txtInput.element['type']).toBe('checkbox');
+    expect(input.element['type']).toBe('checkbox');
 });
 
 it('test clone', () => {
-    const txtInput = new BSDataTableCheckBox('ds');
-    txtInput.readonly = true;
-    txtInput.modelName = 'showDetails';
-    txtInput.disabled = true;
-    txtInput.isKey = true;
-    txtInput.val = true;
+    const input = new BSDataTableCheckBox({DataSourceName: 'ds', ModelName: 'showDetails'});
+    input.readonly = true;
+    input.disabled = true;
+    input.isKey = true;
+    input.val = true;
 
-    const clone = txtInput.clone();
+    const clone = input.clone();
 
     expect(clone.readonly).toBe(true);
-    expect(clone.modelName).toBe('showDetails');
+    expect(clone.options.ModelName).toBe('showDetails');
     expect(clone.disabled).toBe(true);
     expect(clone.isKey).toBe(true);
     expect(clone.val).toBe(true);

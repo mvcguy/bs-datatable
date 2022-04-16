@@ -3,6 +3,7 @@ import { BSSelectorOptions } from "../commonTypes/common-types";
 import { BSDataTableTextInput } from "./BSDataTableTextInput";
 import { BSDataTableButton } from "./BSDataTableButton";
 import { BSDataTableSelectorWindow } from "./BSDataTableSelectorWindow";
+import { appDataEvents } from "../services";
 
 export class BSDataTableSelector extends BSDataTableInput {
 
@@ -17,9 +18,12 @@ export class BSDataTableSelector extends BSDataTableInput {
      */
     txtElement: BSDataTableTextInput;
 
-    constructor(options: BSSelectorOptions) {
+    selectorWindow: BSDataTableSelectorWindow;
+
+    constructor(options: BSSelectorOptions, selectorWindow?: BSDataTableSelectorWindow) {
         super(options);
         this.options = options;
+        this.selectorWindow = selectorWindow;
         this.render();
     }
 
@@ -29,7 +33,7 @@ export class BSDataTableSelector extends BSDataTableInput {
      */
     onItemSelected(sender: BSDataTableSelectorWindow, e: any) {
 
-        console.log('row selected', sender.grid.body.getSelectedRow());
+        // console.log('row selected', sender.grid.body.getSelectedRow());
 
         var row = sender.grid.body.getSelectedRow();
         var selectedInput = row.getInputs().find((input) => input.isKey);
@@ -44,17 +48,22 @@ export class BSDataTableSelector extends BSDataTableInput {
 
     render() {
 
-        this.txtElement = new BSDataTableTextInput(this.options.DataSourceName);
-        this.txtElement
-            .addClass(this.options.CssClass)
-            .props([{ key: "id", value: this.options.ElementId },
-            { key: "placeHolder", value: this.options.PlaceHolder },
-            { key: "data-propname", value: this.options.PropName }]);
+        if (!this.selectorWindow) {
+            var sWindow = new BSDataTableSelectorWindow(this.options);            
+            this.selectorWindow = sWindow;
+        }
 
+        var btnHandler = (sender: BSDataTableSelector, e) => {
+            this.selectorWindow.grid.removeHandler(appDataEvents.ON_ROW_DOUBLE_CLICKED);
+            this.selectorWindow.grid.addHandler(appDataEvents.ON_ROW_DOUBLE_CLICKED, (s, ev) => sender.onItemSelected(this.selectorWindow, ev));
+            this.selectorWindow.show();
+        }
+
+        this.txtElement = new BSDataTableTextInput(this.options);
         this.btnElement = new BSDataTableButton({
             DataSourceName: this.options.DataSourceName,
             Icon: 'search',
-            Handler: (e) => this.options.BtnClick(this, e)
+            Handler: (e) => btnHandler(this, e)
         });
 
         var wrapper = document.createElement('div');
@@ -68,9 +77,10 @@ export class BSDataTableSelector extends BSDataTableInput {
     clone() {
         // debugger;
         var sc = super.clone();
-        var c = new BSDataTableSelector(this.shClone(this.options));
+        var opt: BSSelectorOptions = this.shClone(this.options);
+        opt.cloneContext = true;
+        var c = new BSDataTableSelector(opt, this.selectorWindow);
         c.children = sc.children;
-        // c.addDoubleClickEvent(); // TODO: why it has to be in the clone method?  
         return c;
     }
 }

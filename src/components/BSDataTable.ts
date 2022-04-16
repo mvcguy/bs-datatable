@@ -22,7 +22,6 @@ import { BSDataTableCheckBox } from "./BSDataTableCheckBox";
 import { BSDataTableHttpClient } from "./BSDataTableHttpClient";
 import { BSDataTablePagination } from "./BSDataTablePagination";
 import { BSDataTableInfiniteScroll } from "./BSDataTableInfiniteScroll";
-import { BSDataTableSelectorWindowCollection } from "./BSDataTableSelectorWindowCollection";
 import { BSDataTableMarker } from "./BSDataTableMarker";
 import { BSDataTableActions } from "./BSDataTableActions";
 import { BSDataTableRow } from "./BSDataTableRow";
@@ -34,7 +33,6 @@ export class BSDataTable extends BSDataTableBase {
     options: BSDataTableOptions;
     head: BSDataTableHeader;
     body: BSDataTableBody;
-    selectors: BSDataTableSelectorWindowCollection;
     paginator: BSDataTablePagination;
     httpClient: IBSDataTableHttpClient;
     infiniteScroller: BSDataTableInfiniteScroll;
@@ -48,7 +46,6 @@ export class BSDataTable extends BSDataTableBase {
         this.options = options;
         this.head = new BSDataTableHeader();
         this.body = new BSDataTableBody();
-        this.selectors = new BSDataTableSelectorWindowCollection();
         this.paginator = new BSDataTablePagination(
             new BSDataTablePaginationOptions(this.options.dataSource.name,
                 new BSDataTablePagingMetaData(),
@@ -63,7 +60,7 @@ export class BSDataTable extends BSDataTableBase {
         this.discoverable = true;
         this.containerElement = document.getElementById(this.options.containerId);
     }
-    
+
     notifyListeners(eventType: string, payload: BSEvent) {
         dataEventsService.Emit(eventType, this, payload);
     }
@@ -176,7 +173,7 @@ export class BSDataTable extends BSDataTableBase {
             var colSettings = settings[gc.PropName];
 
             var th = gridHeaderRow.createHeaderFor(gc);
-            var td = templateRow.createInputFor(gc, this);
+            var td = templateRow.createInputFor(gc, this.isReadOnly);
 
             //
             // sorting of the data when the header cell is clicked
@@ -432,7 +429,7 @@ export class BSDataTable extends BSDataTableBase {
             var oldId = input.id;
             input.id = oldId + "_" + rowNumber;
 
-            var cellPropName = input.modelName;
+            var cellPropName = input.options.ModelName;
             // console.log('cell-pro', cellPropName);
 
             var cellVal = rowData[cellPropName];
@@ -710,7 +707,7 @@ export class BSDataTable extends BSDataTableBase {
                     var inputError = errors[dsName + '[' + serverIndex + '].' + propName];
                     if (inputError && inputError.length > 0) {
 
-                        var input = errorRow.getInputs().find((inp) => inp.modelName === col.PropName);
+                        var input = errorRow.getInputs().find((inp) => inp.options.ModelName === col.PropName);
 
                         if (input) {
                             input.addClass('is-invalid');
@@ -944,13 +941,7 @@ export class BSDataTable extends BSDataTableBase {
         modalElem.classList.add('settings-menu', 'grid-config-template');
         modalElem.innerHTML = modelTemplate;
 
-        var container = this.findById(this.options.containerId); // TODO: Store reference to container for faster updates
-
-        if (container) {
-            container.append(modalElem);
-        }
-
-
+        this.containerElement.append(modalElem);
 
         var colsList = modalElem.querySelector('.grid-config-cols');
         headers.forEach((header, index) => {

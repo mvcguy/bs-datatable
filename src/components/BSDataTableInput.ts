@@ -16,17 +16,23 @@ class BSDataTableInput extends BSDataTableBase {
     }
 
     render() {
+        
         if (this.options.InputType === 'select')
             this.element = document.createElement('select');
 
         else if (this.options.InputType === 'button') {
-            this.element = document.createElement('button');
-            this.addClass('btn btn-outline-primary');
+            var btn = document.createElement('button');
+            btn.type = this.options.InputType;
+            this.element = btn;
         }
         else {
-            this.element = document.createElement('input');
-            this.element['type'] = this.options.InputType;
+            var input = document.createElement('input');
+            input.type = this.options.InputType;
+            this.element = input;
         }
+
+        this.element.id = this.options.ElementId ?? this.options.InputType + "_" + this.options.DataSourceName + "_" + this.options.ModelName;
+        this.title = this.options.Title;
     }
 
     get val(): boolean | string | number | string[] {
@@ -69,13 +75,13 @@ class BSDataTableInput extends BSDataTableBase {
         this.change();
     }
 
-    get modelName() {
-        return this.getProp('data-propname');
-    }
+    // get modelName() {
+    //     return this.getProp('data-propname');
+    // }
 
-    set modelName(v) {
-        this.prop('data-propname', v);
-    }
+    // set modelName(v) {
+    //     this.prop('data-propname', v);
+    // }
 
     get readonly() {
         if (this.element instanceof HTMLInputElement)

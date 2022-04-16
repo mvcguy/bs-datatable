@@ -7,7 +7,8 @@ it('test select values', () => {
             { text: 'Pakistan', value: 'PK', isSelected: true },
             { text: 'Norway', value: 'NO', isSelected: false },
             { text: 'Turkey', value: 'TR', isSelected: false }
-        ]
+        ],
+        ModelName: 'selCountries'
     });
 
     expect(countries.readonly).toBe(false);
@@ -16,11 +17,10 @@ it('test select values', () => {
     countries.val = "NO";
     expect(countries.val).toBe("NO");
 
-    countries.modelName = 'selCountries';
     countries.disabled = true;
     countries.isKey = true;
 
-    expect(countries.modelName).toBe('selCountries');
+    expect(countries.options.ModelName).toBe('selCountries');
     expect(countries.disabled).toBe(true);
     expect(countries.isKey).toBe(true);
 
@@ -35,7 +35,9 @@ it('tests clone of the select component', () => {
             { text: 'Pakistan', value: 'PK', isSelected: true },
             { text: 'Norway', value: 'NO', isSelected: false },
             { text: 'Turkey', value: 'TR', isSelected: false }
-        ]
+        ],
+        ModelName: 'selCountries'
+
     });
 
     var clone = countries.clone();
@@ -45,11 +47,10 @@ it('tests clone of the select component', () => {
     clone.val = "NO";
     expect(clone.val).toBe("NO");
 
-    clone.modelName = 'selCountries';
     clone.disabled = true;
     clone.isKey = true;
 
-    expect(clone.modelName).toBe('selCountries');
+    expect(clone.options.ModelName).toBe('selCountries');
     expect(clone.disabled).toBe(true);
     expect(clone.isKey).toBe(true);
 

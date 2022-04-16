@@ -24,8 +24,10 @@ class DataEventsService {
         if (!eventName) return;
         try {
             this.callbacks.forEach((cb) => {
-                if (cb.EventName !== eventName || (cb.DataSourceName !== eventArgs.DataSourceName && cb.VerifyDataSourceName === true))
+                if (cb.EventName !== eventName || (cb.DataSourceName !== eventArgs.DataSourceName && cb.VerifyDataSourceName === true)) {
+                    console.log('source could not be matched');
                     return;
+                }
                 cb.Callback(source, eventArgs);
             });
 

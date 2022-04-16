@@ -2,8 +2,8 @@ import { BSDataTableInput } from "./BSDataTableInput";
 import { BSInputOptions } from "../commonTypes/common-types";
 
 export class BSDataTableCheckBox extends BSDataTableInput {
-    constructor(dataSourceName: string) {
-        let options: BSInputOptions = { DataSourceName: dataSourceName, InputType: "checkbox" };
+    constructor(options: BSInputOptions) {
+        options.InputType = 'checkbox'
         super(options);
         this.render();
     }

@@ -94,6 +94,15 @@ export interface BSInputOptions {
     DataSourceName: string;
     InputType?: string;
     ElementId?: string;
+
+    /**
+     * Space separated list of css classes
+     */
+    Classes?: string;
+    PlaceHolder?: string;
+    ModelName?: string;
+    Title?: string;
+
 }
 
 export interface BSSelectOptions extends BSInputOptions {
@@ -105,21 +114,14 @@ export interface BSButtonOptions extends BSInputOptions {
     Handler?: (arg0: MouseEvent) => void;
 }
 
-export interface BSSelectorOptions extends BSInputOptions {
-    PropName: string,
-    CssClass: string,
-    PlaceHolder: string,
-    BtnId: string,
-    ElementId: string,
-    BtnClick: (sender: object, e: any) => void
+export interface BSSelectorOptions extends BSSelectorWindowOptions {
+    cloneContext?: boolean;    
 }
 
-export interface BSSelectorWindowOptions {
-    PropName: string;
+export interface BSSelectorWindowOptions extends BSInputOptions {
     ContainerId: string;
     UrlCb: getUrlCallback;
     GridCols?: BSDataTableColDefinition[];
-    DataSourceName: string;
 }
 
 export class BSDataTableSelectListItem {
@@ -141,9 +143,16 @@ export class BSDataTableSelectListItem {
 }
 
 export class BSDataTableColDefinition {
+    /**
+     * Display name
+     */
     Name: string;
     DataType: string;
     Width: string;
+
+    /**
+     * variable name - must not contain spaces
+     */
     PropName: string;
     IsKey: boolean;
     DataSource: BSDataTableSelectListItem[];

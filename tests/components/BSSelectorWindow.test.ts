@@ -23,7 +23,7 @@ jest.mock('../../src/components/BSDataTableHttpClient', () => {
                         metaData: { pageIndex: 1, pageSize: 3, totalRecords: 1000000 }
                     };
                     var payload: BSFetchRecordEvent = {
-                        DataSourceName: dsName,
+                        DataSourceName: dsName + "_StockItem",
                         EventData: {
                             Data: response.items,
                             MetaData: new BSDataTablePagingMetaData(response.metaData.pageIndex, response.metaData.pageSize, response.metaData.totalRecords)
@@ -51,7 +51,7 @@ describe('BSSelectorWindow', () => {
     const observeMock = {
         observe: (elem: HTMLElement) => null,
         unobserve: () => null,
-        disconnect: () => null 
+        disconnect: () => null
     };
 
     var httpClientMock = jest.mocked(BSDataTableHttpClient, true);
@@ -65,7 +65,7 @@ describe('BSSelectorWindow', () => {
 
         var selWindow = new BSDataTableSelectorWindow({
             ContainerId: 'container',
-            PropName: 'stock_items',
+            ModelName: 'StockItem',
             UrlCb: (pageIndex) => { return 'http://localhost' },
             GridCols: [
                 new BSDataTableColDefinition("Stock item", "text", "60px", "id", true),
@@ -127,5 +127,9 @@ describe('BSSelectorWindow', () => {
         selWindow.show();
 
     });
+});
+
+it('null test', function () { 
+    expect(1).toBe(1);
 });
 

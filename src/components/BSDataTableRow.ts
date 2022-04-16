@@ -1,7 +1,7 @@
 import { BSDataTableBase } from "./BSDataTableBase";
 import { BSDataTableInput } from "./BSDataTableInput";
 import { BSDataTableCell } from "./BSDataTableCell";
-import { BSDataTableColDefinition, BSRowOptions } from "../commonTypes/common-types";
+import { BSDataTableColDefinition, BSInputOptions, BSRowOptions, BSSelectOptions, BSSelectorOptions } from "../commonTypes/common-types";
 import { BSDataTableTextInput } from "./BSDataTableTextInput";
 import { BSDataTableCheckBox } from "./BSDataTableCheckBox";
 import { BSDataTableSelect } from "./BSDataTableSelect";
@@ -114,66 +114,46 @@ export class BSDataTableRow extends BSDataTableBase {
      * @param {BSDataTable} grid instance
      * @returns {BSDataTableCell} returns the grid cell containing the input
      */
-    createInputFor(model: BSDataTableColDefinition, grid: BSDataTable): BSDataTableCell {
+    createInputFor(model: BSDataTableColDefinition, readonly: boolean): BSDataTableCell {
         var ds = this.options.dataSourceName;
-        var gid = this.options.gridId;
 
         var input = null;
+        var inputOptions: BSInputOptions = {
+            DataSourceName: ds,
+            ModelName: model.PropName,
+            PlaceHolder: model.Name,
+            Title: model.Name
+        };
 
         //debugger;
         if (model.DataType === 'select') {
-            input = new BSDataTableSelect({ DataSourceName: ds, SelectOptions: model.DataSource });
+            var selectOptions: BSSelectOptions = { ...inputOptions, SelectOptions: model.DataSource };
+            input = new BSDataTableSelect(selectOptions);
         }
         else if (model.DataType === 'checkbox') {
-            input = new BSDataTableCheckBox(ds);
+            input = new BSDataTableCheckBox(inputOptions);
         }
         else if (model.DataType === 'selector') {
-            // TODO: Fix two types of settings!!!
-            var sWindow = new BSDataTableSelectorWindow({
-                PropName: model.PropName,
+            
+            var sltrOptions: BSSelectorOptions = {
+                ...inputOptions,
                 ContainerId: this.options.containerId,
                 UrlCb: model.SelectorDataCB,
-                GridCols: model.SelectorCols,
-                DataSourceName: model.PropName + "_selector"
-            });
-
-            grid.selectors.add(sWindow);
-
-            input = new BSDataTableSelector({
-                DataSourceName: ds,
-                PropName: model.PropName,
-                BtnId: "btn_" + gid + "_template_row_" + model.PropName,
-                CssClass: "form-control form-control-sm",
-                ElementId: gid + "_template_row_" + model.PropName,
-                InputType: "text",
-                PlaceHolder: model.Name,
-                BtnClick: (sender: BSDataTableSelector, e) => {
-                    sWindow.grid.removeHandler(appDataEvents.ON_ROW_DOUBLE_CLICKED);
-                    sWindow.grid.addHandler(appDataEvents.ON_ROW_DOUBLE_CLICKED, (s, ev) => sender.onItemSelected(sWindow, ev));
-                    sWindow.show();
-                }
-            });
+                GridCols: model.SelectorCols
+            };
+            input = new BSDataTableSelector(sltrOptions);
 
         }
         else {
-            input = new BSDataTableTextInput(ds, model.DataType);
-            input.addClass('form-control form-control-sm');
+            input = new BSDataTableTextInput(inputOptions);
         }
-        // TODO: Fix two types of settings!!!
-        if (model.DataType !== 'selector')
-            input.props([
-                { key: 'data-propname', value: model.PropName },
-                { key: 'title', value: model.Name },
-                { key: 'id', value: gid + "_template_row_" + model.PropName },
-                { key: 'placeholder', value: model.Name }
-            ]);
 
         if (model.IsKey === true) {
             input.readonly = true;
             input.isKey = true;
         }
 
-        if (grid.options.isReadonly === true) {
+        if (readonly === true) {
             input.readonly = true;
             input.setCss('cursor', 'pointer');
             input.setCss('user-select', 'none');
@@ -209,7 +189,7 @@ export class BSDataTableRow extends BSDataTableBase {
         var rowInputs = this.getInputs();
         var record = {};
         rowInputs.forEach((rowInput, i) => {
-            var cellPropName = rowInput.modelName;
+            var cellPropName = rowInput.options.ModelName;
             record[cellPropName] = rowInput;
         });
         return record;
@@ -232,7 +212,7 @@ export class BSDataTableRow extends BSDataTableBase {
         record['rowCategory'] = rowCat;
 
         rowInputs.forEach((rowInput, i) => {
-            var cellPropName = rowInput.modelName;
+            var cellPropName = rowInput.options.ModelName;
             record[cellPropName] = rowInput.val;
         });
         record["clientRowNumber"] = rowIndex;

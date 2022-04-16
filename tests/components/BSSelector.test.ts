@@ -77,63 +77,63 @@ describe('xxx', function () {
         console.log('cleaning used resources...');
     });
 
-    // it('test selector values', () => {
+    it('test selector values', () => {
 
-    //     let options = getSelectorOptions();
-    //     const inventoryId = new BSDataTableSelector(options);
+        let options = getSelectorOptions();
+        const inventoryId = new BSDataTableSelector(options);
 
-    //     expect(inventoryId.txtElement.readonly).toBe(false);
+        expect(inventoryId.txtElement.readonly).toBe(false);
 
-    //     inventoryId.txtElement.val = "VAR001";
-    //     expect(inventoryId.txtElement.val).toBe("VAR001");
+        inventoryId.txtElement.val = "VAR001";
+        expect(inventoryId.txtElement.val).toBe("VAR001");
 
-    //     inventoryId.txtElement.disabled = true;
-    //     inventoryId.txtElement.isKey = true;
+        inventoryId.txtElement.disabled = true;
+        inventoryId.txtElement.isKey = true;
 
-    //     expect(inventoryId.txtElement.options.ModelName).toBe('inventoryId');
-    //     expect(inventoryId.txtElement.disabled).toBe(true);
-    //     expect(inventoryId.txtElement.isKey).toBe(true);
+        expect(inventoryId.txtElement.options.ModelName).toBe('inventoryId');
+        expect(inventoryId.txtElement.disabled).toBe(true);
+        expect(inventoryId.txtElement.isKey).toBe(true);
 
-    //     //
-    //     // verify that a wrapper exist around the text box and the selector button
-    //     //
-    //     var parent = inventoryId.txtElement.element.parentElement;
-    //     expect(parent.tagName).toBe('DIV');
-    //     expect(parent.classList.contains('input-group')).toEqual(true);
-    //     expect(parent.classList.contains('input-group-sm')).toEqual(true);
+        //
+        // verify that a wrapper exist around the text box and the selector button
+        //
+        var parent = inventoryId.txtElement.element.parentElement;
+        expect(parent.tagName).toBe('DIV');
+        expect(parent.classList.contains('input-group')).toEqual(true);
+        expect(parent.classList.contains('input-group-sm')).toEqual(true);
 
-    //     expect(parent).toEqual(inventoryId.btnElement.element.parentElement);
-    //     expect(inventoryId.element).toEqual(parent);
+        expect(parent).toEqual(inventoryId.btnElement.element.parentElement);
+        expect(inventoryId.element).toEqual(parent);
 
-    // });
+    });
 
-    // it('tests clone of the select component', () => {
-    //     let options = getSelectorOptions();
-    //     const inventoryId = new BSDataTableSelector(options);
-    //     var clone = inventoryId.clone();
+    it('tests clone of the select component', () => {
+        let options = getSelectorOptions();
+        const inventoryId = new BSDataTableSelector(options);
+        var clone = inventoryId.clone();
 
-    //     expect(clone.txtElement.readonly).toBe(false);
+        expect(clone.txtElement.readonly).toBe(false);
 
-    //     clone.txtElement.val = "VAR001";
-    //     expect(clone.txtElement.val).toBe("VAR001");
+        clone.txtElement.val = "VAR001";
+        expect(clone.txtElement.val).toBe("VAR001");
 
-    //     clone.txtElement.disabled = true;
-    //     clone.txtElement.isKey = true;
+        clone.txtElement.disabled = true;
+        clone.txtElement.isKey = true;
 
-    //     expect(clone.txtElement.options.ModelName).toBe('inventoryId');
-    //     expect(clone.txtElement.disabled).toBe(true);
-    //     expect(clone.txtElement.isKey).toBe(true);
+        expect(clone.txtElement.options.ModelName).toBe('inventoryId');
+        expect(clone.txtElement.disabled).toBe(true);
+        expect(clone.txtElement.isKey).toBe(true);
 
-    //     //
-    //     // verify that a wrapper exist around the text box and the selector button
-    //     //
-    //     var parent = clone.txtElement.element.parentElement;
-    //     expect(parent.tagName).toBe('DIV');
-    //     expect(parent.classList.contains('input-group')).toEqual(true);
-    //     expect(parent.classList.contains('input-group-sm')).toEqual(true);
-    //     expect(parent).toEqual(clone.btnElement.element.parentElement);
-    //     expect(clone.element).toEqual(parent);
-    // });
+        //
+        // verify that a wrapper exist around the text box and the selector button
+        //
+        var parent = clone.txtElement.element.parentElement;
+        expect(parent.tagName).toBe('DIV');
+        expect(parent.classList.contains('input-group')).toEqual(true);
+        expect(parent.classList.contains('input-group-sm')).toEqual(true);
+        expect(parent).toEqual(clone.btnElement.element.parentElement);
+        expect(clone.element).toEqual(parent);
+    });
 
     it('verify the contents of selector window', () => {
 
@@ -202,11 +202,6 @@ describe('xxx', function () {
         //inventoryId.selectorWindow.show();
 
     });
-
-    
-it('null test', function () { 
-    expect(1).toBe(1);
-});
 
 
 });

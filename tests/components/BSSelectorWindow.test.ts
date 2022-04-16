@@ -129,7 +129,4 @@ describe('BSSelectorWindow', () => {
     });
 });
 
-it('null test', function () { 
-    expect(1).toBe(1);
-});
 

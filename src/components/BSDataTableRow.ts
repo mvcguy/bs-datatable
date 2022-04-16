@@ -6,9 +6,6 @@ import { BSDataTableTextInput } from "./BSDataTableTextInput";
 import { BSDataTableCheckBox } from "./BSDataTableCheckBox";
 import { BSDataTableSelect } from "./BSDataTableSelect";
 import { BSDataTableSelector } from "./BSDataTableSelector";
-import { BSDataTableSelectorWindow } from "./BSDataTableSelectorWindow";
-import { BSDataTable } from "./BSDataTable";
-import { appDataEvents } from "../services";
 
 export class BSDataTableRow extends BSDataTableBase {
 
@@ -18,9 +15,6 @@ export class BSDataTableRow extends BSDataTableBase {
     cells: BSDataTableCell[] = [];
     options: BSRowOptions;
 
-    /**
-     * @param {{ dataSourceName: string; gridId: string; gridHeader?: boolean; isTemplateRow?: boolean; containerId?:string}} options
-     */
     constructor(options: BSRowOptions) {
         super();
         this.options = options;
@@ -195,18 +189,21 @@ export class BSDataTableRow extends BSDataTableBase {
         return record;
     }
 
-    getRowIndex() {
+    get rowIndex() {
         var rowIndex = this.getProp('data-rowindex');
         return parseInt(rowIndex);
+    }
+
+    set rowIndex(index: number) {
+        this.prop('data-rowindex', index);
     }
 
     /**
      * This function returns an object which contains the values of the all the inputs in the row
      * @returns Retuns an object which contains the values of the inputs
      */
-    getRowData() {
+    getRowData():any {
         var rowInputs = this.getInputs();
-        var rowIndex = this.getRowIndex();
         var record = {};
         var rowCat = this.rowCategory;
         record['rowCategory'] = rowCat;
@@ -215,7 +212,7 @@ export class BSDataTableRow extends BSDataTableBase {
             var cellPropName = rowInput.options.ModelName;
             record[cellPropName] = rowInput.val;
         });
-        record["clientRowNumber"] = rowIndex;
+        record["clientRowNumber"] = this.rowIndex;
         // console.log('GetRowData: ', record);
         return record;
     }

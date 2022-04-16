@@ -54,6 +54,10 @@ export class BSDataTableSelector extends BSDataTableInput {
         }
 
         var btnHandler = (sender: BSDataTableSelector, e) => {
+            //
+            // show the window, and re-register double-click handler 
+            // since the window control is shared by many selectors of same id
+            //
             this.selectorWindow.grid.removeHandler(appDataEvents.ON_ROW_DOUBLE_CLICKED);
             this.selectorWindow.grid.addHandler(appDataEvents.ON_ROW_DOUBLE_CLICKED, (s, ev) => sender.onItemSelected(this.selectorWindow, ev));
             this.selectorWindow.show();

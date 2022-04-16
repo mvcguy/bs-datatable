@@ -16,7 +16,7 @@ class BSDataTableInput extends BSDataTableBase {
     }
 
     render() {
-        
+
         if (this.options.InputType === 'select')
             this.element = document.createElement('select');
 
@@ -133,7 +133,10 @@ class BSDataTableInput extends BSDataTableBase {
 
     addDoubleClickEvent() {
         this.element.addEventListener('dblclick', (e) => {
-            this.notifyListeners(appDataEvents.ON_ROW_DOUBLE_CLICKED, { EventData: { Event: e }, DataSourceName: this.options.DataSourceName });
+            this.notifyListeners(appDataEvents.ON_ROW_DOUBLE_CLICKED, {
+                EventData: { Event: e },
+                DataSourceName: this.options.DataSourceName
+            });
         })
     }
 

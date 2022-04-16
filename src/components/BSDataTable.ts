@@ -93,11 +93,11 @@ export class BSDataTable extends BSDataTableBase {
         this.fetchGridPage(page);
     }
 
-    addHeader() {
+    appendHeader() {
         this.element.append(this.head.element);
     }
 
-    addBody() {
+    appendBody() {
         this.element.append(this.body.element);
     }
 
@@ -191,18 +191,13 @@ export class BSDataTable extends BSDataTableBase {
         //
         // add grid actions toolbar
         //
-        this.addActions();
+        this.appendActions();
 
         //
         // add header and body to the grid
         //
-        this.addHeader();
-        this.addBody();
-
-        //
-        // add actions for the grid to the container
-        //
-        this.containerElement.appendChild(this.gridActions.element);
+        this.appendHeader();
+        this.appendBody();
 
         //
         // add grid to the provided container
@@ -251,12 +246,18 @@ export class BSDataTable extends BSDataTableBase {
         }
     }
 
-    addActions() {
+    appendActions() {
         this.gridActions = new BSDataTableActions();
         this.gridActions.dataSourceName = this.options.dataSource.name;
         this.gridActions.addNewRecordAction((e) => this.addEmptyRow())
             .addDeleteAction((e) => this.body.markDeleted())
             .addGridSettingsAction();
+                
+        //
+        // add actions for the grid to the container
+        //
+        this.containerElement.appendChild(this.gridActions.element);
+
     }
 
     /**
@@ -544,7 +545,7 @@ export class BSDataTable extends BSDataTableBase {
         // debugger;
         var visibleRows = this.body.getVisibleRows();
         if (visibleRows.length <= 0) return;
-        var lastRowIndex = visibleRows[visibleRows.length - 1].getRowIndex();
+        var lastRowIndex = visibleRows[visibleRows.length - 1].rowIndex;
 
         var row = (e.target as Element).closest('tr');
         if (!row) return;
@@ -728,7 +729,7 @@ export class BSDataTable extends BSDataTableBase {
     }
 
     getRowByIndex(index: number) {
-        return this.body.rows.find((v, i) => v.getRowIndex() === index);
+        return this.body.rows.find((v, i) => v.rowIndex === index);
     }
 
     /**

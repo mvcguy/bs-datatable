@@ -50,31 +50,6 @@ export class BSDataTableRow extends BSDataTableBase {
             this.element = document.createElement('tr')
     }
 
-    /**
-     *
-     * @returns {BSDataTableRow}
-     */
-    clone(): BSDataTableRow {
-        //var clone = this.element.clone();
-        //return new BSDataTableRow({ element: clone, dataSourceName: this.dataSourceName });
-        //let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this);
-        //return clone;
-        var parentClone = super.clone();
-        //debugger;
-        let optClone: BSRowOptions = this.shClone(this.options);
-        optClone.isTemplateRow = false;
-        var cloneRow = new BSDataTableRow(optClone);
-        cloneRow.element = parentClone.element;
-        cloneRow.children = parentClone.children;
-        cloneRow.cells = this.cells.map((v) => {
-            var cloneCell = v.clone();
-            cloneRow.element.append(cloneCell.element);
-            return cloneCell;
-        });
-
-        return cloneRow;
-    }
-
     focusRow() {
         this.removeClass('table-active').addClass('table-active');
     }
@@ -102,12 +77,6 @@ export class BSDataTableRow extends BSDataTableBase {
         return inputs;
     }
 
-
-    /**
-     * @param {BSDataTableColDefinition} model
-     * @param {BSDataTable} grid instance
-     * @returns {BSDataTableCell} returns the grid cell containing the input
-     */
     createInputFor(model: BSDataTableColDefinition, readonly: boolean): BSDataTableCell {
         var ds = this.options.dataSourceName;
 
@@ -121,14 +90,14 @@ export class BSDataTableRow extends BSDataTableBase {
 
         //debugger;
         if (model.DataType === 'select') {
-            var selectOptions: BSSelectOptions = { ...inputOptions, SelectOptions: model.DataSource };
+            var selectOptions: BSSelectOptions = { ...inputOptions, SelectOptions: model.SelectList };
             input = new BSDataTableSelect(selectOptions);
         }
         else if (model.DataType === 'checkbox') {
             input = new BSDataTableCheckBox(inputOptions);
         }
         else if (model.DataType === 'selector') {
-            
+
             var sltrOptions: BSSelectorOptions = {
                 ...inputOptions,
                 ContainerId: this.options.containerId,
@@ -202,7 +171,7 @@ export class BSDataTableRow extends BSDataTableBase {
      * This function returns an object which contains the values of the all the inputs in the row
      * @returns Retuns an object which contains the values of the inputs
      */
-    getRowData():any {
+    getRowData(): any {
         var rowInputs = this.getInputs();
         var record = {};
         var rowCat = this.rowCategory;
@@ -217,7 +186,39 @@ export class BSDataTableRow extends BSDataTableBase {
         return record;
     }
 
-    isRowDirty() {
+    get isRowDirty(): boolean {
         return this.getProp('data-isdirty') === 'true';
     }
+
+    set isRowDirty(val: boolean) {
+        this.prop('data-isdirty', val === true ? "true" : 'false');
+    }
+
+    
+    /**
+     *
+     * @returns {BSDataTableRow}
+     */
+     clone(): BSDataTableRow {
+        //var clone = this.element.clone();
+        //return new BSDataTableRow({ element: clone, dataSourceName: this.dataSourceName });
+        //let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this);
+        //return clone;
+        var parentClone = super.clone();
+        //debugger;
+        let optClone: BSRowOptions = this.shClone(this.options);
+        optClone.isTemplateRow = false;
+        var cloneRow = new BSDataTableRow(optClone);
+        cloneRow.element = parentClone.element;
+        cloneRow.children = parentClone.children;
+        cloneRow.cells = this.cells.map((v) => {
+            var cloneCell = v.clone();
+            cloneRow.element.append(cloneCell.element);
+            return cloneCell;
+        });
+
+        return cloneRow;
+    }
+
+
 }

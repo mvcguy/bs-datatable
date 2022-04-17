@@ -46,10 +46,6 @@ class BSDataTableBase {
         this._isReadOnly = v;
     }
 
-    get dirtyRecords(): object[] {
-        return [];
-    }
-
     get width() {
         return this.element.style.width;
     }

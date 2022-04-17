@@ -252,7 +252,7 @@ export class BSDataTable extends BSDataTableBase {
         this.gridActions.addNewRecordAction((e) => this.addEmptyRow())
             .addDeleteAction((e) => this.body.markDeleted())
             .addGridSettingsAction();
-                
+
         //
         // add actions for the grid to the container
         //
@@ -442,7 +442,7 @@ export class BSDataTable extends BSDataTableBase {
             }
             else if (input instanceof BSDataTableCheckBox
                 && (cellVal === 'true' || cellVal === 'True' || cellVal === true)) {
-                input.prop('checked', 'checked');
+                input.val = true;
             }
             else if (cellVal !== undefined) {
                 input.val = cellVal;
@@ -456,7 +456,7 @@ export class BSDataTable extends BSDataTableBase {
 
             input.element.addEventListener('change', (e) => {
 
-                row.prop('data-isdirty', true);
+                row.isRowDirty = true;
 
                 var rowCat = row.rowCategory;
                 if (rowCat !== 'ADDED') {
@@ -475,11 +475,11 @@ export class BSDataTable extends BSDataTableBase {
 
                 let gridUpdateEvent: BSGridUpdatedEvent = { EventData: { Event: e, Grid: _this }, DataSourceName: ds };
                 let rowUpdatedEvent: BSRowUpdatedEvent = { EventData: { Event: e, Row: rowData }, DataSourceName: ds };
-                let fieldUpdaedEvent: BSFieldUpdatedEvent = { EventData: { Event: e, Row: rowData, Field: input }, DataSourceName: ds };
+                let fieldUpdatedEvent: BSFieldUpdatedEvent = { EventData: { Event: e, Row: rowData, Field: input }, DataSourceName: ds };
 
 
                 _this.notifyListeners(appDataEvents.ON_GRID_UPDATED, gridUpdateEvent);
-                _this.notifyListeners(appDataEvents.ON_FIELD_UPDATED, fieldUpdaedEvent);
+                _this.notifyListeners(appDataEvents.ON_FIELD_UPDATED, fieldUpdatedEvent);
                 _this.notifyListeners(appDataEvents.ON_ROW_UPDATED, rowUpdatedEvent);
 
             });
@@ -499,7 +499,6 @@ export class BSDataTable extends BSDataTableBase {
 
         if (visibleInputs.length > 0) {
             var lastInput = visibleInputs[visibleInputs.length - 1];
-
             lastInput.element.addEventListener('keydown', (e) => this.onInputKeyDown);
         }
 
@@ -567,7 +566,7 @@ export class BSDataTable extends BSDataTableBase {
         }
 
         emptyRow.rowCategory = 'ADDED'
-        emptyRow.prop('data-isdirty', 'true');
+        emptyRow.isRowDirty = true;
 
         let gridUpdateEvent: BSGridUpdatedEvent = { EventData: { Grid: this, Event: emptyRow }, DataSourceName: this.options.dataSource.name };
         this.notifyListeners(appDataEvents.ON_GRID_UPDATED, gridUpdateEvent);

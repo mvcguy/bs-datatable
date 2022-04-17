@@ -50,7 +50,7 @@ export class BSDataTableBody extends BSDataTableRowCollection {
     }
 
     getDirtyRows() {
-        var rows = this.rows.filter((v, i) => v.isRowDirty());
+        var rows = this.rows.filter((row) => row.isRowDirty);
         return rows;
     }
 
@@ -95,7 +95,7 @@ export class BSDataTableBody extends BSDataTableRowCollection {
         var siblings = this.rowSiblings(row);
         var lastSibling = siblings[siblings.length - 1];
         row.removeClass('table-active');
-        row.prop('data-isdirty', 'true');
+        row.isRowDirty = true;
         row.css = { 'display': 'none' };
 
         var rowCat = row.rowCategory;

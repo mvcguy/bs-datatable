@@ -127,7 +127,7 @@ export interface BSSelectorWindowOptions extends BSInputOptions {
 export class BSDataTableSelectListItem {
     text: string;
     value: string;
-    isSelected: boolean;
+    isSelected?: boolean;
 
     /**
      * @param {string} text
@@ -155,33 +155,33 @@ export class BSDataTableColDefinition {
      */
     PropName: string;
     IsKey: boolean;
-    DataSource: BSDataTableSelectListItem[];
+    /**
+     * The options of a select list/dropdown
+     */
+    SelectList: BSDataTableSelectListItem[];
     ColSpan: number;
     RowSpan: number;
-    SelectorDataCB: getUrlCallback;
-    SelectorCols: BSDataTableColDefinition[];
 
     /**
-     * @param {string} [name]
-     * @param {string} [dataType]
-     * @param {string} [width]
-     * @param {string} [propName]
-     * @param {boolean} [isKey]
-     * @param {BSDataTableSelectListItem[]} [dataSource]
-     * @param {number} [colSpan]
-     * @param {number} [rowSpan]
-     * @param {getUrlCallback} [selectorDataCB] - a cb to return the page url
-     * @param {BSDataTableColDefinition[]} [selectorCols] - cols def for selector
+     * The URL to get the data for a selector 
+     * Selector displays data in a grid where needs to be bind to some tabuler data
      */
+    SelectorDataCB: getUrlCallback;
+
+    /**
+     * The column list of the grid displayed in the selector window
+     */
+    SelectorCols: BSDataTableColDefinition[];
+
     constructor(name?: string, dataType?: string, width?: string, propName?: string, isKey?: boolean,
-        dataSource?: BSDataTableSelectListItem[], colSpan?: number, rowSpan?: number,
+        selectList?: BSDataTableSelectListItem[], colSpan?: number, rowSpan?: number,
         selectorDataCB?: getUrlCallback, selectorCols?: BSDataTableColDefinition[]) {
         this.Name = name;
         this.DataType = dataType;
         this.Width = width;
         this.PropName = propName;
         this.IsKey = isKey;
-        this.DataSource = dataSource;
+        this.SelectList = selectList;
         this.ColSpan = colSpan;
         this.RowSpan = rowSpan;
         this.SelectorDataCB = selectorDataCB;

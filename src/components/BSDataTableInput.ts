@@ -75,14 +75,6 @@ class BSDataTableInput extends BSDataTableBase {
         this.change();
     }
 
-    // get modelName() {
-    //     return this.getProp('data-propname');
-    // }
-
-    // set modelName(v) {
-    //     this.prop('data-propname', v);
-    // }
-
     get readonly() {
         if (this.element instanceof HTMLInputElement)
             return this.element.readOnly;
@@ -127,10 +119,6 @@ class BSDataTableInput extends BSDataTableBase {
         this.prop('data-keycolumn', v);
     }
 
-    clone() {
-        return super.clone();
-    }
-
     addDoubleClickEvent() {
         this.element.addEventListener('dblclick', (e) => {
             this.notifyListeners(appDataEvents.ON_ROW_DOUBLE_CLICKED, {
@@ -142,6 +130,10 @@ class BSDataTableInput extends BSDataTableBase {
 
     change() {
         this.element.dispatchEvent(new Event('change'));
+    }
+    
+    clone() {
+        return super.clone();
     }
 
 }

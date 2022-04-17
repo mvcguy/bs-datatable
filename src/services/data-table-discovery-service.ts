@@ -1,15 +1,15 @@
-import { BSDataTableBase } from "../components";
+import { BSDataTable } from "../components";
 
 /**
- * Service used to discover data-tables by its identify
+ * Service used to discover data-tables by ID
  * This can be useful when we have many tables in the page and query them for their data
- * to be sent back to server when the user presses the save/persist button
+ * for example: to be sent back to server when the user presses the save/persist button
  */
 class BSDataTableDiscoveryService {
 
-    DataTables: BSDataTableBase[] = [];
+    DataTables: BSDataTable[] = [];
 
-    Add(datatable: BSDataTableBase) {
+    Add(datatable: BSDataTable) {
         this.DataTables.push(datatable);
     }
 

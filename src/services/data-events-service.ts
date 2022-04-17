@@ -23,9 +23,10 @@ class DataEventsService {
     Emit(eventName: string, source: any, eventArgs: BSEvent) {
         if (!eventName) return;
         try {
+            // TODO: use find ftn instead of foreach!!!
             this.callbacks.forEach((cb) => {
                 if (cb.EventName !== eventName || (cb.DataSourceName !== eventArgs.DataSourceName && cb.VerifyDataSourceName === true)) {
-                    console.log('source could not be matched');
+                    // console.log('source could not be matched');
                     return;
                 }
                 cb.Callback(source, eventArgs);

@@ -1,7 +1,10 @@
-import { BSDataTableColDefinition } from "../commonTypes/common-types";
+import { BSDataTableColDefinition, BSInputOptions, BSSelectOptions, BSSelectorOptions } from "../commonTypes/common-types";
 import { BSDataTableBase } from "./BSDataTableBase";
 import { BSDataTableCheckBox } from "./BSDataTableCheckBox";
 import { BSDataTableInput } from "./BSDataTableInput";
+import { BSDataTableSelect } from "./BSDataTableSelect";
+import { BSDataTableSelector } from "./BSDataTableSelector";
+import { BSDataTableTextInput } from "./BSDataTableTextInput";
 
 export class BSDataTableCell extends BSDataTableBase {
 
@@ -32,16 +35,99 @@ export class BSDataTableCell extends BSDataTableBase {
 
         if (this.isHeader) {
             this.element.classList.add('sorting', 'ds-col');
+
+            if (this.options.Name) {
+                this.setText(this.options.Name);
+            }
         }
-        
+
         if (rowSpan)
             this.prop('rowSpan', rowSpan);
 
         if (colSpan)
             this.prop('colSpan', colSpan);
+
+        // add control 
+        this.addInputControl();
+    }
+
+    addInputControl() {
+        var model = this.options;
+        if (this.isHeader || !model.Name || !model.PropName) return;
+
+        var ds = model.DataSourceName;
+
+        var input = null;
+        var inputOptions: BSInputOptions = {
+            DataSourceName: ds,
+            ModelName: model.PropName,
+            PlaceHolder: model.Name,
+            Title: model.Name
+        };
+
+        //debugger;
+        if (model.DataType === 'select') {
+            var selectOptions: BSSelectOptions = { ...inputOptions, SelectOptions: model.SelectList };
+            input = new BSDataTableSelect(selectOptions);
+        }
+        else if (model.DataType === 'checkbox') {
+            input = new BSDataTableCheckBox(inputOptions);
+        }
+        else if (model.DataType === 'selector') {
+
+            var sltrOptions: BSSelectorOptions = {
+                ...inputOptions,
+                ContainerId: model.ContainerId,
+                UrlCb: model.SelectorDataCB,
+                GridCols: model.SelectorCols
+            };
+            input = new BSDataTableSelector(sltrOptions);
+
+        }
+        else {
+            input = new BSDataTableTextInput(inputOptions);
+        }
+
+        if (model.IsKey === true) {
+            input.readonly = true;
+            input.isKey = true;
+        }
+
+        if (model.IsReadOnly === true) {
+            input.readonly = true;
+            input.setCss('cursor', 'pointer');
+            input.setCss('user-select', 'none');
+        }
+
+
+        this.append(input);
+    }
+
+    getInputControls(): BSDataTableInput[] {
+        //
+        // ideally there should be only input control linked to a table cell!!!
+        //
+
+        if (this.isHeader === true) return [];
+
+        var inputs: BSDataTableInput[] = [];
+
+        var children = this.children;
+        if (children.length > 0) {
+            children.forEach((v, i) => {
+                if (v instanceof BSDataTableSelector)
+                    inputs.push(v.txtElement);
+                else if (v instanceof BSDataTableInput)
+                    inputs.push(v);
+            });
+        }
+        return inputs;
     }
 
     getCellText(): string | number | boolean | string[] {
+
+        if (this.isHeader) return this.getText();
+
         var child = this.children[0];
         if (!child) return "";
 
@@ -63,8 +149,12 @@ export class BSDataTableCell extends BSDataTableBase {
         // debugger;
         var sc = super.clone();
         var c = new BSDataTableCell(this.shClone(this.options), this.isHeader);
+        var txt = c.getText();
         c.children = sc.children;
         c.element = sc.element;
+        if (this.isHeader) {
+            c.setText(txt);
+        }
         return c;
     }
 }

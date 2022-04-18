@@ -139,6 +139,7 @@ describe('BSDataTableRow', function () {
 
         expect(row.hasClass('draggable')).toBe(true);
         expect(row.hasClass('grid-cols')).toBe(true);
+        expect(row.cells[0].getText()).toBe('Address');
 
     });
 
@@ -154,7 +155,7 @@ describe('BSDataTableRow', function () {
 
     });
 
-    it('verifies that active has appropriate class set', function () { 
+    it('verifies that active row has appropriate classes', function () { 
         var row = new BSDataTableRow({
             dataSourceName: 'ds',
             gridId: 'grid_1',

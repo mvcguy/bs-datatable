@@ -173,6 +173,12 @@ export class BSDataTableColDefinition {
      */
     SelectorCols: BSDataTableColDefinition[];
 
+    DataSourceName: string;
+
+    ContainerId: string;
+
+    IsReadOnly: boolean;
+
     constructor(name?: string, dataType?: string, width?: string, propName?: string, isKey?: boolean,
         selectList?: BSDataTableSelectListItem[], colSpan?: number, rowSpan?: number,
         selectorDataCB?: getUrlCallback, selectorCols?: BSDataTableColDefinition[]) {

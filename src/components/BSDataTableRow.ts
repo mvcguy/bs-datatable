@@ -1,10 +1,7 @@
 import { BSDataTableBase } from "./BSDataTableBase";
 import { BSDataTableInput } from "./BSDataTableInput";
 import { BSDataTableCell } from "./BSDataTableCell";
-import { BSDataTableColDefinition, BSInputOptions, BSRowOptions, BSSelectOptions, BSSelectorOptions } from "../commonTypes/common-types";
-import { BSDataTableTextInput } from "./BSDataTableTextInput";
-import { BSDataTableCheckBox } from "./BSDataTableCheckBox";
-import { BSDataTableSelect } from "./BSDataTableSelect";
+import { BSDataTableColDefinition, BSRowOptions} from "../commonTypes/common-types";
 import { BSDataTableSelector } from "./BSDataTableSelector";
 
 export class BSDataTableRow extends BSDataTableBase {
@@ -74,89 +71,27 @@ export class BSDataTableRow extends BSDataTableBase {
 
         if (this.options.gridHeader === true) return [];
 
-        /**
-         * @type BSDataTableInput[]
-         */
         var inputs: BSDataTableInput[] = [];
 
-        // debugger;
         this.cells.forEach((cell, idx) => {
-            var children = cell.children;
-            if (children.length > 0) {
-                children.forEach((v, i) => {
-                    if (v instanceof BSDataTableSelector)
-                        inputs.push(v.txtElement);
-                    else if (v instanceof BSDataTableInput)
-                        inputs.push(v);
-                    // if (v instanceof BSDataTableInput)
-                    //     inputs.push(v);
-                });
-            }
+            var controls = cell.getInputControls();
+            inputs = inputs.concat(controls);
         });
         return inputs;
     }
 
-    createInputFor(model: BSDataTableColDefinition, readonly: boolean): BSDataTableCell {
-        // TODO: needs to move the function to BSDataTableCell class
-        var ds = this.options.dataSourceName;
-
-        var input = null;
-        var inputOptions: BSInputOptions = {
-            DataSourceName: ds,
-            ModelName: model.PropName,
-            PlaceHolder: model.Name,
-            Title: model.Name
-        };
-
-        //debugger;
-        if (model.DataType === 'select') {
-            var selectOptions: BSSelectOptions = { ...inputOptions, SelectOptions: model.SelectList };
-            input = new BSDataTableSelect(selectOptions);
-        }
-        else if (model.DataType === 'checkbox') {
-            input = new BSDataTableCheckBox(inputOptions);
-        }
-        else if (model.DataType === 'selector') {
-
-            var sltrOptions: BSSelectorOptions = {
-                ...inputOptions,
-                ContainerId: this.options.containerId,
-                UrlCb: model.SelectorDataCB,
-                GridCols: model.SelectorCols
-            };
-            input = new BSDataTableSelector(sltrOptions);
-
-        }
-        else {
-            input = new BSDataTableTextInput(inputOptions);
-        }
-
-        if (model.IsKey === true) {
-            input.readonly = true;
-            input.isKey = true;
-        }
-
-        if (readonly === true) {
-            input.readonly = true;
-            input.setCss('cursor', 'pointer');
-            input.setCss('user-select', 'none');
-        }
-
-        var td = new BSDataTableCell(new BSDataTableColDefinition());
-        td.append(input);
-        return td;
-
+    createInputFor(model: BSDataTableColDefinition, readonly: boolean): BSDataTableCell {        
+        model.DataSourceName = this.dataSourceName;
+        model.IsReadOnly = readonly;
+        model.ContainerId = this.options.containerId;
+        return new BSDataTableCell(model, false);
     }
 
     /**
      * @param {BSDataTableColDefinition} model
      */
     createHeaderFor(model: BSDataTableColDefinition) {
-        var th = new BSDataTableCell(model, true);
-        th.addClass('sorting')
-            .addClass('ds-col');
-        th.setText(model.Name);
-        return th;
+        return new BSDataTableCell(model, true);
     }
 
     getVisibleInputs() {

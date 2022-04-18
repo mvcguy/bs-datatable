@@ -66,7 +66,8 @@ export class BSDataTableRow extends BSDataTableBase {
     }
 
     focusRow() {
-        this.removeClass('table-active').addClass('table-active');
+        this.removeClass('table-active')
+            .addClass('table-active');
     }
 
     getInputs(): BSDataTableInput[] {

@@ -28,7 +28,6 @@ function GetColModel() {
     };
 }
 
-
 function getRow(idx: number | string): BSDataTableRow {
     var row = new BSDataTableRow({
         dataSourceName: 'row-test' + idx,
@@ -61,6 +60,8 @@ describe('BSDataTableRow', function () {
         inputs.birth_date.val = new Date(1920, 4, 4);
 
         var record: any = row.getRowData();
+
+        expect(row.element.tagName).toBe('TR');
         expect(record.address).toBe('New lucky street 14B, 2098, Mars');
         expect(record.name).toBe('Shahid Ali');
         expect(record.age).toBe('120');
@@ -121,7 +122,7 @@ describe('BSDataTableRow', function () {
 
     });
 
-    it('verifies the headers row for a given model', function () {
+    it('verifies the header row for a given model', function () {
         var colModel = GetColModel();
 
         var row = new BSDataTableRow({
@@ -139,6 +140,30 @@ describe('BSDataTableRow', function () {
         expect(row.hasClass('draggable')).toBe(true);
         expect(row.hasClass('grid-cols')).toBe(true);
 
+    });
+
+    it('verifies that a template row is hidden', function () { 
+        var row = new BSDataTableRow({
+            dataSourceName: 'ds',
+            gridId: 'grid_1',
+            isTemplateRow: true,
+        });
+
+        expect(row.getCss('display')).toBe('none');
+        expect(row.visible).toBe(false);
+
+    });
+
+    it('verifies that active has appropriate class set', function () { 
+        var row = new BSDataTableRow({
+            dataSourceName: 'ds',
+            gridId: 'grid_1',
+            isTemplateRow: true,
+        });
+        
+        row.focusRow();
+
+        expect(row.hasClass('table-active')).toBe(true);
     });
 
 });

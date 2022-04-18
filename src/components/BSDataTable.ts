@@ -118,7 +118,8 @@ export class BSDataTable extends BSDataTableBase {
     render() {
 
         this.element = document.createElement('table');
-        this.element.classList.add('table', 'table-bordered', 'table-hover', 'table-sm', 'resizable', 'navTable', 'nowrap', 'bs-table');
+        this.element.classList.add('table', 'table-bordered', 'table-hover'
+            , 'table-sm', 'resizable', 'navTable', 'nowrap', 'bs-table');
 
 
         this.id = this.options.gridId;
@@ -132,7 +133,6 @@ export class BSDataTable extends BSDataTableBase {
             gridId: this.options.gridId,
             gridHeader: true
         });
-        gridHeaderRow.addClass('draggable').addClass('grid-cols');
 
         var templateRow = new BSDataTableRow({
             isTemplateRow: true,
@@ -140,11 +140,6 @@ export class BSDataTable extends BSDataTableBase {
             gridId: this.options.gridId,
             containerId: this.options.containerId
         });
-        templateRow.addClass('grid-rows');
-
-        templateRow.css = { 'display': 'none' };
-        templateRow.visible = false;
-
 
         var gridColumns = this.applyColOrdering(settings);
 
@@ -159,7 +154,6 @@ export class BSDataTable extends BSDataTableBase {
 
         gridHeaderRow.addCell(mh);
         templateRow.addCell(mb);
-
 
         gridColumns.forEach((gc) => {
 
@@ -414,7 +408,6 @@ export class BSDataTable extends BSDataTableBase {
         var row = this.body.getTemplateRow().clone();
         row.options.isTemplateRow = false;
 
-        row.addClass('grid-row');
         row.css = { 'display': 'table-row' };
         row.visible = true;
 
@@ -987,9 +980,6 @@ export class BSDataTable extends BSDataTableBase {
                 var bodyRows = this.body.rows;
 
                 var rows = [...bodyRows, headerRow];
-
-                //var rows = this.find('.grid-cols, .grid-rows');
-
 
                 //var index = Array.from(col.parent('tr').children()).indexOf(col[0]);
                 var index = headerRow.cells.indexOf(col);

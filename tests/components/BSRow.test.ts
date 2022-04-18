@@ -2,17 +2,8 @@
 import { BSDataTableColDefinition } from "../../src/commonTypes/common-types";
 import { BSDataTableRow, BSDataTableSelect } from "../../src/components";
 
-function getRow(idx: number | string): BSDataTableRow {
-    var row = new BSDataTableRow({
-        dataSourceName: 'row-test' + idx,
-        gridId: 'story_books' + idx,
-        isTemplateRow: false,
-    });
-
-    row.rowCategory = 'PRESTINE';
-    row.rowIndex = 1;
-
-    var colModel = {
+function GetColModel() {
+    return {
         address: new BSDataTableColDefinition('Address', 'text', '120px', 'address', false),
         name: new BSDataTableColDefinition('Name', 'text', '120px', 'name', false),
         age: new BSDataTableColDefinition('Age', 'number', '120px', 'age', false),
@@ -34,7 +25,21 @@ function getRow(idx: number | string): BSDataTableRow {
             value: 'na',
             isSelected: true
         }])
-    }
+    };
+}
+
+
+function getRow(idx: number | string): BSDataTableRow {
+    var row = new BSDataTableRow({
+        dataSourceName: 'row-test' + idx,
+        gridId: 'story_books' + idx,
+        isTemplateRow: false,
+    });
+
+    row.rowCategory = 'PRESTINE';
+    row.rowIndex = 1;
+
+    var colModel = GetColModel();
 
     row.addCell(row.createInputFor(colModel.address, false));
     row.addCell(row.createInputFor(colModel.name, false));
@@ -71,6 +76,7 @@ describe('BSDataTableRow', function () {
         var record: any = row.getRowData();
         expect(record.cstatus).toBe('married');
 
+        expect(row.hasClass('grid-row')).toBe(true);
 
 
         // console.log(record);
@@ -115,4 +121,25 @@ describe('BSDataTableRow', function () {
 
     });
 
+    it('verifies the headers row for a given model', function () {
+        var colModel = GetColModel();
+
+        var row = new BSDataTableRow({
+            dataSourceName: 'header_test',
+            gridId: 'some_grid',
+            gridHeader: true,
+        });
+
+        row.addCell(row.createHeaderFor(colModel.address));
+        row.addCell(row.createHeaderFor(colModel.name));
+        row.addCell(row.createHeaderFor(colModel.age));
+        row.addCell(row.createHeaderFor(colModel.dob));
+        row.addCell(row.createHeaderFor(colModel.cstatus));
+
+        expect(row.hasClass('draggable')).toBe(true);
+        expect(row.hasClass('grid-cols')).toBe(true);
+
+    });
+
 });
+

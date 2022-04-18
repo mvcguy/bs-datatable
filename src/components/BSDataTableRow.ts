@@ -20,6 +20,26 @@ export class BSDataTableRow extends BSDataTableBase {
         this.options = options;
         this.render();
     }
+    
+    render() {
+        if (!this.element)
+            this.element = document.createElement('tr');
+
+        if (this.options.gridHeader === true) {
+            this.addClass('draggable')
+                .addClass('grid-cols')
+        }
+        else {
+            this.addClass('grid-row');
+        }
+
+        if (this.options.isTemplateRow === true) {
+
+            this.css = { 'display': 'none' };
+            this.visible = false;
+        }
+    }
+
 
     get rowCategory() {
         return this.getProp('data-rowcategory');
@@ -45,16 +65,14 @@ export class BSDataTableRow extends BSDataTableBase {
         cells.forEach((cell) => this.addCell(cell));
     }
 
-    render() {
-        if (!this.element)
-            this.element = document.createElement('tr')
-    }
-
     focusRow() {
         this.removeClass('table-active').addClass('table-active');
     }
 
     getInputs(): BSDataTableInput[] {
+
+        if (this.options.gridHeader === true) return [];
+
         /**
          * @type BSDataTableInput[]
          */
@@ -78,6 +96,7 @@ export class BSDataTableRow extends BSDataTableBase {
     }
 
     createInputFor(model: BSDataTableColDefinition, readonly: boolean): BSDataTableCell {
+        // TODO: needs to move the function to BSDataTableCell class
         var ds = this.options.dataSourceName;
 
         var input = null;
@@ -133,9 +152,9 @@ export class BSDataTableRow extends BSDataTableBase {
      */
     createHeaderFor(model: BSDataTableColDefinition) {
         var th = new BSDataTableCell(model, true);
-        th.addClass('sorting').addClass('ds-col');
+        th.addClass('sorting')
+            .addClass('ds-col');
         th.setText(model.Name);
-        th.prop('data-th-propname', model.PropName);
         return th;
     }
 
@@ -194,12 +213,11 @@ export class BSDataTableRow extends BSDataTableBase {
         this.prop('data-isdirty', val === true ? "true" : 'false');
     }
 
-    
     /**
      *
      * @returns {BSDataTableRow}
      */
-     clone(): BSDataTableRow {
+    clone(): BSDataTableRow {
         //var clone = this.element.clone();
         //return new BSDataTableRow({ element: clone, dataSourceName: this.dataSourceName });
         //let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this);

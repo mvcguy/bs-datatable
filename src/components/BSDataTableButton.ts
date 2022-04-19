@@ -14,7 +14,6 @@ export class BSDataTableButton extends BSDataTableInput {
 
     render() {
         super.render();
-        //var icon = this.options.Icon ? `<i class="bi bi-${this.options.Icon}"></i>` : '';
 
         this.addClass(this.options.Classes ?? 'btn btn-outline-primary');
         if (this.options.Icon) {
@@ -24,11 +23,11 @@ export class BSDataTableButton extends BSDataTableInput {
         }
 
         if (this.options.Handler)
-            this.addClickHandler();
+            this.addClickHandler(this.options.Handler);
     }
 
-    addClickHandler() {
-        this.element.addEventListener('click', (e) => this.options.Handler(e));
+    addClickHandler(handler: (arg0: MouseEvent) => void) {
+        this.element.addEventListener('click', (e) => handler(e));
     }
 
     clone() {

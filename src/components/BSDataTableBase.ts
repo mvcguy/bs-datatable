@@ -135,11 +135,16 @@ class BSDataTableBase {
         return this;
     }
 
-    hasClass(cssClass) {
+    hasClass(cssClass: string) {
         return this.element.classList.contains(cssClass);
     }
 
-    setText(txt) {
+    hasClasses(cssClasses: string): boolean {
+        return cssClasses.split(' ')
+            .find((x) => this.element.classList.contains(x) === false) === undefined;
+    }
+
+    setText(txt: string) {
         this.element.innerText = txt;
         return this;
     }
@@ -152,9 +157,9 @@ class BSDataTableBase {
      * 
      * @param {BSDataTableBase} elem 
      */
-    append(elem: BSDataTableBase, pushToArray = true) {
+    append(elem: BSDataTableBase, pushToChildrenArray = true) {
 
-        if (pushToArray) {
+        if (pushToChildrenArray) {
             this.children.push(elem);
         }
 

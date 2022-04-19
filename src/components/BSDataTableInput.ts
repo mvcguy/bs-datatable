@@ -32,7 +32,7 @@ class BSDataTableInput extends BSDataTableBase {
         }
 
         this.element.id = this.options.ElementId ?? this.options.InputType + "_" + this.options.DataSourceName + "_" + this.options.ModelName;
-        this.title = this.options.Title;
+        this.title = this.options.Title ?? '';
     }
 
     get val(): boolean | string | number | string[] {

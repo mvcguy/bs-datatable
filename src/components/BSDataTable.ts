@@ -802,7 +802,7 @@ export class BSDataTable extends BSDataTableBase {
     resetSorting() {
 
         this.head.rows.forEach((v, i) => {
-            if (v.hasClass('sorting_desc' || v.hasClass('sorting_asc'))) {
+            if (v.hasClass('sorting_desc') || v.hasClass('sorting_asc')) {
                 v.removeClass('sorting_asc').removeClass('sorting_desc');
             }
         });

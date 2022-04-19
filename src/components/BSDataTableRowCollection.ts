@@ -18,10 +18,10 @@ export class BSDataTableRowCollection extends BSDataTableBase {
     addRow(row: BSDataTableRow) {
         this.element.append(row.element);
         var index = this.getNextRowIndex();
-        row.prop('data-rowindex', index);
+        row.rowIndex = index;
 
         var rType = row.options.gridHeader === true ? 'head' : 'data';
-        row.prop('id', `${row.options.gridId}_${rType}_${index}`);
+        row.id = `${row.options.gridId}_${rType}_${index}`;
         this.rows.push(row);
         return this;
     }
@@ -34,9 +34,6 @@ export class BSDataTableRowCollection extends BSDataTableBase {
         return this.rows.length + 1;
     }
 
-    // getActionsRow() {
-    //     return this.rows.find((row) => row.options.isActionsRow === true);
-    // }
     getGridTitlesRow() {
         return this.rows.find((row) => row.options.gridHeader === true);
     }

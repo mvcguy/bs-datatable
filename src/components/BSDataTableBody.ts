@@ -21,7 +21,7 @@ export class BSDataTableBody extends BSDataTableRowCollection {
     /**
     * @param {BSDataTableRow} row
     */
-    rowSiblings(row: BSDataTableRow) {
+    rowSiblings(row: BSDataTableRow): BSDataTableRow[] {
         return this.rows.filter((v, i) => {
             if (v !== row)
                 return v; // return all except the current row
@@ -32,26 +32,20 @@ export class BSDataTableBody extends BSDataTableRowCollection {
      * @param {BSDataTableRow} row
      */
     focusRow(row: BSDataTableRow) {
-        row.removeClass('table-active').addClass('table-active');
+        //
+        // focus current row, and remove focus from previous row
+        //
+        row.focusRow();
         var siblings = this.rowSiblings(row);
         siblings.forEach((v, i) => v.removeClass('table-active'));
     };
 
-
-
-    getTemplateRow() {
-        var result = this.rows.filter(function (v) {
-            if (v.options.isTemplateRow === true)
-                return v;
-        });
-
-        if (result && result.length > 0)
-            return result[0];
+    getTemplateRow(): BSDataTableRow {
+        return this.rows.find((v) => v.options.isTemplateRow === true);
     }
 
-    getDirtyRows() {
-        var rows = this.rows.filter((row) => row.isRowDirty);
-        return rows;
+    getDirtyRows(): BSDataTableRow[] {
+        return this.rows.filter((row) => row.isRowDirty === true);
     }
 
     getDirtyRecords() {
@@ -73,7 +67,7 @@ export class BSDataTableBody extends BSDataTableRowCollection {
         // all rows except the template row
         //
 
-        var rows = this.rows.filter((row) => row.options.isTemplateRow === false);
+        var rows = this.rows.filter((row) => row.options.isTemplateRow !== true);
         var records = [];
         rows.forEach((row) => {
             records.push(row.getRowData());
@@ -82,10 +76,9 @@ export class BSDataTableBody extends BSDataTableRowCollection {
         return records;
     }
 
-    getSelectedRow() {
-        return this.rows.find((v, i) => v.hasClass('table-active'));
+    getSelectedRow(): BSDataTableRow {
+        return this.rows.find((v, i) => v.hasClass('table-active') === true);
     }
-
 
     markDeleted() {
         var row = this.getSelectedRow();

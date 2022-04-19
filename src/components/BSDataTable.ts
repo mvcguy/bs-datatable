@@ -315,7 +315,7 @@ export class BSDataTable extends BSDataTableBase {
 
         if (!settings || this.isEmptyObj(settings)) return;
 
-        if (settings.Visible === false) {
+        if (settings.Visible !== true) {
             col.visible = false;
         }
 
@@ -358,7 +358,7 @@ export class BSDataTable extends BSDataTableBase {
         if (!data || data.length <= 0) return;
 
         var pagedData = data;
-        if (this.options.dataSource.isRemote === false) {
+        if (this.options.dataSource.isRemote !== true) {
             pagedData = this.options.dataSource.getPageOfflineCB(metaData.pageIndex, this.options.dataSource.data.initData, metaData);
         }
 
@@ -442,7 +442,7 @@ export class BSDataTable extends BSDataTableBase {
             }
 
             // debugger;
-            if (isExistingRecord === false) {
+            if (isExistingRecord !== true) {
                 input.disabled = false;
                 input.readonly = false;
             }
@@ -586,7 +586,7 @@ export class BSDataTable extends BSDataTableBase {
         this.clearGrid();
         this.paginator.clear();
 
-        if (fetchGrid === false) return;
+        if (fetchGrid !== true) return;
         //
         // fetch grid data
         //        
@@ -862,7 +862,7 @@ export class BSDataTable extends BSDataTableBase {
         //
         // populate the grid with the fetched data
         //
-        if (this.options.enableInfiniteScroll === false)
+        if (this.options.enableInfiniteScroll !== true)
             this.clearGrid();
         var md = eventArgs.EventData.MetaData;
         if (!md) return;

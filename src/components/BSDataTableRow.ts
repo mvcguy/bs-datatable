@@ -81,6 +81,7 @@ export class BSDataTableRow extends BSDataTableBase {
     }
 
     createInputFor(model: BSDataTableColDefinition, readonly: boolean): BSDataTableCell {        
+        // TODO: The arg readonly is not needed!!!
         model.DataSourceName = this.dataSourceName;
         model.IsReadOnly = readonly;
         model.ContainerId = this.options.containerId;

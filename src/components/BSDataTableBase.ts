@@ -55,11 +55,11 @@ class BSDataTableBase {
 
     get visible() {
         //return !!(this.element.offsetWidth || this.element.offsetHeight || this.element.getClientRects().length);
-        return this.element.hidden === false;
+        return this.element.hidden !== true;
     }
     set visible(val) {
         //this.element.style.display = val === false ? "none" : "block";
-        this.element.hidden = val === false;
+        this.element.hidden = val !== true;
 
     }
 
@@ -73,7 +73,7 @@ class BSDataTableBase {
     }
 
     set css(css) {
-        if (typeof css === 'object' && css !== null && this.isEmptyObj(css) === false) {
+        if (typeof css === 'object' && css !== null && this.isEmptyObj(css) !== true) {
             var keys = Object.keys(css);
             keys.forEach((k) => {
                 this.element.style[k] = css[k];

@@ -1,7 +1,18 @@
 import { BSDataTableColDefinition } from "../../src/commonTypes/common-types";
 import { BSDataTableBody, BSDataTableCell, BSDataTableRow } from "../../src/components"
 
-describe('BSDataTableBody', function () {
+function getRow() {
+    var row = new BSDataTableRow({
+        dataSourceName: 'ds',
+        gridId: 'grid',
+    });
+    var cell = new BSDataTableCell(new BSDataTableColDefinition('First Name', 'text', '100px', 'firstName'));
+    row.addCell(cell);
+
+    return row;
+}
+
+describe('BSDataTableBody', function () {    
 
     it('verifies row siblings method', function () {
         var body = new BSDataTableBody();
@@ -14,7 +25,7 @@ describe('BSDataTableBody', function () {
             dataSourceName: 'ds',
             gridId: 'grid',
         });
-        
+
         body.addRow(row1);
         body.addRow(row2);
 
@@ -32,7 +43,43 @@ describe('BSDataTableBody', function () {
         // var l = recs.length;
         // console.log(recs, l);
 
-
     })
+
+    it('verifies that we get all records using the method: getAllRecords', function () {
+        var body = new BSDataTableBody();
+        var row = getRow();
+        body.addRow(row);
+
+        var input = row.cells[0].getInputControls()[0];
+        input.val = 'Shahid Ali';
+
+        var record = body.getAllRecords()[0];
+
+        expect(record.firstName).toBe('Shahid Ali');
+        console.log(record);
+
+    });
+
+    it('verifies that we get only dirty records using the method: getDirtyRecords', function () {
+        var body = new BSDataTableBody();
+        var row = getRow();
+        body.addRow(row);
+
+        var row2 = getRow();
+        body.addRow(row2);
+
+        var firstName = row.cells[0].getInputControls()[0];
+        firstName.val = 'Shahid Ali';
+        row.isRowDirty = true;
+
+        var allRecords = body.getAllRecords();
+        expect(allRecords.length).toBe(2);
+
+        var dirtyRecords = body.getDirtyRecords();
+        expect(dirtyRecords.length).toBe(1);
+
+        expect(dirtyRecords[0].firstName).toBe(firstName.val);
+
+    });
 
 })

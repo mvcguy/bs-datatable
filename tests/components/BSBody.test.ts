@@ -183,10 +183,14 @@ describe('BSDataTableBody', function () {
         var container = document.createElement('table');
         container.append(body.element);
 
+        var rowCount = container.getElementsByClassName('grid-row').length;
+        expect(rowCount).toBe(2);
+
         body.removeRow(row1);
         expect(body.rows.length).toBe(1);
 
-        console.log(container.innerHTML);
+        var rowCount = container.getElementsByClassName('grid-row').length;
+        expect(rowCount).toBe(1);
     })
     
 

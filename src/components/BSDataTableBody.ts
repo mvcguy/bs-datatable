@@ -90,6 +90,7 @@ export class BSDataTableBody extends BSDataTableRowCollection {
         row.removeClass('table-active');
         row.isRowDirty = true;
         row.css = { 'display': 'none' };
+        row.visible = false;
 
         var rowCat = row.rowCategory;
         if (rowCat === 'ADDED') {

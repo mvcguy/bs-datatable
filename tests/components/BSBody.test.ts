@@ -1,18 +1,33 @@
-import { BSDataTableColDefinition } from "../../src/commonTypes/common-types";
+import { dataEventsService } from "../../src/services/data-events-service";
+import { BSDataTableColDefinition, BSEventHandler, BSEventSubscriberModel } from "../../src/commonTypes/common-types";
 import { BSDataTableBody, BSDataTableCell, BSDataTableRow } from "../../src/components"
+import { appDataEvents } from "../../src/services/data-events";
 
 function getRow() {
     var row = new BSDataTableRow({
         dataSourceName: 'ds',
         gridId: 'grid',
     });
-    var cell = new BSDataTableCell(new BSDataTableColDefinition('First Name', 'text', '100px', 'firstName'));
+    var col = new BSDataTableColDefinition('First Name', 'text', '100px', 'firstName');
+    col.DataSourceName = 'ds';
+    var cell = new BSDataTableCell(col);
     row.addCell(cell);
 
     return row;
 }
 
-describe('BSDataTableBody', function () {    
+function addHandler(eventName: string, callback: BSEventHandler, verifyDSName = false) {
+    let model: BSEventSubscriberModel = {
+        Key: 'grid',
+        EventName: eventName,
+        Callback: callback,
+        DataSourceName: 'ds',
+        VerifyDataSourceName: verifyDSName
+    };
+    dataEventsService.Subscribe(model);
+};
+
+describe('BSDataTableBody', function () {
 
     it('verifies row siblings method', function () {
         var body = new BSDataTableBody();
@@ -81,5 +96,98 @@ describe('BSDataTableBody', function () {
         expect(dirtyRecords[0].firstName).toBe(firstName.val);
 
     });
+
+    it('verifies that other rows should not be focused at the same time when one row one is focused', function () {
+        var row1 = getRow();
+        var row2 = getRow();
+
+        var body = new BSDataTableBody();
+
+        body.addRow(row1).addRow(row2);
+
+        body.focusRow(row1);
+        expect(row1.hasClass('table-active')).toBe(true);
+        expect(row2.hasClass('table-active')).toBe(false);
+
+        body.focusRow(row2);
+        expect(row1.hasClass('table-active')).toBe(false);
+        expect(row2.hasClass('table-active')).toBe(true);
+    })
+
+    it('verify the template row', function () {
+        var row = getRow();
+        var row2 = getRow();
+        var body = new BSDataTableBody();
+
+        body.addRow(row).addRow(row2);
+
+        row.options.isTemplateRow = true;
+
+        var templRow = body.getTemplateRow();
+
+        expect(templRow.options.isTemplateRow).toBe(true);        
+    })
+
+    it('verifies a selected row', function () {
+        var row1 = getRow();
+        var row2 = getRow();
+
+        var body = new BSDataTableBody();
+
+        body.addRow(row1).addRow(row2);
+
+        body.focusRow(row1);
+        
+        var selectedRow = body.getSelectedRow();
+
+        expect(selectedRow).toStrictEqual(row1);
+    })
+
+    it('verifies a row that is marked for deletion', function () {
+        var row1 = getRow();
+        var row2 = getRow();
+        var body = new BSDataTableBody();
+        body.addRow(row1).addRow(row2);
+        var rowDeleted = false;
+
+        addHandler(appDataEvents.ON_GRID_UPDATED, (sender, e) => { rowDeleted = true; }, true);
+
+        //
+        // only a selected row is marked for deletion
+        //
+        body.focusRow(row1);
+        body.markDeleted();
+
+        expect(row1.visible).toBe(false);
+        expect(row1.rowCategory).toBe('DELETED');
+
+        row2.rowCategory = 'ADDED';
+        body.focusRow(row2);
+        body.markDeleted();
+
+        expect(row2.visible).toBe(false);
+        expect(row2.rowCategory).toBe('ADDED_DELETED');
+
+        expect(rowDeleted).toBe(true);
+
+    })
+
+    it('verifies a row is removed from DOM by removeRow method', function () {
+        var row1 = getRow();
+        var row2 = getRow();
+        var body = new BSDataTableBody();
+        body.addRow(row1).addRow(row2);
+
+        expect(body.rows.length).toBe(2);
+
+        var container = document.createElement('table');
+        container.append(body.element);
+
+        body.removeRow(row1);
+        expect(body.rows.length).toBe(1);
+
+        console.log(container.innerHTML);
+    })
+    
 
 })

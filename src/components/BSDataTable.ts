@@ -442,6 +442,7 @@ export class BSDataTable extends BSDataTableBase {
             }
 
             // debugger;
+            // TODO: Is it necessary?
             if (isExistingRecord !== true) {
                 input.disabled = false;
                 input.readonly = false;

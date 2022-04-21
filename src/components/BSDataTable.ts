@@ -51,9 +51,8 @@ export class BSDataTable extends BSDataTableBase {
                 new BSDataTablePagingMetaData(),
                 (page) => this.paginatorCallback(page)));
 
-        this.httpClient = options.httpClient ?? new BSDataTableHttpClient(new SessionStorageService()
-            , this.options.dataSource.name
-            , this.options.cacheResponses);
+        this.httpClient = options.httpClient ??
+            new BSDataTableHttpClient(this.options.dataSource.name, this.options.cacheResponses);
 
         this.infiniteScroller = null;
         this.gridActions = null;
@@ -607,9 +606,7 @@ export class BSDataTable extends BSDataTableBase {
             var url = this.options.dataSource.url(pageIndex);
             if (!url) return;
 
-            var options = new BSDataTableHttpClientOptions(url, "GET");
-
-            this.httpClient.get(options);
+            this.httpClient.get({url:url});
         }
         else {
             var data = this.options.dataSource.data.initData;

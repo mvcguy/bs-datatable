@@ -115,7 +115,7 @@ export interface BSButtonOptions extends BSInputOptions {
 }
 
 export interface BSSelectorOptions extends BSSelectorWindowOptions {
-    cloneContext?: boolean;    
+    cloneContext?: boolean;
 }
 
 export interface BSSelectorWindowOptions extends BSInputOptions {
@@ -294,24 +294,11 @@ export class BSDataTablePaginationOptions {
 }
 
 
-export class BSDataTableHttpClientOptions {
-    url: any;
-    method: any;
-    headers: any;
-    recordId: any;
-
-    /**
-     * @param {string} url
-     * @param {string} method
-     * @param {object[]} headers
-     * @param {string} recordId
-     */
-    constructor(url: string, method: string, headers: object[] = undefined, recordId: string = undefined) {
-        this.url = url;
-        this.method = method;
-        this.headers = headers;
-        this.recordId = recordId;
-    }
+export interface BSDataTableHttpClientOptions {
+    url: string;
+    method?: string;
+    headers?: any[];
+    recordId?: string;
 }
 
 
@@ -368,11 +355,11 @@ export interface CachedItem {
 
 export interface IBSDataTableHttpClient {
     get(options: BSDataTableHttpClientOptions): void;
-    notifyResponse(response: any): void;
-    nofifyError(error: any, options: BSDataTableHttpClientOptions): void;
+    notifyResponse(response: any, options: BSDataTableHttpClientOptions): void;
+    notifyError(error: any, options: BSDataTableHttpClientOptions): void;
 }
 
-export interface InfiniteScrollOptions{
+export interface InfiniteScrollOptions {
     gridElement: Element;
     httpClient: IBSDataTableHttpClient;
 }

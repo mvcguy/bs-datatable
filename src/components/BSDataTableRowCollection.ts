@@ -16,7 +16,7 @@ export class BSDataTableRowCollection extends BSDataTableBase {
      * @param {BSDataTableRow} row
      */
     addRow(row: BSDataTableRow) {
-        this.element.append(row.element);
+        this.append(row);
         var index = this.getNextRowIndex();
         row.rowIndex = index;
 

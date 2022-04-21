@@ -145,12 +145,12 @@ class BSDataTableBase {
     }
 
     setText(txt: string) {
-        this.element.innerText = txt;
+        this.element.textContent = txt;
         return this;
     }
 
     getText() {
-        return this.element.innerText;
+        return this.element.textContent;
     }
 
     /**

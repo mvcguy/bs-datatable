@@ -19,9 +19,12 @@ export class BSDataTablePagination extends BSDataTableBase {
     }
 
     render() {
+
+        var currentPage = this.options.metaData.pageIndex ?? 1;
+
         if (this.element)
             this.element.remove();
-        
+
         this.pageLinks = [];
 
         this.element = document.createElement('div');
@@ -41,6 +44,9 @@ export class BSDataTablePagination extends BSDataTableBase {
         for (let index = 1; index <= this.options.metaData.totalPages && index <= 5; index++) {
             var li = document.createElement('li');
             li.classList.add('page-item');
+            if (currentPage === index) {
+                li.classList.add('active');
+            }
 
             var link = new BSDataTableHyperLink({
                 dataSourceName: this.options.dataSourceName,
@@ -50,10 +56,10 @@ export class BSDataTablePagination extends BSDataTableBase {
                 clickHandler: (e) => {
                     e.preventDefault();
                     if (e.target instanceof HTMLElement) {
-                        var index = e.target.getAttribute('data-p-index');
-
-                        if (this.options.nextPageCallback)
+                        if (this.options.nextPageCallback) {
+                            var index = e.target.getAttribute('data-p-index');
                             this.options.nextPageCallback(parseInt(index));
+                        }
                     }
 
                 }
@@ -65,6 +71,20 @@ export class BSDataTablePagination extends BSDataTableBase {
         };
 
         pager.appendChild(pageList);
+    }
+
+    focusPageIndex(index: any) {
+        this.pageLinks.forEach((x) => {
+            var li = x.element.closest('.page-item');
+            if (!li) return;
+
+            if (x.getProp('data-p-index') === index && li.classList.contains('active') !== true) {
+                li.classList.add('active');
+            }
+            else {
+                li.classList.remove('active');
+            }
+        });
     }
 
     clear() {

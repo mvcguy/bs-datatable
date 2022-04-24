@@ -1,4 +1,4 @@
-import { BSDataTablePaginationOptions, BSDataTablePagingMetaData } from "src";
+import { BSDataTablePaginationOptions, BSDataTablePagingMetaData } from "../../src/commonTypes/common-types";
 import { BSDataTablePagination } from "../../src/components"
 
 describe('Verify props of the pagination component', function () {

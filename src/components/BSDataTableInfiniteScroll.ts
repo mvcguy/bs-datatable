@@ -1,6 +1,5 @@
 import { BSDataTableBase } from "./BSDataTableBase";
 import { BSDataTablePagingMetaData, IBSDataTableHttpClient, InfiniteScrollOptions } from "../commonTypes/common-types";
-import { BSDataTableHttpClient } from "./BSDataTableHttpClient";
 
 export class BSDataTableInfiniteScroll extends BSDataTableBase {
 

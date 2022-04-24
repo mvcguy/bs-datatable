@@ -46,10 +46,10 @@ export class BSDataTable extends BSDataTableBase {
         this.options = options;
         this.head = new BSDataTableHeader();
         this.body = new BSDataTableBody();
-        this.paginator = new BSDataTablePagination(
-            new BSDataTablePaginationOptions(this.options.dataSource.name,
-                new BSDataTablePagingMetaData(),
-                (page) => this.paginatorCallback(page)));
+        this.paginator = new BSDataTablePagination({
+            dataSourceName: this.options.dataSource.name,
+            nextPageCallback: (page) => this.paginatorCallback(page)
+        });
 
         this.httpClient = options.httpClient ??
             new BSDataTableHttpClient(this.options.dataSource.name, this.options.cacheResponses);
@@ -374,7 +374,7 @@ export class BSDataTable extends BSDataTableBase {
         //
         // update the pagination component
         //
-        if (this.options.enableInfiniteScroll == false)
+        if (this.options.enableInfiniteScroll !== true)
             this.bindPaginator(metaData);
         else {
             this.infiniteScroller.initMetaData = metaData;
@@ -392,10 +392,9 @@ export class BSDataTable extends BSDataTableBase {
      * @param {BSDataTablePagingMetaData} [paginationModel]
      */
     bindPaginator(paginationModel: BSDataTablePagingMetaData = new BSDataTablePagingMetaData()) {
-        this.paginator.options.pagingMetaData = paginationModel;
+        this.paginator.options.metaData = paginationModel;
         this.paginator.render();
-        var container = document.getElementById('#' + this.options.containerId);
-        container.appendChild(this.paginator.element);
+        this.containerElement.appendChild(this.paginator.element);
     }
 
     /**
@@ -564,8 +563,10 @@ export class BSDataTable extends BSDataTableBase {
         let gridUpdateEvent: BSGridUpdatedEvent = { EventData: { Grid: this, Event: emptyRow }, DataSourceName: this.options.dataSource.name };
         this.notifyListeners(appDataEvents.ON_GRID_UPDATED, gridUpdateEvent);
 
-        this.infiniteScroller.unobserve();
-        this.infiniteScroller.observe(emptyRow.element);
+        if (this.options.enableInfiniteScroll === true) {
+            this.infiniteScroller.unobserve();
+            this.infiniteScroller.observe(emptyRow.element);
+        }
 
         return emptyRow;
     };
@@ -606,7 +607,7 @@ export class BSDataTable extends BSDataTableBase {
             var url = this.options.dataSource.url(pageIndex);
             if (!url) return;
 
-            this.httpClient.get({url:url});
+            this.httpClient.get({ url: url });
         }
         else {
             var data = this.options.dataSource.data.initData;

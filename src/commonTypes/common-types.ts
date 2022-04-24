@@ -277,20 +277,10 @@ export class BSDataTablePagingMetaData {
 }
 
 
-export class BSDataTablePaginationOptions {
-    dsName: any;
-    pagingMetaData: any;
-    nextPageCallback: (page: any) => void;
-
-    /**
-     * @param {string} dsName
-     * @param {BSDataTablePagingMetaData} pagingMetaData
-     */
-    constructor(dsName: string, pagingMetaData: BSDataTablePagingMetaData, nextPageCallback = (page: number) => { }) {
-        this.dsName = dsName;
-        this.pagingMetaData = pagingMetaData;
-        this.nextPageCallback = nextPageCallback;
-    }
+export interface BSDataTablePaginationOptions {
+    dataSourceName: string;
+    metaData?: BSDataTablePagingMetaData;
+    nextPageCallback: (page: number) => void;
 }
 
 
@@ -362,6 +352,14 @@ export interface IBSDataTableHttpClient {
 export interface InfiniteScrollOptions {
     gridElement: Element;
     httpClient: IBSDataTableHttpClient;
+}
+
+export interface BSDataTableHyperLinkOptions {
+    text?: string;
+    href?: string;
+    classes?: string;
+    dataSourceName: string;
+    clickHandler?: (e: MouseEvent) => void;
 }
 
 

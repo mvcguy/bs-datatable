@@ -392,9 +392,13 @@ export class BSDataTable extends BSDataTableBase {
      * @param {BSDataTablePagingMetaData} [paginationModel]
      */
     bindPaginator(paginationModel: BSDataTablePagingMetaData = new BSDataTablePagingMetaData()) {
-        this.paginator.options.metaData = paginationModel;
-        this.paginator.render();
-        this.containerElement.appendChild(this.paginator.element);
+
+        if (!this.paginator.element || (this.paginator.options.metaData.totalRecords != paginationModel.totalRecords)) {
+            this.paginator.options.metaData = paginationModel;
+            this.paginator.render();
+            this.containerElement.appendChild(this.paginator.element);
+        }
+
     }
 
     /**

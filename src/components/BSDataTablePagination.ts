@@ -59,6 +59,7 @@ export class BSDataTablePagination extends BSDataTableBase {
                         if (this.options.nextPageCallback) {
                             var index = e.target.getAttribute('data-p-index');
                             this.options.nextPageCallback(parseInt(index));
+                            this.focusPageIndex(index);
                         }
                     }
 
@@ -78,8 +79,9 @@ export class BSDataTablePagination extends BSDataTableBase {
             var li = x.element.closest('.page-item');
             if (!li) return;
 
-            if (x.getProp('data-p-index') === index && li.classList.contains('active') !== true) {
-                li.classList.add('active');
+            if (x.getProp('data-p-index') === index) {
+                if (li.classList.contains('active') !== true)
+                    li.classList.add('active');
             }
             else {
                 li.classList.remove('active');

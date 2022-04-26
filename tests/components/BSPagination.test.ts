@@ -68,4 +68,18 @@ describe('BSDataTablePagination', function () {
         });
 
     });
+
+    it('verifies clear function of the paginator', function () {
+        var request = { currentPage: -1, ds:'ds3' };
+        var paginator = getPaginator(request);
+
+        var countPages = paginator.element.querySelectorAll('.page-item').length;
+        expect(countPages).toBe(4);        
+        expect(paginator.pageLinks.length).toBe(countPages);
+        paginator.clear();
+
+        countPages = paginator.element.querySelectorAll('.page-item').length;
+        expect(countPages).toBe(0);    
+        expect(paginator.pageLinks.length).toBe(countPages);
+    });
 })

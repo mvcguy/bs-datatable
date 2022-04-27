@@ -20,8 +20,8 @@ function getSelectorOptions(): BSSelectorOptions {
         ContainerId: "container",
         UrlCb: (pageIndex) => { return 'http://localhost' },
         GridCols: [
-            new BSDataTableColDefinition("Stock item", "text", "60px", "id", true),
-            new BSDataTableColDefinition("Description", "text", "220px", "name", false)
+            { DisplayName: "Stock item", DataType: "text", Width: "60px", PropName: "id", IsKey: true },
+            { DisplayName: "Description", DataType: "text", Width: "220px", PropName: "name" }
         ],
     }
 }

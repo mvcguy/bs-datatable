@@ -17,9 +17,9 @@ export class BSDataTableCell extends BSDataTableBase {
     /**
      * @param {BSDataTableColDefinition} [options]
      */
-    constructor(options: BSDataTableColDefinition, isHeader = false) {
+    constructor(options?: BSDataTableColDefinition, isHeader = false) {
         super();
-        this.options = options || new BSDataTableColDefinition();
+        this.options = options || {};
         this.isHeader = isHeader;
         this.render();
     }
@@ -36,8 +36,8 @@ export class BSDataTableCell extends BSDataTableBase {
         if (this.isHeader) {
             this.element.classList.add('sorting', 'ds-col');
 
-            if (this.options.Name) {
-                this.setText(this.options.Name);
+            if (this.options.DisplayName) {
+                this.setText(this.options.DisplayName);
             }
         }
 
@@ -53,7 +53,7 @@ export class BSDataTableCell extends BSDataTableBase {
 
     addInputControl() {
         var model = this.options;
-        if (this.isHeader || !model.Name || !model.PropName) return;
+        if (this.isHeader || !model.DisplayName || !model.PropName) return;
 
         var ds = model.DataSourceName;
 
@@ -61,8 +61,8 @@ export class BSDataTableCell extends BSDataTableBase {
         var inputOptions: BSInputOptions = {
             DataSourceName: ds,
             ModelName: model.PropName,
-            PlaceHolder: model.Name,
-            Title: model.Name
+            PlaceHolder: model.DisplayName,
+            Title: model.DisplayName
         };
 
         //debugger;

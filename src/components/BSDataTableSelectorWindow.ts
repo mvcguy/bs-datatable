@@ -93,20 +93,23 @@ export class BSDataTableSelectorWindow extends BSDataTableBase {
         // if the grid exist from before, no need to render again
         //
         if (this.findById(this.gridId)) return;
-        
+
         //
         // grid shown in the selector window
         //
-        var dataSource = new BSDataTableDataSource(this.options.DataSourceName + "_" + this.options.ModelName,
-            {
-                initData: [],
-                metaData: undefined
-            },
-            true,
-            this.options.UrlCb
-        );
+        var dataSource: BSDataTableDataSource = {
+            name: this.options.DataSourceName + "_" + this.options.ModelName,
+            isRemote: true,
+            url: this.options.UrlCb
+        };
 
-        var bs = new BSDataTableOptions(this.gridId, this.containerId, this.options.GridCols, dataSource, true);
+        var bs: BSDataTableOptions = {
+            gridId: this.gridId, containerId: this.containerId,
+            colDefinition: this.options.GridCols,
+            dataSource: dataSource,
+            isReadonly: true,
+            enableInfiniteScroll: true
+        };
         // bs.enableInfiniteScroll = false;
         var grid = new BSDataTable(bs);
         grid.registerCallbacks();

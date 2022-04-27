@@ -2,29 +2,35 @@
 import { BSDataTableColDefinition } from "../../src/commonTypes/common-types";
 import { BSDataTableRow, BSDataTableSelect } from "../../src/components";
 
-function GetColModel() {
+function GetColModel(): {
+    address: BSDataTableColDefinition, name: BSDataTableColDefinition,
+    age: BSDataTableColDefinition, dob: BSDataTableColDefinition, cstatus: BSDataTableColDefinition,
+} {
     return {
-        address: new BSDataTableColDefinition('Address', 'text', '120px', 'address', false),
-        name: new BSDataTableColDefinition('Name', 'text', '120px', 'name', false),
-        age: new BSDataTableColDefinition('Age', 'number', '120px', 'age', false),
-        dob: new BSDataTableColDefinition('Birth date', 'date', '120px', 'birth_date', false),
-        cstatus: new BSDataTableColDefinition('Civil status', 'select', '120px', 'cstatus', false, [{
-            text: 'Single',
-            value: 'single',
-            isSelected: false
-        }, {
-            text: 'Married',
-            value: 'married',
-            isSelected: false
-        }, {
-            text: 'Divorced',
-            value: 'divorced',
-            isSelected: false
-        }, {
-            text: 'Not specified',
-            value: 'na',
-            isSelected: true
-        }])
+        address: { DisplayName: 'Address', DataType: 'text', Width: '120px', PropName: 'address' },
+        name: { DisplayName: 'Name', DataType: 'text', Width: '120px', PropName: 'name' },
+        age: { DisplayName: 'Age', DataType: 'number', Width: '120px', PropName: 'age' },
+        dob: { DisplayName: 'Birth date', DataType: 'date', Width: '120px', PropName: 'birth_date' },
+        cstatus: {
+            DisplayName: 'Civil status', DataType: 'select', Width: '120px', PropName: 'cstatus',
+            SelectList: [{
+                text: 'Single',
+                value: 'single',
+                isSelected: false
+            }, {
+                text: 'Married',
+                value: 'married',
+                isSelected: false
+            }, {
+                text: 'Divorced',
+                value: 'divorced',
+                isSelected: false
+            }, {
+                text: 'Not specified',
+                value: 'na',
+                isSelected: true
+            }]
+        }
     };
 }
 
@@ -143,7 +149,7 @@ describe('BSDataTableRow', function () {
 
     });
 
-    it('verifies that a template row is hidden', function () { 
+    it('verifies that a template row is hidden', function () {
         var row = new BSDataTableRow({
             dataSourceName: 'ds',
             gridId: 'grid_1',
@@ -155,13 +161,13 @@ describe('BSDataTableRow', function () {
 
     });
 
-    it('verifies that active row has appropriate classes', function () { 
+    it('verifies that active row has appropriate classes', function () {
         var row = new BSDataTableRow({
             dataSourceName: 'ds',
             gridId: 'grid_1',
             isTemplateRow: true,
         });
-        
+
         row.focusRow();
 
         expect(row.hasClass('table-active')).toBe(true);

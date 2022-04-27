@@ -3,7 +3,7 @@ import { Tooltip } from "bootstrap"
 import { BSDataTableBase } from "./BSDataTableBase";
 import '../services/string.extensions'
 import {
-    SessionStorageService, bsDataTableDiscoveryService, CookieHelper
+    bsDataTableDiscoveryService, CookieHelper
     , dataEventsService, appDataEvents, appActions
 } from "../services";
 
@@ -13,8 +13,8 @@ import {
     , BSEventSubscriberModel, BSSortingRequestEvent, BSConfigUpdatedEvent
     , BSColsReorderedEvent
     , BSFetchRecordEvent, BSGridUpdatedEvent, BSRowUpdatedEvent
-    , BSFieldUpdatedEvent, BSDataTablePagingMetaData, BSDataTablePaginationOptions
-    , BSDataTableOptions, BSDataTableHttpClientOptions, BSEvent,
+    , BSFieldUpdatedEvent, BSDataTablePagingMetaData
+    , BSDataTableOptions, BSEvent,
     BSFetchRecordErrorEvent, BSColumnSettings, IBSDataTableHttpClient
 } from "../commonTypes/common-types";
 
@@ -51,13 +51,16 @@ export class BSDataTable extends BSDataTableBase {
             nextPageCallback: (page) => this.paginatorCallback(page)
         });
 
-        this.httpClient = options.httpClient ??
-            new BSDataTableHttpClient(this.options.dataSource.name, this.options.cacheResponses);
+        this.httpClient = new BSDataTableHttpClient(this.options.dataSource.name, this.options.cacheResponses);
 
         this.infiniteScroller = null;
         this.gridActions = null;
         this.discoverable = true;
         this.containerElement = document.getElementById(this.options.containerId);
+    }
+
+    static Create(config: (opt: BSDataTableOptions) => void) {
+        //var options = 
     }
 
     notifyListeners(eventType: string, payload: BSEvent) {
@@ -133,7 +136,7 @@ export class BSDataTable extends BSDataTableBase {
             gridHeader: true
         });
 
-        var templateRow = new BSDataTableRow({
+        var bodyRow = new BSDataTableRow({
             isTemplateRow: true,
             dataSourceName: this.options.dataSource.name,
             gridId: this.options.gridId,
@@ -145,14 +148,14 @@ export class BSDataTable extends BSDataTableBase {
         //
         // add row markers - this helps to improve the visual appearance of selected row
         //
-        var mh = new BSDataTableCell(new BSDataTableColDefinition(), true);
+        var mh = new BSDataTableCell({}, true);
 
         var marker = new BSDataTableMarker();
-        var mb = new BSDataTableCell(new BSDataTableColDefinition());
+        var mb = new BSDataTableCell();
         mb.append(marker);
 
         gridHeaderRow.addCell(mh);
-        templateRow.addCell(mb);
+        bodyRow.addCell(mb);
 
         gridColumns.forEach((gc) => {
 
@@ -166,7 +169,7 @@ export class BSDataTable extends BSDataTableBase {
             var colSettings = settings[gc.PropName];
 
             var th = gridHeaderRow.createHeaderFor(gc);
-            var td = templateRow.createInputFor(gc, this.isReadOnly);
+            var td = bodyRow.createInputFor(gc, this.isReadOnly);
 
             //
             // sorting of the data when the header cell is clicked
@@ -175,11 +178,11 @@ export class BSDataTable extends BSDataTableBase {
             this.applyColSettings(th, colSettings);
             this.applyColSettings(td, colSettings);
             gridHeaderRow.addCell(th);
-            templateRow.addCell(td);
+            bodyRow.addCell(td);
         });
 
         this.head.addRow(gridHeaderRow);
-        this.body.addRow(templateRow)
+        this.body.addRow(bodyRow)
 
         //
         // add grid actions toolbar
@@ -205,17 +208,20 @@ export class BSDataTable extends BSDataTableBase {
         //
         // add data to the grid
         //
-        var data = this.options.dataSource.data.initData;
-        var mdata = this.options.dataSource.data.metaData;
+        if (this.options.dataSource.data) {
+            var data = this.options.dataSource.data.initData;
+            var mdata = this.options.dataSource.data.metaData;
 
 
-        let fetchDataEvent: BSFetchRecordEvent = {
-            DataSourceName: this.options.dataSource.name, EventData: {
-                Data: data,
-                MetaData: mdata
-            }
-        };
-        this.notifyListeners(appDataEvents.ON_FETCH_GRID_RECORD, fetchDataEvent);
+            let fetchDataEvent: BSFetchRecordEvent = {
+                DataSourceName: this.options.dataSource.name, EventData: {
+                    Data: data,
+                    MetaData: mdata
+                }
+            };
+            this.notifyListeners(appDataEvents.ON_FETCH_GRID_RECORD, fetchDataEvent);
+
+        }
 
         //
         // notify that grid is data-bound
@@ -393,7 +399,7 @@ export class BSDataTable extends BSDataTableBase {
      */
     bindPaginator(paginationModel: BSDataTablePagingMetaData = new BSDataTablePagingMetaData()) {
 
-        if (!this.paginator.element || (this.paginator.options.metaData.totalRecords != paginationModel.totalRecords)) {
+        if (!this.paginator.element || (this.paginator.options.metaData.totalRecords !== paginationModel.totalRecords)) {
             this.paginator.options.metaData = paginationModel;
             this.paginator.render();
             this.containerElement.appendChild(this.paginator.element);

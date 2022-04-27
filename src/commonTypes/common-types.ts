@@ -124,75 +124,49 @@ export interface BSSelectorWindowOptions extends BSInputOptions {
     GridCols?: BSDataTableColDefinition[];
 }
 
-export class BSDataTableSelectListItem {
+export interface BSDataTableSelectListItem {
     text: string;
     value: string;
     isSelected?: boolean;
 
-    /**
-     * @param {string} text
-     * @param {string} value
-     * @param {boolean} isSelected
-     */
-    constructor(text: string, value: string, isSelected: boolean = false) {
-        this.text = text;
-        this.value = value;
-        this.isSelected = isSelected;
-    }
-
 }
 
-export class BSDataTableColDefinition {
+export interface BSDataTableColDefinition {
     /**
      * Display name
      */
-    Name: string;
-    DataType: string;
-    Width: string;
+    DisplayName?: string;
+    DataType?: string;
+    Width?: string;
 
     /**
      * variable name - must not contain spaces
      */
-    PropName: string;
-    IsKey: boolean;
+    PropName?: string;
+    IsKey?: boolean;
     /**
      * The options of a select list/dropdown
      */
-    SelectList: BSDataTableSelectListItem[];
-    ColSpan: number;
-    RowSpan: number;
+    SelectList?: BSDataTableSelectListItem[];
+    ColSpan?: number;
+    RowSpan?: number;
 
     /**
      * The URL to get the data for a selector 
      * Selector displays data in a grid where needs to be bind to some tabuler data
      */
-    SelectorDataCB: getUrlCallback;
+    SelectorDataCB?: getUrlCallback;
 
     /**
      * The column list of the grid displayed in the selector window
      */
-    SelectorCols: BSDataTableColDefinition[];
+    SelectorCols?: BSDataTableColDefinition[];
 
-    DataSourceName: string;
+    DataSourceName?: string;
 
-    ContainerId: string;
+    ContainerId?: string;
 
-    IsReadOnly: boolean;
-
-    constructor(name?: string, dataType?: string, width?: string, propName?: string, isKey?: boolean,
-        selectList?: BSDataTableSelectListItem[], colSpan?: number, rowSpan?: number,
-        selectorDataCB?: getUrlCallback, selectorCols?: BSDataTableColDefinition[]) {
-        this.Name = name;
-        this.DataType = dataType;
-        this.Width = width;
-        this.PropName = propName;
-        this.IsKey = isKey;
-        this.SelectList = selectList;
-        this.ColSpan = colSpan;
-        this.RowSpan = rowSpan;
-        this.SelectorDataCB = selectorDataCB;
-        this.SelectorCols = selectorCols;
-    }
+    IsReadOnly?: boolean;
 }
 
 
@@ -205,57 +179,27 @@ export class BSDataTableColDefinition {
  * @returns {object[]} returns the data model for the request page
  */
 
-interface getNextPageOffline { (pageIndex: number, data: object[], metaData: BSDataTablePagingMetaData): object[] };
+interface getNextPageOffline { (pageIndex: number, data: any[], metaData: BSDataTablePagingMetaData): any[] };
 
 
 
 
-export class BSDataTableDataSource {
-    name: any;
-    data: any;
-    isRemote: any;
-    url: (page: any) => any;
-    getPageOfflineCB: any;
-
-
-    /**
-     * @param {string} name
-     * @param {{initData: object[];metaData: BSDataTablePagingMetaData;}} initData
-     * @param {boolean} isRemote
-     * @param {getUrlCallback} url - A cb that will accept a page number and returns the url to the next page
-     * @param {getNextPageOffline} getPageOffline - A callback type to get the next page in the offline mode
-     */
-    constructor(name: string, initData: { initData: object[]; metaData: BSDataTablePagingMetaData; },
-        isRemote: boolean, url: getUrlCallback = (page) => undefined, getPageOffline: getNextPageOffline = undefined) {
-        this.name = name;
-        this.data = initData;
-        this.isRemote = isRemote;
-        this.url = url;
-        this.getPageOfflineCB = getPageOffline;
-    }
-
+export interface BSDataTableDataSource {
+    name: string;
+    isRemote: boolean;
+    data?: { initData: any[]; metaData: BSDataTablePagingMetaData; };
+    url?: getUrlCallback;
+    getPageOfflineCB?: getNextPageOffline;
 }
 
-export class BSDataTableOptions {
+export interface BSDataTableOptions {
     gridId: string;
     containerId: string;
     colDefinition: BSDataTableColDefinition[];
     dataSource: BSDataTableDataSource;
-    isReadonly: boolean;
-    enableInfiniteScroll: boolean;
-    cacheResponses: boolean;
-    httpClient: IBSDataTableHttpClient;
-
-    constructor(gridId: string, containerId: string,
-        colDefinition: BSDataTableColDefinition[], dataSource: BSDataTableDataSource, isReadonly: boolean = false) {
-        this.gridId = gridId;
-        this.containerId = containerId;
-        this.colDefinition = colDefinition;
-        this.dataSource = dataSource;
-        this.isReadonly = isReadonly;
-        this.enableInfiniteScroll = true;
-        this.cacheResponses = false;
-    }
+    enableInfiniteScroll?: boolean;
+    cacheResponses?: boolean;
+    isReadonly?: boolean;
 }
 
 export class BSDataTablePagingMetaData {
@@ -263,11 +207,7 @@ export class BSDataTablePagingMetaData {
     pageSize: number;
     totalRecords: number;
     totalPages: number;
-    /**
-     * @param {number} pageIndex
-     * @param {number} pageSize
-     * @param {number} totalRecords
-     */
+
     constructor(pageIndex: number = 1, pageSize: number = 10, totalRecords: number = 10) {
         this.pageIndex = pageIndex;
         this.pageSize = !pageSize || pageSize <= 0 ? 10 : pageSize;

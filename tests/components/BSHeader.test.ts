@@ -4,12 +4,17 @@ import { BSDataTableCell, BSDataTableHeader, BSDataTableRow } from "../../src/co
 it('verify table header props', function () {
     var header = new BSDataTableHeader();
 
-    var col = new BSDataTableColDefinition("First name", 'text', '120px', 'first_name');
+    var col: BSDataTableColDefinition = {
+        DisplayName: "First name",
+        DataType: 'text',
+        Width: '120px',
+        PropName: 'first_name'
+    };
     var cell = new BSDataTableCell(col, true);
 
     var row = new BSDataTableRow({
         dataSourceName: 'ds',
-        gridId: 'grid',        
+        gridId: 'grid',
         gridHeader: true
     })
 

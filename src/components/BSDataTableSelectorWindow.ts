@@ -112,7 +112,7 @@ export class BSDataTableSelectorWindow extends BSDataTableBase {
         };
         // bs.enableInfiniteScroll = false;
         var grid = new BSDataTable(bs);
-        grid.registerCallbacks();
+        grid.RegisterCallbacks();
 
         // grid.addHandler(grid.appDataEvents.ON_ROW_DOUBLE_CLICKED, this.onItemSelected);
         //
@@ -124,7 +124,7 @@ export class BSDataTableSelectorWindow extends BSDataTableBase {
         grid.removeHandler(appDataEvents.ON_SAVE_RECORD);
         grid.removeHandler(appDataEvents.ON_SAVE_ERROR);
 
-        grid.render();
+        grid.Render();
 
         // hide actions
         grid.gridActions.visible = false;

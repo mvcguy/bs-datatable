@@ -174,29 +174,32 @@ export interface BSDataTableColDefinition {
  * A callback type to get the next page in the offline mode
  * @callback getNextPageOffline
  * @param {number} pageIndex
- * @param {object[]} data - dataset
+ * @param {any[]} data - dataset
  * @param {BSDataTablePagingMetaData} metadata - dataseta metadata
- * @returns {object[]} returns the data model for the request page
+ * @returns {any[]} returns the data model for the request page
  */
 
-interface getNextPageOffline { (pageIndex: number, data: any[], metaData: BSDataTablePagingMetaData): any[] };
+export interface getNextPageOffline { (pageIndex: number, data: any[], metaData: BSDataTablePagingMetaData): any[] };
 
-
+export interface BSInitDataModel {
+    data: any[],
+    metaData: BSDataTablePagingMetaData
+ }
 
 
 export interface BSDataTableDataSource {
-    name: string;
-    isRemote: boolean;
+    name?: string;
+    isRemote?: boolean;
     data?: { initData: any[]; metaData: BSDataTablePagingMetaData; };
     url?: getUrlCallback;
     getPageOfflineCB?: getNextPageOffline;
 }
 
 export interface BSDataTableOptions {
-    gridId: string;
-    containerId: string;
-    colDefinition: BSDataTableColDefinition[];
-    dataSource: BSDataTableDataSource;
+    gridId?: string;
+    containerId?: string;
+    colDefinition?: BSDataTableColDefinition[];
+    dataSource?: BSDataTableDataSource;
     enableInfiniteScroll?: boolean;
     cacheResponses?: boolean;
     isReadonly?: boolean;

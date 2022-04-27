@@ -117,7 +117,7 @@ export class BSDataTable extends BSDataTableBase {
         }
     };
 
-    render() {
+    Render() {
 
         this.element = document.createElement('table');
         this.element.classList.add('table', 'table-bordered', 'table-hover'
@@ -235,6 +235,8 @@ export class BSDataTable extends BSDataTableBase {
         if (this.discoverable === true) {
             this.setDiscoverable();
         }
+
+        return this;
     };
 
     addInfiniteScroll() {
@@ -882,7 +884,7 @@ export class BSDataTable extends BSDataTableBase {
         // console.error('onFetchDataError: ', eventArgs);
     }
 
-    registerCallbacks(verifyDSName = true) {
+    RegisterCallbacks(verifyDSName = true) {
         // debugger;
         var id = this.options.gridId;
         var ds = this.options.dataSource.name;
@@ -905,6 +907,8 @@ export class BSDataTable extends BSDataTableBase {
         this.addHandler(appDataEvents.ON_GRID_DATA_BOUND, (sender, ev) => this.onGridDataBound(ev), verifyDSName);
         this.addHandler(appDataEvents.ON_FETCH_GRID_RECORD, (sender, ev) => this.onFetchData(ev), verifyDSName);
         this.addHandler(appDataEvents.ON_FETCH_GRID_RECORD_ERROR, (sender, ev) => this.onFetchDataError(ev), verifyDSName);
+
+        return this;
     }
 
     configurableGrid() {

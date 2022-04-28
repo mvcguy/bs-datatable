@@ -18,7 +18,7 @@ describe('BSDataTable', function () {
             })
             .AddColumn((col) => {
                 col.DisplayName = 'Last name';
-                col.PropName = 'last_name';
+                col.PropName = 'last_name';                
             })
             .AddColumn((col) => {
                 col.DisplayName = 'Address';

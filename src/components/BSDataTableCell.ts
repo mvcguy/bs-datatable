@@ -62,7 +62,8 @@ export class BSDataTableCell extends BSDataTableBase {
             DataSourceName: ds,
             ModelName: model.PropName,
             PlaceHolder: model.DisplayName,
-            Title: model.DisplayName
+            Title: model.DisplayName,
+            InputType: model.DataType,            
         };
 
         //debugger;

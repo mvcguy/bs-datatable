@@ -1,6 +1,6 @@
-// import { BSDataTableColDefinition } from "src";
 import { BSDataTableColDefinition } from "../../src/commonTypes/common-types";
 import { BSDataTableRow, BSDataTableSelect } from "../../src/components";
+import { TestHelpers } from "./TestHelpers";
 
 function GetColModel(): {
     address: BSDataTableColDefinition, name: BSDataTableColDefinition,
@@ -63,15 +63,22 @@ describe('BSDataTableRow', function () {
         inputs.address.val = 'New lucky street 14B, 2098, Mars';
         inputs.name.val = 'Shahid Ali';
         inputs.age.val = 120;
-        inputs.birth_date.val = new Date(1920, 4, 4);
+
+        // month starts from zero in js - very strange?
+        inputs.birth_date.val = TestHelpers.toDateDisplayFormat(new Date(1920, 4, 4));
 
         var record: any = row.getRowData();
+
+        expect(inputs.age.element.type).toBe('number');
+        expect(inputs.address.element.type).toBe('text');
+        expect(inputs.name.element.type).toBe('text');
+        expect(inputs.birth_date.element.type).toBe('date');
 
         expect(row.element.tagName).toBe('TR');
         expect(record.address).toBe('New lucky street 14B, 2098, Mars');
         expect(record.name).toBe('Shahid Ali');
-        expect(record.age).toBe('120');
-        expect(record.birth_date).toBe(new Date(1920, 4, 4).toString());
+        expect(record.age).toBe(120);
+        expect(record.birth_date).toBe(TestHelpers.toDateDisplayFormat(new Date(1920, 4, 4)));
         expect(record.rowCategory).toBe('PRESTINE');
         expect(record.clientRowNumber).toBe(1);
         expect(record.cstatus).toBe('na');
@@ -97,13 +104,13 @@ describe('BSDataTableRow', function () {
         inputs.address.val = 'New lucky street 14B, 2098, Mars';
         inputs.name.val = 'Shahid Ali';
         inputs.age.val = 120;
-        inputs.birth_date.val = new Date(1920, 4, 4);
+        inputs.birth_date.val = TestHelpers.toDateDisplayFormat(new Date(1920, 4, 4));
 
         var record: any = clone.getRowData();
         expect(record.address).toBe('New lucky street 14B, 2098, Mars');
         expect(record.name).toBe('Shahid Ali');
-        expect(record.age).toBe('120');
-        expect(record.birth_date).toBe(new Date(1920, 4, 4).toString());
+        expect(record.age).toBe(120);
+        expect(record.birth_date).toBe(TestHelpers.toDateDisplayFormat(new Date(1920, 4, 4)));
         expect(record.rowCategory).toBe('PRESTINE');
         expect(record.clientRowNumber).toBe(1);
 

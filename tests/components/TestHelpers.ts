@@ -12,4 +12,17 @@ export class TestHelpers {
         };
         dataEventsService.Subscribe(model);
     };
+
+
+    static toDateDisplayFormat(date: Date) {
+        var day = date.getDate(),
+            month = date.getMonth() + 1, // month starts from zero in js - very strange?
+            year = date.getFullYear();
+
+        let monthStr = (month < 10 ? "0" : "") + month;
+        let dayStr = (day < 10 ? "0" : "") + day;
+
+        return year + "-" + monthStr + "-" + dayStr;
+    }
+
 }

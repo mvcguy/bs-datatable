@@ -36,7 +36,10 @@ describe('BSDataTable', function () {
             .RegisterCallbacks()
             .Render();
 
-        console.log(dt.element.parentElement.innerHTML);
+        var row = dt.getRowByIndex(2); // position 1 is template row
+        console.log(row.getRowData());
+        // var records = dt.allRecords;
+        // console.log(records);
 
     })
 

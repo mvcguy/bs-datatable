@@ -25,6 +25,16 @@ export class BSFluentBuilder {
                     metaData: new BSDataTablePagingMetaData()
                 },
                 isRemote: true,
+                getPageOfflineCB: (page, data, mdata) => {
+                    var start = Math.max(0, (page - 1) * mdata.pageSize);
+                    var end = Math.min(start + mdata.pageSize, data.length);
+                    var pageData = [];
+                    for (let index = start; index < end; index++) {
+                        const dt = data[index];
+                        pageData.push(dt);
+                    }
+                    return pageData;
+                }
             };
         }
 
@@ -127,24 +137,5 @@ export class BSFluentBuilder {
         config(this.options.dataSource.data);
         return this;
     }
-
-    /*
-
-    BSFluentBuilder
-        .CreateDataTable()
-        .SetId()
-        .SetContainerId()
-        .IsRemote(true)
-        .EnableInfiniteScroll(true)
-        .IsReadOnly(true)
-        .AddInitData()
-        .NextPageUrlCallback()
-        .GetNextPageOfflineCallback()
-        .AddColumn()
-        .AddColumn()
-        .AddColumns()
-
-*/
-
 
 }

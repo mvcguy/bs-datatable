@@ -38,7 +38,7 @@ describe('BSDataTable', function () {
             .Build()
             .RegisterCallbacks()
             .Render();
-        
+
         expect(dt.element.tagName).toBe('TABLE')
         expect(dt.hasClasses('table table-bordered table-hover table-sm resizable navTable nowrap bs-table')).toBe(true);
 
@@ -56,7 +56,7 @@ describe('BSDataTable', function () {
         var headerRow = dt.head.rows.find(x => x.options.gridHeader === true);
         expect(headerRow.element.tagName).toBe('TR');
         expect(headerRow.hasClasses('draggable grid-cols')).toBe(true);
-        expect(headerRow.getProp('data-rowindex')).toBe('1');
+        expect(headerRow.rowIndex).toBe(1);
         expect(headerRow.element.id).toBe('grid2_head_1')
 
         var headerCells = headerRow.cells;
@@ -92,7 +92,42 @@ describe('BSDataTable', function () {
         var body = dt.body;
         expect(body.element.tagName).toBe('TBODY');
 
-        
+        var rows = body.rows;
+        expect(rows.length).toBe(4);
+
+        rows.forEach((row, index) => {
+
+            // first row is the template row
+            if (row.options.isTemplateRow === true) {
+                expect(row.visible).toBe(false);
+                expect(row.rowIndex).toBe(1);
+            }
+            else {
+                expect(row.visible).toBe(true);
+                expect(row.rowIndex).toBe(index + 1);
+                expect(row.element.style.display).toBe('table-row');
+            }
+
+            // common for all types of rows
+            expect(row.hasClass('grid-row')).toBe(true);
+            expect(row.id).toBe(`${dt.id}_data_${index + 1}`)
+
+            var cells = row.cells;
+            expect(cells.length).toBe(4);
+            cells.forEach((cell, ci) => {
+                // cell at zero index is the row marker
+                if (ci === 0) {
+                    var rowMarker = cell;
+                    
+                }
+                else {
+
+                }
+            })
+
+        });
+
+        // console.log(dt.element.parentElement.innerHTML);
 
 
     })

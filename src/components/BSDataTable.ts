@@ -609,7 +609,7 @@ export class BSDataTable extends BSDataTableBase {
             this.infiniteScroller.currentPage = 1;
         }
     };
- 
+
     /**
      * @param {number} pageIndex
      */

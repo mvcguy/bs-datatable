@@ -26,7 +26,7 @@ it('verify table header props', function () {
     expect(header.element.tagName).toBe('THEAD');
     expect(header.hasClass('table-light')).toBe(true);
 
-    var expectedHtml = '<thead class="table-light"><tr class="draggable grid-cols" data-rowindex="1" id="grid_head_1"><th class="sorting ds-col">First name</th></tr></thead>';
+    var expectedHtml = '<thead class="table-light"><tr class="draggable grid-cols" head-rowindex="1" id="grid_head_1"><th class="sorting ds-col">First name</th></tr></thead>';
 
     expect(container.innerHTML).toBe(expectedHtml);
 

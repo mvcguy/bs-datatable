@@ -1,8 +1,7 @@
 import { BSDataTableBase } from "./BSDataTableBase";
 import { BSDataTableInput } from "./BSDataTableInput";
 import { BSDataTableCell } from "./BSDataTableCell";
-import { BSDataTableColDefinition, BSRowOptions} from "../commonTypes/common-types";
-import { BSDataTableSelector } from "./BSDataTableSelector";
+import { BSDataTableColDefinition, BSRowOptions } from "../commonTypes/common-types";
 
 export class BSDataTableRow extends BSDataTableBase {
 
@@ -17,7 +16,7 @@ export class BSDataTableRow extends BSDataTableBase {
         this.options = options;
         this.render();
     }
-    
+
     render() {
         if (!this.element)
             this.element = document.createElement('tr');
@@ -80,9 +79,9 @@ export class BSDataTableRow extends BSDataTableBase {
         return inputs;
     }
 
-    createInputFor(model: BSDataTableColDefinition, readonly: boolean): BSDataTableCell {        
+    createInputFor(model: BSDataTableColDefinition, readonly: boolean): BSDataTableCell {
         // TODO: The arg readonly is not needed!!!
-        model.DataSourceName = this.dataSourceName;
+        model.DataSourceName = this.options.dataSourceName;
         model.IsReadOnly = readonly;
         model.ContainerId = this.options.containerId;
         return new BSDataTableCell(model, false);
@@ -114,13 +113,18 @@ export class BSDataTableRow extends BSDataTableBase {
         return record;
     }
 
+    get rType() {
+        return this.options.gridHeader === true ? 'head' : 'data';
+
+    }
+
     get rowIndex() {
-        var rowIndex = this.getProp('data-rowindex');
+        var rowIndex = this.getProp(this.rType + '-rowindex');
         return parseInt(rowIndex);
     }
 
     set rowIndex(index: number) {
-        this.prop('data-rowindex', index);
+        this.prop(this.rType + '-rowindex', index);
     }
 
     /**

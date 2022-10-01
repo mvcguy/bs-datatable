@@ -67,7 +67,8 @@ export class BSDataTableSelector extends BSDataTableInput {
         this.btnElement = new BSDataTableButton({
             DataSourceName: this.options.DataSourceName,
             Icon: 'search',
-            Handler: (e) => btnHandler(this, e)
+            Handler: (e) => btnHandler(this, e),
+            Title:'Search'
         });
 
         var wrapper = document.createElement('div');

@@ -38,6 +38,10 @@ export class BSDataTableInfiniteScroll extends BSDataTableBase {
 
     }
 
+    reset(){
+        this.currentPage = 1;
+    }
+
     /**
      * @param {IntersectionObserverEntry[]} entries
      * @param {IntersectionObserver} sender

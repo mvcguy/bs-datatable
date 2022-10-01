@@ -59,10 +59,6 @@ export class BSDataTable extends BSDataTableBase {
         this.containerElement = document.getElementById(this.options.containerId);
     }
 
-    static Create(config: (opt: BSDataTableOptions) => void) {
-        //var options = 
-    }
-
     notifyListeners(eventType: string, payload: BSEvent) {
         dataEventsService.Emit(eventType, this, payload);
     }
@@ -310,6 +306,9 @@ export class BSDataTable extends BSDataTableBase {
         // remove all except the template row
         var templateRow = this.body.getTemplateRow();
         this.body.rows = [templateRow];
+
+        if (this.infiniteScroller)
+            this.infiniteScroller.reset();
     };
 
     /**
@@ -468,6 +467,7 @@ export class BSDataTable extends BSDataTableBase {
                 }
 
                 // remove any previous errors
+                // TODO: Do not remove the title of the input
                 input.removeClass('is-invalid').prop('title', '');
 
                 var tooltip = Tooltip.getInstance(e.target as Element);

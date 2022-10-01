@@ -76,6 +76,7 @@ export class BSDataTableCell extends BSDataTableBase {
         }
         else if (model.DataType === 'selector') {
 
+            inputOptions.InputType = 'text';
             var sltrOptions: BSSelectorOptions = {
                 ...inputOptions,
                 ContainerId: model.ContainerId,
@@ -100,6 +101,9 @@ export class BSDataTableCell extends BSDataTableBase {
             input.setCss('user-select', 'none');
         }
 
+        //
+        // TODO: add a common class to the input elements
+        //
 
         this.append(input);
     }

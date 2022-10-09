@@ -3,8 +3,6 @@ import { BSDataTable } from "./BSDataTable";
 
 
 export class BSFluentBuilder {
-
-
     options: BSDataTableOptions
 
     constructor(options: BSDataTableOptions) {
@@ -123,6 +121,7 @@ export class BSFluentBuilder {
                 ContainerId: this.options.containerId,
                 IsKey: false,
                 DataType: 'text',
+                ValidationRules:[]
             };
             colConfig(col);
             this.options.colDefinition.push(col);

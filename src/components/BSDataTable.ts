@@ -5,6 +5,7 @@ import '../services/string.extensions'
 import {
     bsDataTableDiscoveryService, CookieHelper
     , dataEventsService, appDataEvents, appActions
+    , BSValidationService, BSFluentValidationBuilder
 } from "../services";
 
 import { BSDataTableCell } from "./BSDataTableCell";
@@ -39,6 +40,7 @@ export class BSDataTable extends BSDataTableBase {
     gridActions: BSDataTableActions;
     discoverable: boolean;
     containerElement: HTMLElement;
+    validationService: BSValidationService;
 
     constructor(options: BSDataTableOptions) {
         super();
@@ -57,6 +59,10 @@ export class BSDataTable extends BSDataTableBase {
         this.gridActions = null;
         this.discoverable = true;
         this.containerElement = document.getElementById(this.options.containerId);
+        this.validationService = BSFluentValidationBuilder
+            .CreateBuilder()
+            .ShowMessagesAsToolTips(true)
+            .Build();
     }
 
     notifyListeners(eventType: string, payload: BSEvent) {
@@ -309,6 +315,9 @@ export class BSDataTable extends BSDataTableBase {
 
         if (this.infiniteScroller)
             this.infiniteScroller.reset();
+
+        if (this.validationService)
+            this.validationService.Clear();
     };
 
     /**
@@ -457,6 +466,23 @@ export class BSDataTable extends BSDataTableBase {
                 input.readonly = false;
             }
 
+            //
+            // Add validation for controls
+            //
+
+            if (input.options.ValidationRules && input.options.ValidationRules.length > 0) {
+
+                _this.validationService.AddValidationFor(opt => {
+                    if (input.element instanceof HTMLInputElement)
+                        opt.Control = input.element
+                    else
+                        opt.Id = input.id;
+
+                    opt.Rules = input.options.ValidationRules;
+                });
+            }
+
+
             input.element.addEventListener('change', (e) => {
 
                 row.isRowDirty = true;
@@ -468,11 +494,13 @@ export class BSDataTable extends BSDataTableBase {
 
                 // remove any previous errors
                 // TODO: Do not remove the title of the input
-                input.removeClass('is-invalid').prop('title', '');
+                // if (input.hasClass('is-invalid')) {
+                //     input.removeClass('is-invalid').prop('title', '');
+                // }
 
-                var tooltip = Tooltip.getInstance(e.target as Element);
-                if (tooltip)
-                    tooltip.dispose();
+                // var tooltip = Tooltip.getInstance(e.target as Element);
+                // if (tooltip)
+                //     tooltip.dispose();
 
                 var rowData = row.getRowDataExt();
                 var ds = _this.options.dataSource.name;
@@ -846,7 +874,7 @@ export class BSDataTable extends BSDataTableBase {
      * @param callback 
      * @param verifyDSName 
      */
-    addHandler(eventName: string, callback: BSEventHandler, verifyDSName = false) {
+    addHandler(eventName: string, callback: BSEventHandler, verifyDSName = true) {
         let model: BSEventSubscriberModel = {
             Key: this.options.gridId,
             EventName: eventName,
@@ -890,7 +918,7 @@ export class BSDataTable extends BSDataTableBase {
         var ds = this.options.dataSource.name;
 
         //
-        // subscribe to main view/form events
+        // subscribe to main view/form events (// TODO: not needed any more)
         //
         this.addHandler(appDataEvents.GRID_DATA, (sender, ev) => this.body.getDirtyRecords()); // TODO: obsolete -> replaced with discovery service
         this.addHandler(appDataEvents.ON_ADD_RECORD, (sender, ev) => this.onHeaderNext(ev, false));

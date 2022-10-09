@@ -63,7 +63,8 @@ export class BSDataTableCell extends BSDataTableBase {
             ModelName: model.PropName,
             PlaceHolder: model.DisplayName,
             Title: model.DisplayName,
-            InputType: model.DataType,            
+            InputType: model.DataType,     
+            ValidationRules: model.ValidationRules       
         };
 
         //debugger;
@@ -81,7 +82,7 @@ export class BSDataTableCell extends BSDataTableBase {
                 ...inputOptions,
                 ContainerId: model.ContainerId,
                 UrlCb: model.SelectorDataCB,
-                GridCols: model.SelectorCols
+                GridCols: model.SelectorCols,
             };
             input = new BSDataTableSelector(sltrOptions);
 

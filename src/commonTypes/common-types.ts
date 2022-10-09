@@ -1,3 +1,4 @@
+import { Tooltip } from "bootstrap";
 
 export interface BSEventHandler { (sender: object, eventObject: BSEvent): void }
 
@@ -102,6 +103,7 @@ export interface BSInputOptions {
     PlaceHolder?: string;
     ModelName?: string;
     Title?: string;
+    ValidationRules?: BSValidationRule[]
 
 }
 
@@ -167,6 +169,8 @@ export interface BSDataTableColDefinition {
     ContainerId?: string;
 
     IsReadOnly?: boolean;
+
+    ValidationRules?: BSValidationRule[]
 }
 
 
@@ -184,7 +188,7 @@ export interface getNextPageOffline { (pageIndex: number, data: any[], metaData:
 export interface BSInitDataModel {
     data: any[],
     metaData: BSDataTablePagingMetaData
- }
+}
 
 
 export interface BSDataTableDataSource {
@@ -304,5 +308,98 @@ export interface BSDataTableHyperLinkOptions {
     dataSourceName: string;
     clickHandler?: (e: MouseEvent) => void;
 }
+
+
+export interface BSValidationOptions {
+
+    /**
+     * An arrary of control options which the validator is going to validate
+     */
+    Controls?: BSInputControlOptions[]
+
+    /**
+     * If we want to update the class of the input control for visual effects
+     *  we need to specify its name here.
+     * By default its value is set to 'form-control-danger' class
+     */
+    ControlErrorClass?: string
+
+    /**
+     * By Default the validator inserts a new element below the input control to show 
+     * validation errors. Set this property to a css class to format such messages
+     */
+    ErrorMessageClass?: string
+
+    /**
+     * Invoked when the validation is completed. Its called on the grid/form level
+     */
+    OnValidated?: (sender: any, args: any) => void
+
+    /**
+     * Data source name of the grid
+     */
+    DataSourceName?: string
+
+    /**
+     * A unique name for the current validator, since there can many validators on the same page
+     * Its a good idea to name each validator uniquely 
+     */
+    ValidatorName?: string
+
+    /**
+     * Be default validation messages are shown under the input control, but when this property is set, these are displayed as tooltips
+     */
+    ShowMessagesAsToolTips?: Boolean
+
+    /**
+     * By default the class is set to 'tooltip-error'
+     */
+    TooltipClass?: string
+}
+
+export interface BSInputControlOptions {
+    /**
+     * The ID of the control which is being validated. This prop is optional if the Control prop is set
+     */
+    Id?: string
+
+    /**
+     * The control which is being validated. This prop is optional if the ID of the control is already provided
+     */
+    Control?: HTMLInputElement
+    Rules?: BSValidationRule[]
+}
+
+export interface BSValidationRule {
+    RuleType?: keyof BSValidationRuleType
+    DisplayName?: string
+    ErrorMessage?: string
+    ControlErrorClass?: string // To override the general error class
+    ErrorMessageClass?: string // To override the general error class
+    Start?: number
+    End?: number
+    Length?: number
+    MinLength?: number
+    MaxLength?: number
+}
+
+export interface ControlValidationModel {
+    Control: HTMLInputElement
+    Options: BSInputControlOptions
+    MessageNode?: HTMLElement;
+    MessageTooltip?: Tooltip;
+    IsValid: boolean;
+    Messages: string[];
+    ExistingTooltip?: string;
+    
+}
+
+export interface BSValidationRuleType {
+    "LENGTH": string
+    "REQUIRED": string
+    "RANGE": string
+    "GENERAL": string
+}
+
 
 

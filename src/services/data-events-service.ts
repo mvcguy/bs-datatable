@@ -23,14 +23,20 @@ class DataEventsService {
     Emit(eventName: string, source: any, eventArgs: BSEvent) {
         if (!eventName) return;
         try {
-            // TODO: use find ftn instead of foreach!!!
-            this.callbacks.forEach((cb) => {
-                if (cb.EventName !== eventName || (cb.DataSourceName !== eventArgs.DataSourceName && cb.VerifyDataSourceName === true)) {
-                    // console.log('source could not be matched');
-                    return;
-                }
-                cb.Callback(source, eventArgs);
-            });
+
+            var found = this.callbacks.filter(v => v.EventName === eventName && (v.DataSourceName === eventArgs.DataSourceName || v.VerifyDataSourceName !== true));
+            if (found && found.length > 0) {
+                found.forEach(cb => cb.Callback(source, eventArgs));
+            }
+
+            // TODO: use find ftn instead of foreach!!! DONE
+            // this.callbacks.forEach((cb) => {
+            //     if (cb.EventName !== eventName || (cb.DataSourceName !== eventArgs.DataSourceName && cb.VerifyDataSourceName === true)) {
+            //         // console.log('source could not be matched');
+            //         return;
+            //     }
+            //     cb.Callback(source, eventArgs);
+            // });
 
         } catch (error) {
             console.error(error);
@@ -40,9 +46,9 @@ class DataEventsService {
     Unsubscribe(model: BSEventSubscriberModel) {
 
         var filtered = this.callbacks
-            .filter((cb) => (cb.Key === model.Key
-                && cb.EventName === model.EventName
-                && cb.DataSourceName === model.DataSourceName) === false);
+            .filter(cb => cb.Key !== model.Key
+                || cb.EventName !== model.EventName
+                || cb.DataSourceName !== model.DataSourceName);
 
         this.callbacks = filtered;
 
